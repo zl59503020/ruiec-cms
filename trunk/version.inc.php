@@ -1,0 +1,5 @@
+<?php
+define('RE_VERSION', '1.0');
+define('RE_RELEASE', '2012-11-10');
+define('RE_LICENSE', '3B1D05E6655266E9E0F5E8F303A3DBC9');
+?>

@@ -1,0 +1,34 @@
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+$CFG['database'] = 'mysql';
+$CFG['pconnect'] = '0';
+$CFG['db_host'] = 'localhost';
+$CFG['db_name'] = 'ruiecCMS';
+$CFG['db_user'] = 'zl';
+$CFG['db_pass'] = '110';
+$CFG['db_charset'] = 'utf8';
+$CFG['db_expires'] = '0';
+$CFG['tb_pre'] = 'ruiec_';
+$CFG['charset'] = 'utf-8';
+$CFG['path'] = '/';
+$CFG['url'] = 'http://192.168.1.3/';
+$CFG['file_mod'] = 0777;
+$CFG['cache'] = 'file';
+$CFG['cache_pre'] = 'b2b_';
+$CFG['cache_dir'] = '';
+$CFG['tag_expires'] = '0';
+$CFG['template_refresh'] = '1';
+$CFG['template_trim'] = '0';
+$CFG['cookie_domain'] = '';
+$CFG['cookie_path'] = '/';
+$CFG['cookie_pre'] = 'Dc9_';
+$CFG['timezone'] = 'Etc/GMT-8';
+$CFG['timediff'] = '0';
+$CFG['skin'] = 'default';
+$CFG['template'] = 'default';
+$CFG['language'] = 'zh-cn';
+$CFG['authkey'] = 'Z3L1zyOKW7L9YXK26B';
+$CFG['edittpl'] = '1';
+$CFG['executesql'] = '1';
+$CFG['founderid'] = '1';
+?>

@@ -1,0 +1,1 @@
+<?php defined('IN_RUIEC') or exit('Access Denied'); return array ('moduleid' => '6','name' => '新闻中心','moduledir' => 'news','module' => 'article','ismenu' => '1','domain' => '','linkurl' => 'http://192.168.1.3/news/',); ?>

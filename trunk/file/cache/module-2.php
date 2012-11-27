@@ -1,0 +1,1 @@
+<?php defined('IN_RUIEC') or exit('Access Denied'); return array ('moduleid' => '2','name' => '会员系统','moduledir' => 'member','module' => 'member','ismenu' => '0','domain' => 'http://www.ruiec.com/','linkurl' => 'http://www.ruiec.com/',); ?>
