@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-11-26 11:58:09</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/admin.php</file>
+	<querystring>file=admin</querystring>
+	<message>		<query>SELECT COUNT(*) AS num FROM ruiec_member WHERE groupid=1 LIMIT 0,1</query>
+		<errno>0</errno>
+		<error>Table 'ruieccms.ruiec_member' doesn't exist</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

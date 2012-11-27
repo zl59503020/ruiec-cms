@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-11-26 18:14:22</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/news/index.php</file>
+	<querystring></querystring>
+	<message>		<query>SELECT catid,catname,child,style,linkurl,item FROM ruiec_category WHERE moduleid=18 AND parentid=0 AND level=1 ORDER BY listorder,catid ASC</query>
+		<errno>0</errno>
+		<error>Table 'ruieccms.ruiec_category' doesn't exist</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-11-21 21:55:42</time>
+	<ip>192.168.1.3</ip>
+	<user>guest</user>
+	<file>/admin.php</file>
+	<querystring>file=module&amp;action=add</querystring>
+	<message>		<query>INSERT INTO ruiec_module (islink,name,ismenu,isblank,linkurl,module,moduledir,domain,installtime) VALUES ('0','关于我们','1','1','http://192.168.1.3/about/','info','about','','1353506142')</query>
+		<errno>0</errno>
+		<error>Duplicate entry '3' for key 'PRIMARY'</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

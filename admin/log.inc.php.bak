@@ -1,0 +1,23 @@
+﻿<?php
+defined('IN_RUIEC') or exit('Access Denied');
+
+switch($action) {
+	case 'add':
+		
+		break;
+	case 'delete':
+		die('0');
+		break;
+	default:
+		$condition = '1';
+		$lists = array();
+		$result = $db->query("SELECT * FROM {$RE_PRE}logs WHERE $condition ORDER BY id DESC");
+		while($r = $db->fetch_array($result)) {
+			$r['time'] = timetodate($r['time'], 5);
+			$lists[] = $r;
+		}
+		include tpl('log');
+	break;
+}
+
+?>
