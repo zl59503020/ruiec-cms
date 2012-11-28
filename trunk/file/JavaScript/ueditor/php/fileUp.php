@@ -9,7 +9,7 @@
     include "Uploader.class.php";
     //上传配置
     $config = array(
-        "savePath" => "../../../../upload/file/" , //保存路径
+        "savePath" => "upload/" , //保存路径
         "allowFiles" => array( ".rar" , ".doc" , ".docx" , ".zip" , ".pdf" , ".txt" , ".swf" , ".wmv" ) , //文件允许格式
         "maxSize" => 100000 //文件大小限制，单位KB
     );
@@ -38,5 +38,5 @@
      *   'state'    :'SUCCESS'       //上传状态，成功时返回SUCCESS,其他任何值将原样返回至图片上传框中
      * }
      */
-    echo '{"url":"' . str_replace("../../../../","",$info["url"]) . '","fileType":"' . $info[ "type" ] . '","original":"' . $info[ "originalName" ] . '","state":"' . $info["state"] . '"}';
+    echo '{"url":"' .$info[ "url" ] . '","fileType":"' . $info[ "type" ] . '","original":"' . $info[ "originalName" ] . '","state":"' . $info["state"] . '"}';
 

@@ -9,7 +9,7 @@
     error_reporting(E_ERROR|E_WARNING);
     //远程抓取图片配置
     $config = array(
-        "savePath" => "../../../../upload/" ,            //保存路径
+        "savePath" => "upload/" ,            //保存路径
         "allowFiles" => array( ".gif" , ".png" , ".jpg" , ".jpeg" , ".bmp" ) , //文件允许格式
         "maxSize" => 3000                    //文件大小限制，单位KB
     );
@@ -95,5 +95,5 @@
          *   'tip'   : '状态提示'
          * }
          */
-        echo "{'url':'" . str_replace("../../../../","",implode( "ue_separate_ue" , $tmpNames )) . "','tip':'远程图片抓取成功！','srcUrl':'" . $uri . "'}";
+        echo "{'url':'" . implode( "ue_separate_ue" , $tmpNames ) . "','tip':'远程图片抓取成功！','srcUrl':'" . $uri . "'}";
     }

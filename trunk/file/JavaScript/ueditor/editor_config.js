@@ -24,14 +24,12 @@
     /**
      * 此处配置写法适用于UEditor小组成员开发使用，外部部署用户请按照上述说明方式配置即可，建议保留下面两行，以兼容可在具体每个页面配置window.UEDITOR_HOME_URL的功能。
      */
-    
-	/*
-	var tmp = window.location.pathname;
-        URL = window.UEDITOR_HOME_URL||tmp.substr(0,tmp.lastIndexOf("\/")+1).replace("_examples/","").replace("website/","");//这里你可以配置成ueditor目录在您网站的相对路径或者绝对路径（指以http开头的绝对路径）
-	*/
 	var sps = document.getElementsByTagName('script');
 	var tmp = sps[sps.length-1].src;
-	URL = window.UEDITOR_HOME_URL||tmp.substr(0,tmp.lastIndexOf("\/")+1).replace("_examples/","").replace("website/","");
+	URL = window.UEDITOR_HOME_URL || tmp.substr(0,tmp.lastIndexOf('\/')+1);
+    //var tmp = window.location.pathname;
+    //URL = window.UEDITOR_HOME_URL||tmp.substr(0,tmp.lastIndexOf("\/")+1).replace("_examples/","").replace("website/","");
+	//这里你可以配置成ueditor目录在您网站的相对路径或者绝对路径（指以http开头的绝对路径）
 
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
@@ -48,42 +46,42 @@
 
         //图片上传配置区
         ,imageUrl:URL+"php/imageUp.php"             //图片上传提交地址
-        ,imagePath:"/"                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
+        ,imagePath:URL + "php/"                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
        //,imageFieldName:"upfile"                   //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
         //,compressSide:0                            //等比压缩的基准，确定maxImageSideLength参数的参照对象。0为按照最长边，1为按照宽度，2为按照高度
         //,maxImageSideLength:900                    //上传图片最大允许的边长，超过会自动等比缩放,不缩放就设置一个比较大的值，更多设置在image.html中
 
         //涂鸦图片配置区
         ,scrawlUrl:URL+"php/scrawlUp.php"           //涂鸦上传地址
-        ,scrawlPath:"/"                           //图片修正地址，同imagePath
+        ,scrawlPath:URL+"php/"                           //图片修正地址，同imagePath
 
         //附件上传配置区
         ,fileUrl:URL+"php/fileUp.php"               //附件上传提交地址
-        ,filePath:"/"                   //附件修正地址，同imagePath
+        ,filePath:URL + "php/"                   //附件修正地址，同imagePath
         //,fileFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 
          //远程抓取配置区
         //,catchRemoteImageEnable:true               //是否开启远程图片抓取,默认开启
         ,catcherUrl:URL +"php/getRemoteImage.php"   //处理远程图片抓取的地址
-        ,catcherPath:"/"                  //图片修正地址，同imagePath
+        ,catcherPath:URL + "php/"                  //图片修正地址，同imagePath
         //,catchFieldName:"upfile"                   //提交到后台远程图片uri合集，若此处修改，需要在后台对应文件修改对应参数
         //,separater:'ue_separate_ue'               //提交至后台的远程图片地址字符串分隔符
         //,localDomain:[]                            //本地顶级域名，当开启远程图片抓取时，除此之外的所有其它域名下的图片都将被抓取到本地,默认不抓取127.0.0.1和localhost
 
         //图片在线管理配置区
         ,imageManagerUrl:URL + "php/imageManager.php"       //图片在线管理的处理地址
-        ,imageManagerPath:"/"                                    //图片修正地址，同imagePath
+        ,imageManagerPath:URL + "php/"                                    //图片修正地址，同imagePath
 
         //屏幕截图配置区
         ,snapscreenHost: '127.0.0.1'                                  //屏幕截图的server端文件所在的网站地址或者ip，请不要加http://
         ,snapscreenServerUrl: URL +"php/imageUp.php" //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/php/snapImgUp.php"”
-        ,snapscreenPath:"/"
+        ,snapscreenPath: URL + "php/"
         //,snapscreenServerPort: 80                                    //屏幕截图的server端端口
         //,snapscreenImgAlign: 'center'                                //截图的图片默认的排版方式
 
         //word转存配置区
         ,wordImageUrl:URL + "php/imageUp.php"             //word转存提交地址
-        ,wordImagePath:"/"                       //
+        ,wordImagePath:URL + "php/"                       //
         //,wordImageFieldName:"upfile"                     //word转存表单名若此处修改，需要在后台对应文件修改对应参数
 
         //获取视频数据的地址
@@ -121,7 +119,7 @@
         //常用配置项目
         //,isShow : true    //默认显示编辑器
 
-        ,initialContent:''    //初始化编辑器的内容,也可以通过textarea/script给值，看官网例子
+        //,initialContent:'欢迎使用ueditor!'    //初始化编辑器的内容,也可以通过textarea/script给值，看官网例子
 
         //,autoClearinitialContent:true //是否自动清除编辑器初始内容，注意：如果focus属性设置为true,这个也为真，那么编辑器一上来就会触发导致初始化的内容看不到了
 
@@ -147,7 +145,7 @@
 
         //,emotionLocalization:false //是否开启表情本地化，默认关闭。若要开启请确保emotion文件夹下包含官网提供的images表情文件夹
 
-        ,pasteplain:false  //是否纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        //,pasteplain:true  //是否纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
 
         //,allHtmlEnabled:false //提交到后台的数据是否包含整个html字符串
         //iframeUrlMap
@@ -240,17 +238,17 @@
 //           ]
 
         //wordCount
-        ,wordCount:false          //是否开启字数统计
-        ,maximumWords:100000       //允许的最大字符数
+        //,wordCount:false          //是否开启字数统计
+        //,maximumWords:10000       //允许的最大字符数
         //字数统计提示，{#count}代表当前字数，{#leave}代表还可以输入多少字符数,留空支持多语言自动切换，否则按此配置显示
-        ,wordCountMsg:''   //当前已输入 {#count} 个字符，您还可以输入{#leave} 个字符
+        //,wordCountMsg:''   //当前已输入 {#count} 个字符，您还可以输入{#leave} 个字符
         //超出字数限制提示  留空支持多语言自动切换，否则按此配置显示
         //,wordOverFlowMsg:''    //<span style="color:red;">你输入的字符个数已经超出最大允许值，服务器可能会拒绝保存！</span>
 
         //highlightcode
         // 代码高亮时需要加载的第三方插件的路径
-         ,highlightJsUrl:URL + "third-party/SyntaxHighlighter/shCore.js"
-         ,highlightCssUrl:URL + "third-party/SyntaxHighlighter/shCoreDefault.css"
+        // ,highlightJsUrl:URL + "third-party/SyntaxHighlighter/shCore.js"
+        // ,highlightCssUrl:URL + "third-party/SyntaxHighlighter/shCoreDefault.css"
 
         //tab
         //点击tab键时移动的距离,tabSize倍数，tabNode什么字符做为单位
@@ -259,7 +257,7 @@
 
         //elementPathEnabled
         //是否启用元素路径，默认是显示
-        ,elementPathEnabled : false
+        //,elementPathEnabled : false
 
         //removeFormat
         //清除格式时可以删除的标签和属性
@@ -294,12 +292,12 @@
 
         //sourceEditor
         //源码的查看方式,codemirror 是代码高亮，textarea是文本框,默认是codemirror
-        ,sourceEditor:"codemirror"
+        //,sourceEditor:"codemirror"
         //如果sourceEditor是codemirror，还用配置一下两个参数
         //codeMirrorJsUrl js加载的路径，默认是 URL + "third-party/codemirror2.15/codemirror.js"
-        ,codeMirrorJsUrl:URL + "third-party/codemirror2.15/codemirror.js"
+        //,codeMirrorJsUrl:URL + "third-party/codemirror2.15/codemirror.js"
         //codeMirrorCssUrl css加载的路径，默认是 URL + "third-party/codemirror2.15/codemirror.css"
-        ,codeMirrorCssUrl:URL + "third-party/codemirror2.15/codemirror.css"
+        //,codeMirrorCssUrl:URL + "third-party/codemirror2.15/codemirror.css"
         //编辑器初始化完成后是否进入源码模式，默认为否。
         //,sourceEditorFirst:false
 

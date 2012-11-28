@@ -219,4 +219,16 @@ function _ip(ip){
 }
 
 
+function checkAll(name,v){
+	var cks = z.$('#'+name);
+	for(var i in cks){
+		if(v == '!')cks[i].checked = !cks[i].checked;
+		else cks[i].checked = v;
+	}
+}
+
+function _url(url){
+	window.location = url;
+}
+
 
