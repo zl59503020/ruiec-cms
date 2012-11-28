@@ -17,7 +17,7 @@ class article {
 		$this->table_data = $table_data;
 		$this->split = $MOD['split'];
 		$this->db = &$db;
-		$this->fields = array('catid','areaid','level','title','style','fee','subtitle','introduce','thumb','tag','author','copyfrom','fromurl','voteid','status','hits','username','adREime','editor','edittime','ip','template','islink','linkurl','filepath','note');
+		$this->fields = array('catid','level','title','introduce','thumb','tag','author','copyfrom','fromurl','status','hits','addtime','edittime','ip','template','islink','linkurl','filename','note');
     }
 
 	function pass($post) {
@@ -35,7 +35,7 @@ class article {
 	function set($post) {
 		global $MOD, $RE_TIME, $RE_IP, $_username, $_userid;
 		$post['islink'] = isset($post['islink']) ? 1 : 0;
-		$post['adREime'] = (isset($post['adREime']) && $post['adREime']) ? strtotime($post['adREime']) : $RE_TIME;
+		$post['addtime'] = (isset($post['addtime']) && $post['addtime']) ? strtotime($post['addtime']) : $RE_TIME;
 		$post['edittime'] = $RE_TIME;
 		$post['title'] = trim($post['title']);
 		$post['content'] = stripslashes($post['content']);
@@ -67,11 +67,13 @@ class article {
 		return $post;
 	}
 
+	// 获取唯一
 	function get_one() {
 		$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
         return $this->db->get_one("SELECT * FROM {$this->table} a,{$content_table} c WHERE a.itemid=c.itemid and a.itemid=$this->itemid");
 	}
 
+	// 获取列表
 	function get_list($condition = 'status=3', $order = 'addtime DESC', $cache = '') {
 		global $MOD, $pages, $page, $pagesize, $offset, $items;
 		/*
@@ -85,11 +87,12 @@ class article {
 			$r['adddate'] = timetodate($r['addtime'], 5);
 			$r['editdate'] = timetodate($r['edittime'], 5);
 			$r['alt'] = $r['title'];
-			$r['title'] = set_style($r['title'], $r['style']);
+			$r['title'] = $r['title'];
 			if(!$r['islink']) $r['linkurl'] = $MOD['linkurl'].$r['linkurl'];
 			$catids[$r['catid']] = $r['catid'];
 			$lists[] = $r;
 		}
+		//分类
 		if($catids) {
 			$result = $this->db->query("SELECT catid,catname,linkurl FROM {$this->db->pre}category WHERE catid IN (".implode(',', $catids).")");
 			while($r = $this->db->fetch_array($result)) {
@@ -160,12 +163,13 @@ class article {
 		$this->db->query("UPDATE {$this->table} SET $sql WHERE itemid=$itemid");
 	}
 
+	// 回收站
 	function recycle($itemid) {
 		if(is_array($itemid)) {
 			foreach($itemid as $v) { $this->recycle($v); }
 		} else {
 			$this->db->query("UPDATE {$this->table} SET status=0 WHERE itemid=$itemid");
-			$this->delete($itemid, false);
+			//$this->delete($itemid, false);	//删除已生成的文件.
 			return true;
 		}		
 	}
@@ -181,6 +185,7 @@ class article {
 		}		
 	}
 
+	// 删除
 	function delete($itemid, $all = true) {
 		global $MOD;
 		if(is_array($itemid)) {
@@ -190,7 +195,7 @@ class article {
 		} else {
 			$this->itemid = $itemid;
 			$r = $this->get_one();
-			if($MOD['show_html'] && !$r['islink']) {
+			if($MOD['show_html'] && !$r['islink']) {	//生成HTML
 				$_file = RE_ROOT.'/'.$MOD['moduledir'].'/'.$r['linkurl'];
 				if(is_file($_file)) unlink($_file);
 				$i = 1;

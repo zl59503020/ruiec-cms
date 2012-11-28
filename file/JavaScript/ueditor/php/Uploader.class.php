@@ -187,19 +187,7 @@ class Uploader
         if ( strrchr( $pathStr , "/" ) != "/" ) {
             $pathStr .= "/";
         }
-        $pathStr .= date( "Y" );
-        if ( !file_exists( $pathStr ) ) {
-            if ( !mkdir( $pathStr , 0777 , true ) ) {
-                return false;
-            }
-        }
-		$pathStr .= '/'.date( "m" );
-        if ( !file_exists( $pathStr ) ) {
-            if ( !mkdir( $pathStr , 0777 , true ) ) {
-                return false;
-            }
-        }
-		$pathStr .= '/'.date( "d" );
+        $pathStr .= date( "Ymd" );
         if ( !file_exists( $pathStr ) ) {
             if ( !mkdir( $pathStr , 0777 , true ) ) {
                 return false;

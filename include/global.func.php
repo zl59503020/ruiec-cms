@@ -32,7 +32,21 @@ function phpException($e)
 }
 
 //------------------------------------------------------------------------
-	
+
+function start_editor($textareaid = 'content', $width = 500, $height = 400) {
+	global $RE, $MODULE, $_userid;
+	$width = is_numeric($width) ? $width.'px' : $width;
+	$height = is_numeric($height) ? $height.'px' : $width;
+	$editor = '';
+	$editor .= '<script type="text/javascript" src="'.RE_PATH.'file/JavaScript/ueditor/editor_config.js"></script>';
+	$editor .= '<script type="text/javascript" src="'.RE_PATH.'file/JavaScript/ueditor/editor_all_min.js"></script>';
+	$editor .= '<script type="text/javascript">';
+	$editor .= 'var ue = new UE.ui.Editor();';
+    $editor .= 'ue.render("'.$textareaid.'");';
+	$editor .= '</script>';
+	echo $editor;
+}
+
 function rehtmlspecialchars($string) {
     return is_array($string) ? array_map('rehtmlspecialchars', $string) : str_replace('&amp;', '&', htmlspecialchars($string, ENT_QUOTES));
 }
@@ -432,10 +446,10 @@ function send_message($touser, $title, $content, $typeid = 4, $fromuser = '') {
 				$_from = $fromuser ? $fromuser : 'Guest';
 				if(in_array($_from, $blacks)) return false;
 			}
-			$db->query("INSERT INTO {$db->pre}message (title,typeid,touser,fromuser,content,adREime,ip,status) VALUES ('$title', $typeid, '$touser','$fromuser','$content','$RE_TIME','$RE_IP',3)");			
+			$db->query("INSERT INTO {$db->pre}message (title,typeid,touser,fromuser,content,addtime,ip,status) VALUES ('$title', $typeid, '$touser','$fromuser','$content','$RE_TIME','$RE_IP',3)");			
 			$db->query("UPDATE {$db->pre}member SET message=message+1 WHERE username='$touser'");
 			if($fromuser) {
-				$db->query("INSERT INTO {$db->pre}message (title,typeid,content,fromuser,touser,adREime,ip,status) VALUES ('$title','$typeid','$content','$fromuser','$touser','$RE_TIME','$RE_IP','2')");
+				$db->query("INSERT INTO {$db->pre}message (title,typeid,content,fromuser,touser,addtime,ip,status) VALUES ('$title','$typeid','$content','$fromuser','$touser','$RE_TIME','$RE_IP','2')");
 			}
 			return true;
 		}
@@ -456,7 +470,7 @@ function send_mail($mail_to, $mail_subject, $mail_body, $mail_from = '', $mail_s
 		$mail_body = stripslashes($mail_body);
 		$mail_subject = addslashes($mail_subject);
 		$mail_body = addslashes($mail_body);
-		$db->query("INSERT INTO {$db->pre}mail_log (email,title,content,adREime,status,note) VALUES ('$mail_to','$mail_subject','$mail_body','$RE_TIME','$status','$note')");
+		$db->query("INSERT INTO {$db->pre}mail_log (email,title,content,addtime,status,note) VALUES ('$mail_to','$mail_subject','$mail_body','$RE_TIME','$status','$note')");
 	}
 	return $success;
 }
@@ -1142,21 +1156,21 @@ function listurl($CAT, $page = 0) {
 
 function itemurl($item, $page = 0) {
 	global $RE, $MOD, $L;
-	if($MOD['show_html'] && $item['filepath']) {
-		if($page === 0) return $item['filepath'];
-		$ext = file_ext($item['filepath']);
-		return str_replace('.'.$ext, '_'.$page.'.'.$ext, $item['filepath']);
+	if($MOD['show_html'] && $item['filename']) {
+		if($page === 0) return $item['filename'];
+		$ext = file_ext($item['filename']);
+		return str_replace('.'.$ext, '_'.$page.'.'.$ext, $item['filename']);
 	}
 	include RE_ROOT.'/api/url.inc.php';
 	$file_ext = $RE['file_ext'];
 	$index = $RE['index'];
 	$itemid = $item['itemid'];
 	$title = file_vname($item['title']);
-	$adREime = $item['adREime'];
+	$addtime = $item['addtime'];
 	$catid = $item['catid'];
-	$year = date('Y', $adREime);
-	$month = date('m', $adREime);
-	$day = date('d', $adREime);
+	$year = date('Y', $addtime);
+	$month = date('m', $addtime);
+	$day = date('d', $addtime);
 	$prefix = $MOD['htm_item_prefix'];
 	$urlid = $MOD['show_html'] ? $MOD['htm_item_urlid'] : $MOD['php_item_urlid'];
 	$ext = $MOD['show_html'] ? 'htm' : 'php';
