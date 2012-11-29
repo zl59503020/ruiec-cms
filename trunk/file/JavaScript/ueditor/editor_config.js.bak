@@ -26,7 +26,7 @@
      */
 	var sps = document.getElementsByTagName('script');
 	var tmp = sps[sps.length-1].src;
-	URL = window.UEDITOR_HOME_URL||tmp.substr(0,tmp.lastIndexOf('\/')+1);
+	URL = window.UEDITOR_HOME_URL || tmp.substr(0,tmp.lastIndexOf('\/')+1);
     //var tmp = window.location.pathname;
     //URL = window.UEDITOR_HOME_URL||tmp.substr(0,tmp.lastIndexOf("\/")+1).replace("_examples/","").replace("website/","");
 	//这里你可以配置成ueditor目录在您网站的相对路径或者绝对路径（指以http开头的绝对路径）
@@ -45,15 +45,15 @@
         //,langPath:URL +"lang/"
 
         //图片上传配置区
-        ,imageUrl:URL+"php/imageUp.php"             //图片上传提交地址
-        ,imagePath:URL + "php/"                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
-       //,imageFieldName:"upfile"                   //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
+        ,imageUrl:"/upload.php"			             //图片上传提交地址
+        ,imagePath:""			                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
+       //,imageFieldName:"upfile"                    //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
         //,compressSide:0                            //等比压缩的基准，确定maxImageSideLength参数的参照对象。0为按照最长边，1为按照宽度，2为按照高度
         //,maxImageSideLength:900                    //上传图片最大允许的边长，超过会自动等比缩放,不缩放就设置一个比较大的值，更多设置在image.html中
 
         //涂鸦图片配置区
-        ,scrawlUrl:URL+"php/scrawlUp.php"           //涂鸦上传地址
-        ,scrawlPath:URL+"php/"                           //图片修正地址，同imagePath
+        ,scrawlUrl:"upload.php"           			//涂鸦上传地址
+        ,scrawlPath:""		                        //图片修正地址，同imagePath
 
         //附件上传配置区
         ,fileUrl:URL+"php/fileUp.php"               //附件上传提交地址
@@ -119,7 +119,7 @@
         //常用配置项目
         //,isShow : true    //默认显示编辑器
 
-        //,initialContent:'欢迎使用ueditor!'    //初始化编辑器的内容,也可以通过textarea/script给值，看官网例子
+        ,initialContent:''    //初始化编辑器的内容,也可以通过textarea/script给值，看官网例子
 
         //,autoClearinitialContent:true //是否自动清除编辑器初始内容，注意：如果focus属性设置为true,这个也为真，那么编辑器一上来就会触发导致初始化的内容看不到了
 
@@ -238,12 +238,12 @@
 //           ]
 
         //wordCount
-        //,wordCount:false          //是否开启字数统计
+        ,wordCount:false          //是否开启字数统计
         //,maximumWords:10000       //允许的最大字符数
         //字数统计提示，{#count}代表当前字数，{#leave}代表还可以输入多少字符数,留空支持多语言自动切换，否则按此配置显示
-        //,wordCountMsg:''   //当前已输入 {#count} 个字符，您还可以输入{#leave} 个字符
+        ,wordCountMsg:''   //当前已输入 {#count} 个字符，您还可以输入{#leave} 个字符
         //超出字数限制提示  留空支持多语言自动切换，否则按此配置显示
-        //,wordOverFlowMsg:''    //<span style="color:red;">你输入的字符个数已经超出最大允许值，服务器可能会拒绝保存！</span>
+        ,wordOverFlowMsg:''    //<span style="color:red;">你输入的字符个数已经超出最大允许值，服务器可能会拒绝保存！</span>
 
         //highlightcode
         // 代码高亮时需要加载的第三方插件的路径
@@ -257,14 +257,16 @@
 
         //elementPathEnabled
         //是否启用元素路径，默认是显示
-        //,elementPathEnabled : false
+        ,elementPathEnabled : false
 
         //removeFormat
         //清除格式时可以删除的标签和属性
         //removeForamtTags标签
         //,removeFormatTags:'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var'
+		,removeFormatTags:''
         //removeFormatAttributes属性
         //,removeFormatAttributes:'class,style,lang,width,height,align,hspace,valign'
+		,removeFormatAttributes:''
 
          //undo
          //可以最多回退的次数,默认20
@@ -274,7 +276,7 @@
 
         //autoHeightEnabled
         // 是否自动长高,默认true
-       // ,autoHeightEnabled:false
+        ,autoHeightEnabled:false
 
         //autoFloatEnabled
         //是否保持toolbar的位置不动,默认true
