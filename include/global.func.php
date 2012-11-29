@@ -34,16 +34,21 @@ function phpException($e)
 //------------------------------------------------------------------------
 
 function start_editor($textareaid = 'content', $width = 500, $height = 400) {
-	global $RE, $MODULE, $_userid;
+	global $RE, $MODULE, $_userid, $moduleid;
 	$width = is_numeric($width) ? $width.'px' : $width;
 	$height = is_numeric($height) ? $height.'px' : $width;
-	$editor = '';
-	$editor .= '<script type="text/javascript" src="'.RE_PATH.'file/JavaScript/ueditor/editor_config.js"></script>';
-	$editor .= '<script type="text/javascript" src="'.RE_PATH.'file/JavaScript/ueditor/editor_all_min.js"></script>';
-	$editor .= '<script type="text/javascript">';
-	$editor .= 'var ue = new UE.ui.Editor();';
-    $editor .= 'ue.render("'.$textareaid.'");';
-	$editor .= '</script>';
+	$editor = "";
+	$editor .= "<link rel='stylesheet' type='text/css' href='".RE_PATH."file/JavaScript/ueditor/themes/default/ueditor.css'/>\n";
+	$editor .= "<script type='text/javascript' src='".RE_PATH."file/JavaScript/ueditor/editor_config.js'></script>\n";
+	$editor .= "<script type='text/javascript' src='".RE_PATH."file/JavaScript/ueditor/editor_all_min.js'></script>\n";
+	$editor .= "<script type='text/javascript'>\n";
+	$editor .= "var ue = new UE.ui.Editor({\n";
+	$editor .= "imageUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=image',\n";
+	$editor .= "scrawlUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=scrawl',\n";
+	$editor .= "fileUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=file',\n";
+	$editor .= "});";
+    $editor .= "ue.render('".$textareaid."');";
+	$editor .= "</script>";
 	echo $editor;
 }
 
