@@ -14,7 +14,7 @@ if(!check_group($_groupid, $MOD['group_index'])) {
 }
 $maincat = $childcat = get_maincat(0, $moduleid, 1);
 $seo_file = 'index';
-include RE_ROOT.'/include/seo.inc.php';
+//include RE_ROOT.'/include/seo.inc.php';
 $template = $MOD['template_index'] ? $MOD['template_index'] : 'index';
 //$destoon_task = "moduleid=$moduleid&html=index";
 include template($template, $module);

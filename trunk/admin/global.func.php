@@ -1,5 +1,6 @@
 <?php
 defined('IN_RUIEC') or exit('Access Denied');
+
 function msg($msg = errmsg, $acturl = 'goback', $time = '1') {
 	global $CFG;
 	if(!$msg && $acturl && $acturl != 'goback') rheader($acturl);
@@ -18,6 +19,7 @@ function tpl($file = 'index', $mod = 'ruiec') {
 	return $mod == 'ruiec' ? RE_ROOT.'/admin/template/'.$file.'.tpl.php' : RE_ROOT.'/module/'.$mod.'/admin/template/'.$file.'.tpl.php';
 }
 
+//进度
 function progress($sid, $fid, $tid, $rv='') {
 	if($tid > $sid && $fid < $tid) {
 		$p = dround(($fid-$sid)*100/($tid-$sid), 0, true);
@@ -30,21 +32,8 @@ function progress($sid, $fid, $tid, $rv='') {
 	else return '<table cellpadding="0" cellspacing="0" width="100%" style="margin:0"><tr><td><div class="progress" style="width:96%;"><div style="width:'.$p.';">&nbsp;</div></div></td><td style="color:#666666;font-size:10px;width:40px;text-align:center;">'.$p.'</td></tr></table>';
 }
 
-function show_menu($menus = array()) {
-	global $module, $file, $action;
-    $menu = '';
-    foreach($menus as $id=>$m) {
-		if(isset($m[1])) {
-			$extend = isset($m[2]) ? $m[2] : '';
-			$menu .= '<td id="Tab'.$id.'" class="tab"><a href="'.$m[1].'" '.$extend.'>'.$m[0].'</a></td><td class="tab_nav">&nbsp;</td>';
-		} else {
-			$class = $id == 0 ? 'tab_on' : 'tab';
-			$menu .= '<td id="Tab'.$id.'" class="'.$class.'"><a href="javascript:Tab('.$id.');">'.$m[0].'</a></td><td class="tab_nav">&nbsp;</td>';
-		}
-	}
-	include RE_ROOT.'/admin/template/menu.tpl.php';;
-}
 
+// 更新模块设置
 function update_setting($item, $setting) {
 	global $db;
 	$db->query("DELETE FROM {$db->pre}setting WHERE item='$item'");
@@ -55,6 +44,7 @@ function update_setting($item, $setting) {
 	return true;
 }
 
+// 获取模块设置
 function get_setting($item) {
 	global $db;
 	$setting = array();

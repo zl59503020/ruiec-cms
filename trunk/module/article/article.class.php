@@ -19,20 +19,23 @@ class article {
 		$this->db = &$db;
 		$this->fields = array('catid','level','title','introduce','thumb','tag','author','copyfrom','fromurl','status','hits','addtime','edittime','ip','template','islink','linkurl','filename','note');
     }
-
+	
+	// 检测.
 	function pass($post) {
 		if(!is_array($post)) return false;
-		if(!$post['catid']) return $this->_(lang('message->pass_catid'));
-		if(strlen($post['title']) < 3) return $this->_(lang('message->pass_title'));
+		if(!$post['catid']) return $this->_('选择分类!');
+		if(strlen($post['title']) < 3) return $this->_('标题太短!');
 		if(isset($post['islink'])) {
-			if(!$post['linkurl']) return $this->_(lang('message->pass_linkurl'));
+			if(!$post['linkurl']) return $this->_('外链不能为空!');
 		} else {
-			if(!$post['content']) return $this->_(lang('message->pass_content'));
+			if(!$post['content']) return $this->_('内容不能为空!');
 		}
 		return true;
 	}
-
+	
+	// 保存前检测...[设置默认.]
 	function set($post) {
+		/*
 		global $MOD, $RE_TIME, $RE_IP, $_username, $_userid;
 		$post['islink'] = isset($post['islink']) ? 1 : 0;
 		$post['addtime'] = (isset($post['addtime']) && $post['addtime']) ? strtotime($post['addtime']) : $RE_TIME;
@@ -63,6 +66,7 @@ class article {
 			$post = dhtmlspecialchars($post);
 			$post['content'] = dsafe($content);
 		}
+		*/
 		$post['content'] = addslashes($post['content']);
 		return $post;
 	}
@@ -131,8 +135,9 @@ class article {
 		return $this->itemid;
 	}
 
+	//编辑
 	function edit($post) {
-		$this->delete($this->itemid, false);
+		//$this->delete($this->itemid, false);
 		$post = $this->set($post);
 		$sql = '';
 		foreach($post as $k=>$v) {
@@ -142,9 +147,9 @@ class article {
 	    $this->db->query("UPDATE {$this->table} SET $sql WHERE itemid=$this->itemid");
 		$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
 	    $this->db->query("UPDATE {$content_table} SET content='$post[content]' WHERE itemid=$this->itemid");
-		$this->update($this->itemid, $post, $post['content']);
-		clear_upload($post['content'].$post['thumb'], $this->itemid);
-		if($post['status'] == 3) $this->tohtml($this->itemid, $post['catid']);
+		//$this->update($this->itemid, $post, $post['content']);
+		//clear_upload($post['content'].$post['thumb'], $this->itemid);
+		//if($post['status'] == 3) $this->tohtml($this->itemid, $post['catid']);
 		return true;
 	}
 

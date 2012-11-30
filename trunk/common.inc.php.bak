@@ -1,5 +1,5 @@
 <?php
-define('RE_DEBUG', true);
+define('RE_DEBUG', false);
 if(RE_DEBUG) {
 	error_reporting(E_ALL);
 	$mtime = explode(' ', microtime());
@@ -104,7 +104,7 @@ if(!isset($moduleid)) {
 }
 //$module = (isset($module)) ? $module : 'ruiec';
 $action = (isset($action)) ? trim($action) : '';
-echo ' - :-> '.$moduleid;
+
 /*
 if(!isset($moduleid)) {
 	$moduleid = 1;
