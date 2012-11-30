@@ -135,6 +135,13 @@
 							<td><input type="text" id="webmail" name="setting[webmail]" value="<?php echo $webmail; ?>" class="txtInput normal email" /></td>
 						</tr>
 						<tr>
+							<th>默认编辑器：</th>
+							<td>
+								<input type="radio" name="setting[editor]" value="ueditor" <?php if($editor){ ?>checked <?php } ?> > ueditor &nbsp;&nbsp;
+								<input type="radio" name="setting[editor]" value="kindeditor" <?php if(!$editor){ ?>checked <?php } ?> > kindeditor
+							</td>
+						</tr>
+						<tr>
 							<th>网站状态:</th>
 							<td>
 								<input type="radio" name="setting[webstatus]" value="1" <?php if($webstatus){ ?>checked <?php } ?>onclick="$('#rclose').hide();"> 开启&nbsp;&nbsp;

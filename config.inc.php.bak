@@ -28,6 +28,7 @@ $CFG['skin'] = 'default';
 $CFG['template'] = 'default';
 $CFG['language'] = 'zh-cn';
 $CFG['authkey'] = 'Z3L1zyOKW7L9YXK26B';
+$CFG['editor'] = 'ueditor';
 $CFG['edittpl'] = '1';
 $CFG['executesql'] = '1';
 $CFG['founderid'] = '1';

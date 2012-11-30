@@ -1,1 +1,0 @@
-<?php defined('IN_RUIEC') or exit('Access Denied'); return array ('moduleid' => '5','name' => '资源共享','moduledir' => 'down','module' => 'down','ismenu' => '1','domain' => '','linkurl' => 'http://192.168.1.3/down/',); ?>

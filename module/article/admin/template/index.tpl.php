@@ -76,7 +76,7 @@ include tpl('header');
 				<td align="left"><a href="<?php echo $v['caturl']; ?>" ><?php echo $v['catname']; ?></a></td>
 				<td><?php echo $v['level']; ?></td>
 				<td class="my_option_m">
-					<a href="<?php echo $v['linkurl']; ?>" title="<?php echo $v['alt'];?>"><?php echo $v['title'];?></a>
+					<a href="<?php echo $v['linkurl']; ?>" title="<?php echo $v['alt'];?>" target="_blank"><?php echo $v['title'];?></a>
 					<a href="javascript:;" onclick="showImg('<?php echo $v['thumb']; ?>');" class="icon_img" style="margin-top:3px;" title="有标题图片,点击预览"></a>
 				</td>
 				<td><?php echo $v['adddate'];?></td>

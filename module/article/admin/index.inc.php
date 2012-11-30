@@ -11,10 +11,19 @@ switch($action) {
 	case 'edit':
 		$itemid or die('ID不能为空!');
 		$do->itemid = $itemid;
-		$item = $do->get_one();
-		extract($item);
-		$addtime = timetodate($addtime);
-		include tpl('edit', $module);
+		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec' ){
+			if($do->pass($post)) {
+				$do->edit($post);
+				die('0');
+			} else {
+				die($do->errmsg);
+			}
+		}else{
+			$item = $do->get_one();
+			extract($item);
+			$addtime = timetodate($addtime);
+			include tpl('edit', $module);
+		}
 	break;
 	case 'delete':
 		$itemid or die('请选择'.$MOD['name']);

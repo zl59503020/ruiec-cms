@@ -137,7 +137,7 @@ function upfile(id,w,h,c){
 	c = (typeof c == 'undefined') ? '' : 'checked';
 	var upArt = art.dialog({
 		title: '上传文件',
-		content: '<form method="POST" id="fm_art_'+id+'" action="" enctype="multipart/form-data"><div style="margin:10px;"><input type="hidden" name="file" value="setting" /><input type="hidden" name="action" value="uplogo" /><input type="file" id="upfile" name="upfile" style="width:18em;padding:6px 4px" /></div><div>宽:<input type="text" id="upfilew" name="upimgsize[w]" size="10" class="txtInput" value="'+w+'" />&nbsp;&nbsp;高:<input type="text" id="upfileh" name="upimgsize[h]" size="10" class="txtInput"  value="'+h+'" />&nbsp;&nbsp;<input  type="checkbox" name="upimgsize[s]" '+c+'/>约束比例</div></form>',
+		content: '<form method="POST" id="fm_art_'+id+'" action="/upload.php" enctype="multipart/form-data"><div style="margin:10px;"><input type="hidden" name="su" value="upImage" /><input type="file" id="upfile" name="upfile" style="width:18em;padding:6px 4px" /></div><div>宽:<input type="text" id="upfilew" name="upimgsize[w]" size="10" class="txtInput" value="'+w+'" />&nbsp;&nbsp;高:<input type="text" id="upfileh" name="upimgsize[h]" size="10" class="txtInput"  value="'+h+'" />&nbsp;&nbsp;<input  type="checkbox" name="upimgsize[s]" '+c+'/>约束比例</div></form>',
 		lock: true,
 		background: '#fff',
 		opacity: 0.5,
@@ -163,7 +163,7 @@ function upfile(id,w,h,c){
 		complete: function(xhr) {},
 		success: function(responseText, statusText, xhr, $form){
 			if(statusText == 'success'){
-				if(responseText != '0'){
+				if(responseText.substr(0,5) != 'error'){
 					$('#'+id).val(responseText);
 					upArt.close();
 				}else{
@@ -227,7 +227,7 @@ function checkAll(name,v){
 	}
 }
 
-function act_url(url){
+function _url(url){
 	window.location = url;
 }
 

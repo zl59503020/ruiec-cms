@@ -32,22 +32,45 @@ function phpException($e)
 }
 
 //------------------------------------------------------------------------
-
-function start_editor($textareaid = 'content', $width = 500, $height = 400) {
-	global $RE, $MODULE, $_userid, $moduleid;
-	$width = is_numeric($width) ? $width.'px' : $width;
-	$height = is_numeric($height) ? $height.'px' : $width;
+// 编辑器
+function start_editor($textareaid = 'content', $css = '') {
+	global $RE,$moduleid;
 	$editor = "";
-	$editor .= "<link rel='stylesheet' type='text/css' href='".RE_PATH."file/JavaScript/ueditor/themes/default/ueditor.css'/>\n";
-	$editor .= "<script type='text/javascript' src='".RE_PATH."file/JavaScript/ueditor/editor_config.js'></script>\n";
-	$editor .= "<script type='text/javascript' src='".RE_PATH."file/JavaScript/ueditor/editor_all_min.js'></script>\n";
-	$editor .= "<script type='text/javascript'>\n";
-	$editor .= "var ue = new UE.ui.Editor({\n";
-	$editor .= "imageUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=image',\n";
-	$editor .= "scrawlUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=scrawl',\n";
-	$editor .= "});";
-    $editor .= "ue.render('".$textareaid."');";
-	$editor .= "</script>";
+	if($RE['editor'] == 'ueditor'){
+		$editor .= "<link rel='stylesheet' type='text/css' href='".RE_PATH."file/JavaScript/ueditor/themes/default/ueditor.css'/>\n";
+		$editor .= "<script type='text/javascript' src='".RE_PATH."file/JavaScript/ueditor/editor_config.js'></script>\n";
+		$editor .= "<script type='text/javascript' src='".RE_PATH."file/JavaScript/ueditor/editor_all_min.js'></script>\n";
+		$editor .= "<script type='text/javascript'>\n";
+		$editor .= "var editor = new UE.ui.Editor({\n";
+		$editor .= "imageUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=image',\n";
+		$editor .= "scrawlUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=scrawl',\n";
+		$editor .= "fileUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=file',\n";
+		$editor .= "catcherUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=remoteimage',\n";
+		$editor .= "imageManagerUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=imagemanager',\n";
+		$editor .= "snapscreenServerUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=image',\n";
+		$editor .= "wordImageUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=image',\n";
+		$editor .= "getMovieUrl:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=ueditor&upftype=movie',\n";
+		$editor .= "iframeCssUrl:'".$css."'\n";
+		$editor .= "});";
+		$editor .= "editor.render('".$textareaid."');";
+		$editor .= "function ___initData(){editor.sync();}\n";
+		$editor .= "</script>";
+	}else if($RE['editor'] == 'kindeditor'){
+		$editor .= "<script charset='utf-8' src='".RE_PATH."file/JavaScript/kindeditor/kindeditor-all-min.js'></script>\n";
+		$editor .= "<script charset='utf-8' src='".RE_PATH."file/JavaScript/kindeditor/lang/zh_CN.js'></script>\n";
+		$editor .= "<script type='text/javascript'>\n";
+		$editor .= "var editor;\n";
+		$editor .= "KindEditor.ready(function(K) {\n";
+		$editor .= "editor = K.create('#".$textareaid."',{\n";
+		$editor .= "uploadJson:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=kindeditor',\n";
+		$editor .= "fileManagerJson:'".RE_PATH."upload.php?moduleid=".$moduleid."&su=kindeditor',\n";
+		$editor .= "cssPath:'".$css."'\n";
+		//$editor .= "filterMode:false\n";
+		$editor .= "});\n";
+		$editor .= "});\n";
+		$editor .= "function ___initData(){editor.sync();}\n";
+		$editor .= "</script>";
+	}
 	echo $editor;
 }
 
@@ -865,12 +888,12 @@ function area_pos($areaid, $str = ' &raquo; ', $deep = 0) {
 	return $pos;
 }
 
-function get_maincat($catid, $moduleid, $level = -1) {
+// 获取分类
+function get_maincat($catid, $moduleid) {
 	global $db;
 	$condition = $catid ? "parentid=$catid" : "moduleid=$moduleid AND parentid=0";
-	if($level >= 0) $condition .= " AND level=$level";
 	$cat = array();
-	$result = $db->query("SELECT catid,catname,child,style,linkurl,item FROM {$db->pre}category WHERE $condition ORDER BY listorder,catid ASC", 'CACHE');
+	$result = $db->query("SELECT * FROM {$db->pre}category WHERE $condition ORDER BY listorder,catid ASC", 'CACHE');
 	while($r = $db->fetch_array($result)) {
 		$cat[] = $r;
 	}

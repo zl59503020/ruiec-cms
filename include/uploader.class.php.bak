@@ -1,4 +1,5 @@
-<?php
+﻿<?php
+defined('IN_RUIEC') or exit('Access Denied');
 class Uploader
 {
     private $fileField;            //文件域名
@@ -180,7 +181,7 @@ class Uploader
         if ( strrchr( $pathStr , "/" ) != "/" ) {
             $pathStr .= "/";
         }
-        /*
+		/*
 		$pathStr .= date( "Ymd" );
         if ( !file_exists( $pathStr ) ) {
             if ( !mkdir( $pathStr , 0777 , true ) ) {
@@ -190,4 +191,60 @@ class Uploader
 		*/
         return $pathStr;
     }
+	
+	/**
+     * 改变图片大小
+     * @return string
+     */
+	public function reSizeImage($fspath,$maxw,$maxh,$name='',$db=true){
+		$ft = strrchr(basename($fspath),'.');
+		if($ft == '.jpg'){ $im = imagecreatefromjpeg($fspath);}
+		else if($ft == '.png'){	$im = imagecreatefrompng($fspath);}
+		else if($ft == '.gif'){	$im = imagecreatefromgif($fspath);}
+		
+		if(!isset($im))return false;
+		
+		if($name == '') $name = $fspath.'.min'.$ft;
+		
+		($maxw != 0 || $maxw != '') or $maxw = imagesx($im);
+		($maxh != 0 || $maxh != '') or $maxh = imagesy($im);
+
+		$width = imagesx($im);
+		$height = imagesy($im);
+		
+		if(($width > $maxw) || ($height > $maxh)){
+			if($db){
+				$widthratio = $maxw/$width;
+				$heightratio = $maxh/$height;
+				if($widthratio < $heightratio){
+					$ratio = $widthratio;
+				}else{
+					$ratio = $heightratio;
+				}
+				$newwidth = $width * $ratio;
+				$newheight = $height * $ratio;
+			}else{
+				$newwidth = $maxw;
+				$newheight = $maxh;
+			}
+			if(function_exists("imagecopyresampled")){
+				$newim = imagecreatetruecolor($newwidth, $newheight);
+				imagecopyresampled($newim, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+			}else{
+				$newim = imagecreate($newwidth, $newheight);
+				imagecopyresized($newim, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+			}
+			if($ft == '.jpg'){ ImageJpeg($newim,$name);}
+			else if($ft == '.png'){ ImagePng($newim,$name);}
+			else if($ft == '.gif'){ ImageGif($newim,$name);}
+			//ImageJpeg($newim,$name);
+			ImageDestroy($newim);
+		}else{
+			if($ft == '.jpg'){ ImageJpeg($im,$name);}
+			else if($ft == '.png'){ ImagePng($im,$name);}
+			else if($ft == '.gif'){ ImageGif($im,$name);}
+			//ImageJpeg($im,$name);
+		}
+		return is_file($name);
+	}
 }

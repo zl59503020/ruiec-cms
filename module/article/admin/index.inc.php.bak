@@ -10,15 +10,21 @@ switch($action) {
 	break;
 	case 'edit':
 		$itemid or die('ID不能为空!');
-		$do->itemid = $itemid;
-		$item = $do->get_one();
-		extract($item);
-		$pagebreak = strpos($item['content'], '[pagebreak]') === false ? 0 : 1;
-		$addtime = timetodate($addtime);
-		$menuon = array('4', '3', '2', '1');
-		$menuid = $menuon[$status];
-		$tname = '修改'.$MOD['name'];
-		include tpl($action, $module);
+		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec' ){
+			if($do->pass($post)) {
+				$do->itemid = $itemid;
+				$do->edit($post);
+				die('0');
+			} else {
+				die($do->errmsg);
+			}
+		}else{
+			$do->itemid = $itemid;
+			$item = $do->get_one();
+			extract($item);
+			$addtime = timetodate($addtime);
+			include tpl('edit', $module);
+		}
 	break;
 	case 'delete':
 		$itemid or die('请选择'.$MOD['name']);
