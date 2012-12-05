@@ -41,14 +41,6 @@ include tpl('header');
 				<input type="button" value="搜 索" class="btnSearch" onclick="btnSearch_Click()" />
 			</div>
 			<a href="?file=<?php echo $file; ?>&action=add" class="tools_btn"><span><b class="add">添加<?php echo $MOD['name']; ?></b></span></a>
-			<!--
-			<a href="javascript:void(0);" onclick="checkAll('tables[]',true);" class="tools_btn"><span><b class="all">全选</b></span></a>
-			<a href="javascript:void(0);" onclick="checkAll('tables[]',false);" class="tools_btn"><span><b class="all">全不选</b></span></a>
-			-->
-			<!--<a href="javascript:void(0);" onclick="checkAll('tables[]',0);" class="tools_btn"><span><b class="all">反选</b></span></a>-->
-			<!--
-			<a href="?action=del" onclick="return false;" class="tools_btn"><span><b class="delete">批量删除</b></span></a>
-			-->
 		</div>
 	</div>
 

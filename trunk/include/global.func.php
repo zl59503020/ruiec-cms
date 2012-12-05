@@ -606,6 +606,106 @@ function get_maincat($catid, $moduleid) {
 	return $cat;
 }
 
+//分类选择框
+function category_select($name = 'catid', $title = '', $catid = 0, $moduleid = 1, $extend = '') {
+	$option = cache_read('catetree-'.$moduleid.'.php', '', true);
+	if($option) {
+		if($catid) $option = str_replace('value="'.$catid.'"', 'value="'.$catid.'" selected', $option);
+		$select = '<select name="'.$name.'" '.$extend.' id="catid_1">';
+		if($title) $select .= '<option value="0">'.$title.'</option>';
+		$select .= $option ? $option : '</select>';
+		return $select;
+	} else {
+		return ajax_category_select($name, $title, $catid, $moduleid, $extend);
+	}
+}
+
+function get_catchildid($catid){
+	global $db;
+	$parents = array();
+	$result = $db->query("SELECT child FROM {$db->pre}category WHERE parentid=$catid");
+	while($c = $db->fetch_array($result)) {
+		$parents[] = $c['catid'];
+	}
+	return $parents;
+}
+
+function get_category_select($title = '', $catid = 0, $moduleid = 1, $extend = '', $deep = 0, $cat_id = 1) {
+	global $db, $_child;
+	$_child or $_child = array();
+	$parents = array();
+	if($catid) {
+		$result = $db->query("SELECT child FROM {$db->pre}category WHERE parentid=$catid");
+		while($c = $db->fetch_array($result)) {
+			$parents[] = $c['catid'];
+			array_push($parents, get_catchildid($c['catid']));
+		}
+		//$r = $db->get_one("SELECT child FROM {$db->pre}category WHERE parentid=$catid");
+		//$parents = explode(',', $r['arrparentid']);
+		//if($r['child']) $parents[] = $catid;
+	} else {
+		$parents[] = 0;
+	}
+	$select = '';
+	foreach($parents as $k=>$v) {
+		if($deep && $deep <= $k) break;
+		$select .= '<select '.$extend.'>';
+		if($title) $select .= '<option value="0">'.$title.'</option>';
+		$condition = $v ? "parentid=$v" : "moduleid=$moduleid AND parentid=0";
+		$result = $db->query("SELECT catid,catname FROM {$db->pre}category WHERE $condition ORDER BY listorder,catid ASC");
+		while($c = $db->fetch_array($result)) {
+			$selectid = isset($parents[$k+1]) ? $parents[$k+1] : $catid;
+			$selected = $c['catid'] == $selectid ? ' selected' : '';
+			if($_child && !in_array($c['catid'], $_child)) continue;
+			$select .= '<option value="'.$c['catid'].'"'.$selected.'>'.$c['catname'].'</option>';
+		}
+		$select .= '</select> ';
+	}
+	return $select;
+}
+
+function ajax_category_select($name = 'catid', $title = '', $catid = 0, $moduleid = 1, $extend = '', $deep = 0) {
+	global $cat_id;
+	if($cat_id) {
+		$cat_id++;
+	} else {
+		$cat_id = 1;
+	}
+	$catid = intval($catid);
+	$deep = intval($deep);
+	$select = '';
+	$select .= '<span id="load_category_'.$cat_id.'">'.get_category_select($title, $catid, $moduleid, 'name="'.$name.'" '.$extend, $deep, $cat_id).'</span>';
+	//if($cat_id == 1) $select .= '<script type="text/javascript" src="'.RE_PATH.'file/script/category.js"></script>';
+	return $select;
+}
+
+// 选择模板
+function tpl_select($file = 'index', $module = '', $name = 'template', $title = '', $template = '', $extend = '') {
+	//include load('include.lang');
+	global $CFG, $ruiec_tpl_id;
+	if(!$ruiec_tpl_id) {
+		$ruiec_tpl_id = 1;
+	} else {
+		$ruiec_tpl_id++;
+	}
+    $tpldir = $module ? RE_ROOT."/template/".$CFG['template']."/".$module : RE_ROOT."/template/".$CFG['template'];
+	@include $tpldir."/these.name.php";
+	$select = '<span id="ruiec_template_'.$ruiec_tpl_id.'"><select name="'.$name.'" '.$extend.'><option value="">'.$title.'</option>';
+	$files = glob($tpldir."/*.htm");
+	foreach($files as $tplfile)	{
+		$tplfile = basename($tplfile);
+		$tpl = str_replace('.htm', '', $tplfile);
+		if(preg_match("/^".$file."-(.*)/i", $tpl) || !$file) {//$file == $tpl || 
+			$selected = ($template && $tpl == $template) ? 'selected' : '';
+            $templatename = (isset($names[$tpl]) && $names[$tpl]) ? $names[$tpl] : $tpl;
+			$select .= '<option value="'.$tpl.'" '.$selected.'>'.$templatename.'</option>';
+		}
+	}
+	$select .= '</select></span>';
+	if(defined('RE_ADMIN')) $select .= '&nbsp;&nbsp;<a href="javascript:tpl_edit(\''.$file.'\', \''.$module.'\', '.$ruiec_tpl_id.');" class="t">修改</a> &nbsp;<a href="javascript:tpl_add(\''.$file.'\', \''.$module.'\');" class="t">新建</a>';
+	return $select;
+}
+
 // 用户
 function get_user($value, $key = 'username', $from = 'userid') {
 	global $db;

@@ -85,6 +85,12 @@ if(!isset($moduleid)) {
 	$module = $MODULE[$moduleid]['module'];
 	$MOD = $moduleid == 3 ? $EXT : cache_read('module-'.$moduleid.'.php');
 }
+$page = isset($page) ? max(intval($page), 1) : 1;
+$catid = isset($catid) ? intval($catid) : 0;
+$itemid = isset($itemid) ? (is_array($itemid) ? $itemid : intval($itemid)) : 0;
+$pagesize = isset($RE['pagesize']) ? $RE['pagesize'] : 20;
+
+if($catid) $CAT = get_cat($catid);
 $action = (isset($action)) ? trim($action) : '';
 $_username = $_company = $_passport = 'Guest';
 $_groupid = 3;
