@@ -10,13 +10,6 @@ class captcha {
 	var $charset;
 	var $ip;
 
-	function question($id) {
-		global $db;
-		$r = $db->get_one("SELECT * FROM {$db->pre}question ORDER BY rand()");
-		$_SESSION['answerstr'] = md5(md5($r['answer'].DT_KEY.$this->ip));
-		exit('document.getElementById("'.$id.'").innerHTML = "'.$r['question'].'";');
-	}
-
 	function image() {
 		if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

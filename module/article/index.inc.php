@@ -7,11 +7,6 @@ if($MOD['index_html']) {
 	include($html_file);
 	exit;
 }
-if(!check_group($_groupid, $MOD['group_index'])) {
-	$head_title = lang('message->without_permission');
-	include template('noright', 'message');
-	exit;
-}
 $maincat = $childcat = get_maincat(0, $moduleid, 1);
 $seo_file = 'index';
 //include RE_ROOT.'/include/seo.inc.php';

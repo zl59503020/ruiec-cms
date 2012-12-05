@@ -24,6 +24,7 @@
 				if(statusText == 'success'){
 					if(responseText == '0'){
 						parent.jsprint("保存成功!", "", "Success");
+						window.location.reload();
 					}else{
 						parent.jsprint("保存失败!", "", "Error");
 						art.dialog({
@@ -137,8 +138,8 @@
 						<tr>
 							<th>默认编辑器：</th>
 							<td>
-								<input type="radio" name="setting[editor]" value="ueditor" <?php if($editor){ ?>checked <?php } ?> > ueditor &nbsp;&nbsp;
-								<input type="radio" name="setting[editor]" value="kindeditor" <?php if(!$editor){ ?>checked <?php } ?> > kindeditor
+								<input type="radio" name="setting[editor]" value="ueditor" <?php if($editor == 'ueditor'){ ?>checked <?php } ?> > ueditor &nbsp;&nbsp;
+								<input type="radio" name="setting[editor]" value="kindeditor" <?php if($editor == 'kindeditor'){ ?>checked <?php } ?> > kindeditor
 							</td>
 						</tr>
 						<tr>

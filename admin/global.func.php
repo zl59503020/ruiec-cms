@@ -55,6 +55,7 @@ function get_setting($item) {
 	return $setting;
 }
 
+// 更新分类
 function update_category($CAT) {
 	global $db, $RE;
 	$linkurl = listurl($CAT);
@@ -62,50 +63,16 @@ function update_category($CAT) {
 	$db->query("UPDATE {$db->pre}category SET linkurl='$linkurl' WHERE catid=".$CAT['catid']);
 }
 
+// 提示信息
 function tips($tips) {
 	echo ' <img src="'.RE_PATH.'admin/skin/images/help.png" title="'.$tips.'" alt="tips" class="stips" onclick="MsgBox(this.title);" />';
 }
 
+//写入文件
 function array_save($array, $arrayname, $file) {
 	$data = var_export($array,true);
 	$data = "<?php\n".$arrayname." = ".$data.";\n?>";
 	return file_put($file,$data);
-}
-
-function fetch_url($url) {
-	global $db;
-	$fetch = array();
-	$tmp = parse_url($url);
-	$domain = $tmp['host'];
-	$r = $db->get_one("SELECT * FROM {$db->pre}fetch WHERE domain='$domain' ORDER BY edittime DESC");
-	if($r) {
-		$content = file_get($url);
-		if($content) {
-			$content = convert($content, $r['encode'], RE_CHARSET);
-			preg_match("/<title>(.*)<\/title>/isU", $content, $m);
-			if(isset($m[1])) $fetch['title'] = trim($r['title'] ? str_replace($r['title'], '', $m[1]) : $m[1]);
-			preg_match("/<meta[\s]+name=['\"]description['\"] content=['\"](.*)['\"]/isU", $content, $m);
-			if(isset($m[1])) $fetch['introduce'] = $m[1];
-			list($f, $t) = explode('[content]', $r['content']);
-			if($f && $t) {
-				$s = strpos($content, $f);
-				if($s !== false) {
-					$e = strpos($content, $t, $s);
-					if($e !== false && $e > $s) {
-						$fetch['content'] = substr($content, $s + strlen($f), $e - $s - strlen($f));
-					}
-				}
-			}
-		}
-	}
-	return $fetch;
-}
-
-function edition($k = -1) {
-	$E = array();
-	$E[0] = RE_DOMAIN;
-	$E[1] = '&#20010;&#20154;&#29256;';
-	return $k >= 0 ? $E[$k] : $E;
 }
 
 function admin_log($force = 0) {
@@ -123,18 +90,6 @@ function admin_log($force = 0) {
 		$db->query("INSERT INTO {$db->pre}admin_log(qstring, username, ip, logtime) VALUES('$qstring','$_username','$RE_IP','$RE_TIME')");
 		set_cookie('logstring', $qstring);
 	}
-}
-
-function admin_online() {
-	global $RE, $db, $moduleid, $_username, $RE_QST, $RE_IP, $RE_TIME;
-	if(!$RE['admin_online'] || !$_username) return false;
-	$qstring = $RE_QST;
-	$fpos = strpos($qstring, '&forward');
-	if($fpos) $$qstring = substr($qstring, 0, $fpos);
-	$qstring = preg_replace("/rand=([0-9]{1,})\&/", "", $qstring);
-	$db->query("REPLACE INTO {$db->pre}admin_online (sid,username,ip,moduleid,qstring,lasttime) VALUES ('".session_id()."','$_username','$RE_IP','$moduleid','$qstring','$RE_TIME')");	
-	$lastime = $RE_TIME - $RE['online'];
-	$db->query("DELETE FROM {$db->pre}admin_online WHERE lasttime<$lastime");
 }
 
 function admin_check() {
@@ -168,26 +123,6 @@ function admin_check() {
 	return true;
 }
 
-function item_check($itemid) {
-	global $db, $table, $_child, $moduleid;
-	if($moduleid == 3) return true;
-	$fd = 'itemid';
-	if($moduleid == 2 || $moduleid == 4) $fd = 'userid';
-	$r = $db->get_one("SELECT catid FROM {$table} WHERE `$fd`=$itemid");
-	if($r && $_child && in_array($r['catid'], $_child)) return true;
-	return false;
-}
-
-function city_check($itemid) {
-	global $db, $table, $_areaid, $moduleid;
-	if($moduleid == 3) return true;
-	$fd = 'itemid';
-	if($moduleid == 2 || $moduleid == 4) $fd = 'userid';
-	$r = $db->get_one("SELECT areaid FROM {$table} WHERE `$fd`=$itemid");
-	if($r && $_areaid && in_array($r['areaid'], $_areaid)) return true;
-	return false;
-}
-
 function split_content($moduleid, $part) {
 	global $db, $CFG, $MODULE;
 	$table = $db->pre.$moduleid.'_'.$part;
@@ -198,57 +133,6 @@ function split_content($moduleid, $part) {
 		$type = " TYPE=MyISAM";
 	}	
 	$db->query("CREATE TABLE IF NOT EXISTS `{$table}` (`{$fd}` bigint(20) unsigned NOT NULL default '0',`content` longtext NOT NULL,PRIMARY KEY  (`{$fd}`))".$type." COMMENT='".$MODULE[$moduleid]['name']."内容_".$part."'");
-}
-
-function split_sell($part) {
-	global $db, $CFG, $MODULE;
-	$sql = file_get(RE_ROOT.'/file/setting/split_sell.sql');
-	$sql or dalert('请检查文件file/setting/split_sell.sql是否存在');
-	$sql = str_replace('destoon_sell_1', $db->pre.'sell_'.$part, $sql);
-	if($db->version() > '4.1' && $CFG['db_charset']) {
-		$sql .= " ENGINE=MyISAM DEFAULT CHARSET=".$CFG['db_charset'];
-	} else {
-		$sql .= " TYPE=MyISAM";
-	}
-	$sql .= " COMMENT='".$MODULE[5]['name']."分表_".$part."';";
-	$db->query($sql);
-}
-
-function seo_title($title, $show = '') {
-	$SEO = array(
-		'modulename'		=>	'模块名称',
-		'page'				=>	'页码',
-		'sitename'			=>	'网站名称',
-		'sitetitle'			=>	'网站SEO标题',
-		'sitekeywords'		=>	'网站SEO关键词',
-		'sitedescription'	=>	'网站SEO描述',
-		'catname'			=>	'分类名称',
-		'cattitle'			=>	'分类SEO标题',
-		'catkeywords'		=>	'分类SEO关键词',
-		'catdescription'	=>	'分类SEO描述',
-		'showtitle'			=>	'内容标题',
-		'showintroduce'		=>	'内容简介',
-		'kw'				=>	'关键词',
-		'areaname'			=>	'地区',
-		'delimiter'			=>	'分隔符',
-	);
-	if(is_array($show)) {
-		foreach($show as $v) {
-			if(isset($SEO[$v])) echo '<a href="javascript:_into(\''.$title.'\', \'{'.$SEO[$v].'}\');" title="{'.$SEO[$v].'}">{'.$SEO[$v].'}</a>&nbsp;&nbsp;';
-		}
-	} else {
-		foreach($SEO as $k=>$v) {
-			$title = str_replace($v, '$seo_'.$k, $title);
-		}
-		return $title;
-	}
-}
-
-function seo_check($str) {
-	foreach(array('<', '>', '(', ')', ';', '?', '\\', '"', "'") as $v) {
-		if(strpos($str, $v) !== false) return false;
-	}
-	return true;
 }
 
 //安装模块时,创建文件.

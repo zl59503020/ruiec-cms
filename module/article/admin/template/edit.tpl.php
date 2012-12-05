@@ -21,7 +21,7 @@ include tpl('header');
             }
         });
 		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3}); ___initData();},
+			beforeSend : function() { art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3}); },
 			success : function(responseText, statusText, xhr, $form){
 				art.dialog.list['lock'].close();
 				if(statusText == 'success'){
@@ -61,12 +61,18 @@ include tpl('header');
 					<tbody>
 						<tr>
 							<th>所属分类：</th>
-							<td><?php echo $catid; ?></td>
+							<td>
+								<select>
+									<option value='0'>请选择分类</option>
+								</select>
+								<?php echo $catid.$moduleid; ?>&nbsp;&nbsp;
+								<input type="checkbox" name="post[islink]" value="1" id="islink" <?php if($islink) echo 'checked';?>/> 外部链接
+							</td>
 						</tr>
 						<tr>
 							<th>标题：</th>
 							<td>
-								<input type="text" name="post[title]" value="<?php echo $title; ?>" class="txtInput normal required" />
+								<input type="text" name="post[title]" value="<?php echo _htmlspecialchars($title); ?>" class="txtInput normal required" />
 							</td>
 						</tr>
 						<tr>
@@ -101,7 +107,7 @@ include tpl('header');
 				<input type="hidden" name="action" value="<?php echo $action; ?>" />
 				<input type="hidden" name="itemid" value="<?php echo $itemid; ?>" />
 				<input type="hidden" name="v_ruiec_sm" value="ruiec" />
-				<input name="提交" type="submit" value="提交保存" class="btnSubmit" />&nbsp;
+				<input name="提交" type="submit" value="提交保存" class="btnSubmit" onclick="___initData();" />&nbsp;
 				<input name="重置" type="reset" class="btnSubmit" value="重 置" />
 			</div>
 

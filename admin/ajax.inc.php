@@ -59,6 +59,7 @@ switch($action) {
 		$_menu[] = array('id' => 'sys_template', 'name' => '模板风格', 'url' => '?file=template');
 		$_menu[] = array('id' => 'manager_log', 'name' => '系统日志', 'url' => '?file=log');
 		$_menu[] = array('id' => 'sys_manager', 'name' => '管理员管理', 'url' => '?file=admin');
+		$_menu[] = array('id' => 'sys_ads', 'name' => '广告管理', 'url' => '?file=ad');
 		echo json_encode($_menu);
 		exit;
 	break;

@@ -35,6 +35,7 @@ if($CP) {
 
 $adddate = timetodate($addtime, 3);
 $editdate = timetodate($edittime, 3);
+$maincat = $childcat = get_maincat(0, $moduleid, 1);
 //if($voteid) $voteid = explode(' ', $voteid);
 if($fromurl) $fromurl = fix_link($fromurl);
 $linkurl = linkurl($MOD['linkurl'].$linkurl, 1);
