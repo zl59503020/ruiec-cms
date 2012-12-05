@@ -1,7 +1,7 @@
 <?php defined('IN_RUIEC') or exit('Access Denied');?><?php include template('header');?>
 <div class="m">
 <div class="lf_nav">
-<h3 class="title"><?php echo $MOD['name'];?></h3>
+<a href="<?php echo $MOD['linkurl'];?>"><h3 class="title"><?php echo $MOD['name'];?></h3></a>
 <div class="active" id="sidebar">
 <?php if(is_array($maincat)) { foreach($maincat as $k => $v) { ?>
 <dl class="list-none navnow">
