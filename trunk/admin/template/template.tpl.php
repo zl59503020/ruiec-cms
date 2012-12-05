@@ -115,8 +115,9 @@
 	
 	<div class="tools_box">
 		<div class="tools_bar">
-			<a href="?file=template" class="tools_btn"><span><b class="add">模板管理</b></span></a>
+			<a href="?file=<?php echo $file;?>" class="tools_btn"><span><b class="add">模板管理</b></span></a>
 			<a href="?file=skin" class="tools_btn"><span><b class="add">皮肤管理</b></span></a>
+			<a href="?file=<?php echo $file;?>&action=add&dir=<?php echo $dir;?>" class="tools_btn"><span><b class="add">新建模板</b></span></a>
 		</div>
 	</div>
 

@@ -1,7 +1,7 @@
 <?php
 defined('IN_RUIEC') or exit('Access Denied');
-class resession {
-    function resession() {
+class _session {
+    function _session() {
 		global $CFG;
 		if($CFG['cookie_domain']) @ini_set('session.cookie_domain', $CFG['cookie_domain']);
 		@ini_set('session.gc_maxlifetime', 1800);

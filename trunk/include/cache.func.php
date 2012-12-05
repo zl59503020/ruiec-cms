@@ -1,10 +1,9 @@
 <?php
 defined('IN_RUIEC') or exit('Access Denied');
 function cache_all() {
-	cache_module();
+	cache_module();		//模型
+	cache_category();	//分类
 	/*
-	cache_area();
-	cache_category();
 	cache_fields();
 	cache_group();
 	cache_pay();
@@ -21,6 +20,7 @@ function cache_module($moduleid = 0) {
 		$r = $db->get_one("SELECT * FROM {$db->pre}module WHERE disabled=0 AND moduleid='$moduleid'");
 		$setting = array();
 		$setting = get_setting($moduleid);
+		/*
 		if(isset($setting['seo_title_index'])) $setting['title_index'] = seo_title($setting['seo_title_index']);
 		if(isset($setting['seo_title_list'])) $setting['title_list'] = seo_title($setting['seo_title_list']);
 		if(isset($setting['seo_title_show'])) $setting['title_show'] = seo_title($setting['seo_title_show']);
@@ -33,7 +33,8 @@ function cache_module($moduleid = 0) {
 		if(isset($setting['seo_description_list'])) $setting['description_list'] = seo_title($setting['seo_description_list']);
 		if(isset($setting['seo_description_show'])) $setting['description_show'] = seo_title($setting['seo_description_show']);
 		if(isset($setting['seo_description_search'])) $setting['description_search'] = seo_title($setting['seo_description_search']);
-		//cache_write('setting/module-'.$moduleid.'.php', $setting);
+		*/
+		cache_write('setting/module-'.$moduleid.'.php', $setting);
 		$setting['moduleid'] = $moduleid;
 		$setting['name'] = $r['name'];
 		$setting['moduledir'] = $r['moduledir'];
@@ -81,17 +82,6 @@ function cache_module($moduleid = 0) {
 	}
 }
 
-function cache_area() {
-	global $db;
-	$data = array();
-    $result = $db->query("SELECT areaid,areaname,parentid,arrparentid,child,arrchildid FROM {$db->pre}area ORDER BY listorder,areaid");
-    while($r = $db->fetch_array($result)) {
-		$areaid = $r['areaid'];
-        $data[$areaid] = $r;
-    }
-	cache_write('area.php', $data);
-}
-
 function cache_category($moduleid = 0, $data = array()) {
 	global $db, $RE, $MODULE;
 	if($moduleid) {
@@ -132,6 +122,7 @@ function cache_category($moduleid = 0, $data = array()) {
 	}
 }
 
+//支付
 function cache_pay() {
 	global $db;
 	$setting = $order = $pay = array();
@@ -149,6 +140,7 @@ function cache_pay() {
 	cache_write('pay.php', $pay);
 }
 
+//第三方登录验证
 function cache_oauth() {
 	global $db;
 	$setting = $order = $oauth = array();
@@ -166,6 +158,7 @@ function cache_oauth() {
 	cache_write('oauth.php', $oauth);
 }
 
+// 自定义字段
 function cache_fields($tb = '') {
 	global $db, $RE;
 	if($tb) {
@@ -186,16 +179,7 @@ function cache_fields($tb = '') {
 	}
 }
 
-function cache_quote_product() {
-	global $db;
-	$data = array();
-	$result = $db->query("SELECT pid,title,catid FROM {$db->pre}quote_product ORDER BY listorder DESC,pid DESC");
-	while($r = $db->fetch_array($result)) {
-		$data[$r['pid']] = $r;
-	}
-	cache_write('quote_product.php', $data);
-}
-
+//用户组
 function cache_group() {
 	global $db;
 	$data = $group = array();
@@ -217,93 +201,7 @@ function cache_group() {
 	cache_write('group.php', $data);
 }
 
-function cache_type($item = '') {
-	global $db;
-	if($item) {
-		$types = array();
-		$result = $db->query("SELECT typeid,typename,style FROM {$db->pre}type WHERE item='$item' AND cache=1 ORDER BY listorder ASC,typeid DESC");
-		while($r = $db->fetch_array($result)) {
-			$types[$r['typeid']] = $r;
-		}
-		cache_write('type-'.$item.'.php', $types);
-		return $types;
-	} else {
-		$arr = array();
-		$result = $db->query("SELECT item FROM {$db->pre}type WHERE item!='' AND cache=1 ORDER BY typeid DESC");
-		while($r = $db->fetch_array($result)) {
-			if(!in_array($r['item'], $arr)) {
-				$arr[] = $r['item'];
-				cache_type($r['item']);
-			}
-		}
-	}
-}
-
-function cache_bancomment($moduleid = 0) {
-	global $db, $MODULE;
-	if($moduleid) {
-		$data = array();
-		$result = $db->query("SELECT itemid FROM {$db->pre}comment_ban WHERE moduleid='$moduleid' ORDER BY bid DESC ");
-		while($r = $db->fetch_array($result)) {
-			$data[] = $r['itemid'];
-		}
-		cache_write('bancomment-'.$moduleid.'.php', $data);
-		return $data;
-	} else {
-		foreach($MODULE as $k=>$v) {
-			if($k < 4 || $v['islink']) continue;
-			cache_bancomment($k);
-		}
-	}
-}
-
-function cache_keylink($item = '') {
-	global $db;
-	if($item) {
-		$keylinks = array();
-		$result = $db->query("SELECT title,url FROM {$db->pre}keylink WHERE item='$item' ORDER BY listorder DESC,itemid DESC");
-		while($r = $db->fetch_array($result)) {
-			$keylinks[] = $r;
-		}
-		cache_write('keylink-'.$item.'.php', $keylinks);
-		return $keylinks;
-	} else {
-		$arr = array();
-		$result = $db->query("SELECT item FROM {$db->pre}keylink");
-		while($r = $db->fetch_array($result)) {
-			if(!in_array($r['item'], $arr)) {
-				$arr[] = $r['item'];
-				cache_keylink($r['item']);
-			}
-		}
-	}
-}
-
-function cache_banip() {
-	global $db, $RE_TIME;
-	$data = array();
-	$result = $db->query("SELECT ip,totime FROM {$db->pre}banip ORDER BY itemid DESC");
-	while($r = $db->fetch_array($result)) {
-		if($r['totime'] && $r['totime'] < $RE_TIME) continue;
-		$data[] = $r;
-	}
-	cache_write('banip.php', $data);
-}
-
-function cache_banword() {
-	global $db;
-	$data = array();
-	$result = $db->query("SELECT * FROM {$db->pre}banword ORDER BY bid DESC");
-	while($r = $db->fetch_array($result)) {
-		$b = array();
-		$b[] = $r['replacefrom'];
-		$b[] = $r['replaceto'];
-		$b[] = $r['deny'];
-		$data[] = $b;
-	}
-	cache_write('banword.php', $data);
-}
-
+//清除
 function cache_clear_ad($all = false) {
 	global $RE_TIME;
 	$globs = glob(RE_CACHE.'/htm/*.htm');
@@ -320,6 +218,7 @@ function cache_clear_ad($all = false) {
 	}
 }
 
+//清除Tag
 function cache_clear_tag($all = false) {
 	global $RE_TIME;
 	$globs = glob(RE_CACHE.'/tag/*.htm');
@@ -335,6 +234,7 @@ function cache_clear_tag($all = false) {
 	}
 }
 
+//清除SQL
 function cache_clear_sql($dir, $all = false) {
 	global $RE_TIME;
 	if($dir) {

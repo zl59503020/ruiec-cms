@@ -13,14 +13,17 @@ if(!function_exists('file_put_contents')) {
 	}
 }
 
+//扩展名
 function file_ext($filename) {
 	return strtolower(trim(substr(strrchr($filename, '.'), 1)));
 }
 
+//文件名
 function file_vname($name) {
 	return str_replace(array(' ', '\\', '/', ':', '*', '?', '"', '<', '>', '|', "'", '$', '&', '%', '#', '@'), array('-', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''), $name);
 }
 
+//下载
 function file_down($file, $filename = '', $data = '') {
 	if(!$data && !is_file($file)) exit;
 	$filename = $filename ? $filename : basename($file);
@@ -43,6 +46,7 @@ function file_down($file, $filename = '', $data = '') {
 	exit;
 }
 
+//文件列表
 function file_list($dir, $fs = array()) {
 	$files = glob($dir.'/*');
 	if(!is_array($files)) return $fs;
@@ -56,6 +60,7 @@ function file_list($dir, $fs = array()) {
 	return $fs;
 }
 
+//复制
 function file_copy($from, $to) {
 	dir_create(dirname($to));
 	if(is_file($to) && RE_CHMOD) @chmod($to, RE_CHMOD);	
@@ -68,6 +73,7 @@ function file_copy($from, $to) {
 	}
 }
 
+//写入
 function file_put($filename, $data) {
 	dir_create(dirname($filename));	
 	if(@$fp = fopen($filename, 'wb')) {
@@ -82,10 +88,12 @@ function file_put($filename, $data) {
 	}
 }
 
+// 读取
 function file_get($filename) {
 	return @file_get_contents($filename);
 }
 
+//删除
 function file_del($filename) {
 	if(RE_CHMOD) @chmod($filename, RE_CHMOD);
 	return is_file($filename) ? @unlink($filename) : false;
@@ -108,6 +116,7 @@ function dir_zip($path,$to){
 	return true;
 }
 
+// 创建目录
 function dir_create($path) {
 	if(is_dir($path)) return true;
 	//$dir = str_replace(RE_CACHE.'/', '', $path);	//Safe
@@ -126,6 +135,7 @@ function dir_create($path) {
 	return is_dir($path);
 }
 
+// 目录权限
 function dir_chmod($dir, $mode = '', $require = 0) {
 	if(!$require) $require = substr($dir, -1) == '*' ? 2 : 0;
 	if($require) {
@@ -147,6 +157,7 @@ function dir_chmod($dir, $mode = '', $require = 0) {
 	}
 }
 
+//目录Copy
 function dir_copy($fromdir, $todir) {
 	$fromdir = dir_path($fromdir);
 	$todir = dir_path($todir);
@@ -168,6 +179,7 @@ function dir_copy($fromdir, $todir) {
     return true;
 }
 
+//目录 删除
 function dir_delete($dir) {
 	$dir = dir_path($dir);
 	if(!is_dir($dir)) return false;
@@ -182,6 +194,7 @@ function dir_delete($dir) {
     return @rmdir($dir);
 }
 
+// 获取所有文件
 function get_file($dir, $ext = '', $fs = array()) {
 	$files = glob($dir.'/*');
 	if(!is_array($files)) return $fs;
@@ -200,6 +213,7 @@ function get_file($dir, $ext = '', $fs = array()) {
 	return $fs;
 }
 
+//是否可写
 function is_write($file) {
 	if(RE_WIN) {
 		if(substr($file, -1) == '/') {

@@ -67,6 +67,7 @@ class article {
 			$post['content'] = dsafe($content);
 		}
 		*/
+		$post['content'] = stripslashes($post['content']);
 		$post['content'] = addslashes($post['content']);
 		return $post;
 	}

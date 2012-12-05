@@ -1,7 +1,7 @@
 <?php
 defined('IN_RUIEC') or exit('Access Denied');
 function tag($parameter, $expires = 0) {
-	global $DT, $CFG, $MODULE, $DT_TIME, $db;
+	global $RE, $CFG, $MODULE, $RE_TIME, $db;
 	if($expires > 0) {
 		$tag_expires = $expires;
 	} else if($expires == -2) {
@@ -15,8 +15,8 @@ function tag($parameter, $expires = 0) {
 	$db_cache = ($expires == -2 || defined('TOHTML')) ? 'CACHE' : '';
 	if($tag_expires && $db_cache != 'CACHE' && strpos($parameter, '&page=') === false) {
 		$tag_cache = true;
-		$TCF = DT_CACHE.'/tag/'.md5($parameter).'.htm';
-		if(is_file($TCF) && ($DT_TIME - filemtime($TCF) < $tag_expires)) {
+		$TCF = RE_CACHE.'/tag/'.md5($parameter).'.htm';
+		if(is_file($TCF) && ($RE_TIME - filemtime($TCF) < $tag_expires)) {
 			echo substr(file_get($TCF), 17);
 			return;
 		}
@@ -24,7 +24,7 @@ function tag($parameter, $expires = 0) {
 	$parameter = str_replace(array('&amp;', '%'), array('', '##'), $parameter);
 	parse_str($parameter, $par);
 	if(!is_array($par)) return '';
-	$par = dstripslashes($par);
+	$par = _stripslashes($par);
 	extract($par);
 	isset($prefix) or $prefix = $db->pre;
 	isset($moduleid) or $moduleid = 1;
@@ -32,8 +32,6 @@ function tag($parameter, $expires = 0) {
 	isset($fields) or $fields = '*';
 	isset($catid) or $catid = 0;
 	isset($child) or $child = 1;
-	isset($areaid) or $areaid = 0;
-	isset($areachild) or $areachild = 1;
 	isset($dir) or $dir = 'tag';
 	isset($template) or $template = 'list';
 	isset($condition) or $condition = '1';
@@ -67,25 +65,9 @@ function tag($parameter, $expires = 0) {
 			$condition .= " AND catid IN ($catid)";
 		}
 	}
-	if($areaid) {
-		if(is_numeric($areaid)) {
-			$ARE = $db->get_one("SELECT child,arrchildid FROM {$db->pre}area WHERE areaid=$areaid");
-			$condition .= ($areachild && $ARE['child']) ? " AND areaid IN (".$ARE['arrchildid'].")" : " AND areaid=$areaid";
-		} else {
-			if($areachild) {
-				$areaids = '';
-				$result = $db->query("SELECT arrchildid FROM {$db->pre}area WHERE areaid IN ($areaid)");
-				while($r = $db->fetch_array($result)) {
-					$areaids .= ','.$r['arrchildid'];
-				}
-				if($areaids) $areaid = substr($areaids, 1);
-			}
-			$condition .= " AND areaid IN ($areaid)";
-		}
-	}
 	$table = isset($table) ? $prefix.$table : get_table($moduleid);
 	$offset or $offset = ($page-1)*$pagesize;
-	$percent = dround(100/$cols).'%';
+	$percent = _round(100/$cols).'%';
 	$num = 0;
 	$order = $order ? ' ORDER BY '.$order : '';
 	$condition = stripslashes($condition);
@@ -106,17 +88,13 @@ function tag($parameter, $expires = 0) {
 	$tags = $catids = $CATS = array();
 	$result = $db->query($query, $db_cache, $tag_expires);
 	while($r = $db->fetch_array($result)) {
-		if($moduleid == 4 && isset($r['company'])) {
-			$r['alt'] = $r['companyname'] = $r['company'];
-			if($length) $r['company'] = dsubstr($r['company'], $length);
-		}
 		if(isset($r['title'])) {
 			$r['title'] = str_replace('"', '&quot;', trim($r['title']));
 			$r['alt'] = $r['title'];
-			if($length) $r['title'] = dsubstr($r['title'], $length);
+			if($length) $r['title'] = _substr($r['title'], $length);
 			if(isset($r['style']) && $r['style']) $r['title'] = set_style($r['title'], $r['style']);
 		}
-		if(isset($r['introduce']) && $introduce) $r['introduce'] = dsubstr($r['introduce'], $introduce);
+		if(isset($r['introduce']) && $introduce) $r['introduce'] = _substr($r['introduce'], $introduce);
 		if(isset($r['linkurl']) && $r['linkurl'] && $moduleid > 4 && strpos($r['linkurl'], '://') === false) $r['linkurl'] = $MODULE[$moduleid]['linkurl'].$r['linkurl'];
 		if($showcat && $moduleid > 4 && isset($r['catid'])) $catids[$r['catid']] = $r['catid'];
 		$tags[] = $r;
@@ -140,7 +118,7 @@ function tag($parameter, $expires = 0) {
 		include template($template, $dir);
 		$contents = ob_get_contents();
 		ob_clean();
-		file_put($TCF, '<!--'.($DT_TIME + $tag_expires).'-->'.$contents);
+		file_put($TCF, '<!--'.($RE_TIME + $tag_expires).'-->'.$contents);
 		echo $contents;
 	} else {
 		include template($template, $dir);

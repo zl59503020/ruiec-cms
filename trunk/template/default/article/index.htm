@@ -1,1 +1,59 @@
-<!--{tag("moduleid=$moduleid&condition=status=3&order=hits desc", -2)}-->
+{template 'header'}
+<div class="m">
+	<div class="lf_nav">
+		<h3 class="title">{$MOD[name]}</h3>
+		<div class="active" id="sidebar">
+			{loop $maincat $k $v}
+			<dl class="list-none navnow">
+				<dt id="part2_80" class="">
+					<a href="{$MOD[linkurl]}{$v[linkurl]}" title="{$v['catname']}" class="zm"><span>{$v['catname']}</span></a>
+				</dt>
+			</dl>
+			{/loop}
+			<div class="clear"></div>
+		</div>
+    </div>
+	
+	<div class="ri_main">
+		<h3 class="title">
+			<div class="position" id="ny_navx">当前位置：<a href="{$MODULE[1][linkurl]}">首页</a> &raquo; {$MOD[name]} </div>
+			<span>{$MOD[name]}</span>
+		</h3>
+		<div class="clr"></div>
+		<div class="active" id="newslist">
+			<ul class="list-none metlist">
+			<!--{php $lists = tag("moduleid=$moduleid&condition=status=3&pagesize=10&order=".$MOD[order]."&template=null");}-->
+			{loop $lists $v}
+				<li class="list top">
+					<span>[{timetodate($v['addtime'],3)}]</span>
+					<a href="{$v['linkurl']}" title="{$v['alt']}" target="_blank">{$v['title']}</a>
+				</li>
+			{/loop}
+				<li class="list top">
+					<span>[2012-10-16]</span>
+					<a href="" title="" target="_self">淘宝网开店我们需要知道的哪些事</a>
+				</li>
+				<li class="list top">
+					<span>[2012-10-16]</span>
+					<a href="" title="" target="_self">淘宝网开店我们需要知道的哪些事</a>
+				</li>
+				<li class="list top">
+					<span>[2012-10-16]</span>
+					<a href="" title="" target="_self">淘宝网开店我们需要知道的哪些事</a>
+				</li>
+				<li class="list top">
+					<span>[2012-10-16]</span>
+					<a href="" title="" target="_self">淘宝网开店我们需要知道的哪些事</a>
+				</li>
+				<li class="list top">
+					<span>[2012-10-16]</span>
+					<a href="" title="" target="_self">淘宝网开店我们需要知道的哪些事</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="clear"></div>
+<div class="b10"></div>
+{template 'footer'}

@@ -4,7 +4,6 @@ define('RE_ADMIN', true);
 require 'common.inc.php';
 
 include_once RE_ROOT.'/admin/global.func.php';
-include_once RE_ROOT.'/include/post.func.php';
 require_once RE_ROOT.'/include/cache.func.php';
 
 require_once RE_ROOT.'/admin/admin_check.inc.php';

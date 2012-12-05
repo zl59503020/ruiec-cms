@@ -9,7 +9,6 @@ include tpl('header');
 		<div class="tools_bar">
 			<a href="?file=template" class="tools_btn"><span><b class="add">模板管理</b></span></a>
 			<a href="?file=skin" class="tools_btn"><span><b class="add">皮肤管理</b></span></a>
-			<a href="?file=skin&action=add" class="tools_btn"><span><b class="add">新建CSS</b></span></a>
 		</div>
 	</div>
 
