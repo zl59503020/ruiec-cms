@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-06 09:13:22</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/admin.php</file>
+	<querystring>file=category&amp;mid=18&amp;action=add</querystring>
+	<message>		<query>SELECT child FROM ruiec_category WHERE moduleid=18 AND parentid=0</query>
+		<errno>0</errno>
+		<error>Unknown column 'child' in 'field list'</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

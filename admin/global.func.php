@@ -59,7 +59,7 @@ function get_setting($item) {
 function update_category($CAT) {
 	global $db, $RE;
 	$linkurl = listurl($CAT);
-	if($RE['index']) $linkurl = str_replace($RE['index'].'.'.$RE['file_ext'], '', $linkurl);
+	//if($RE['index']) $linkurl = str_replace($RE['index'].'.'.$RE['file_ext'], '', $linkurl);
 	$db->query("UPDATE {$db->pre}category SET linkurl='$linkurl' WHERE catid=".$CAT['catid']);
 }
 

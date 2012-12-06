@@ -1,8 +1,8 @@
 <?php
 defined('IN_RUIEC') or exit('Access Denied');
 function cache_all() {
-	cache_module();		//Ä£ÐÍ
-	cache_category();	//·ÖÀà
+	cache_module();		//æ¨¡åž‹
+	cache_category();	//åˆ†ç±»
 	/*
 	cache_fields();
 	cache_group();
@@ -122,7 +122,7 @@ function cache_category($moduleid = 0, $data = array()) {
 	}
 }
 
-//Ö§¸¶
+//æ”¯ä»˜
 function cache_pay() {
 	global $db;
 	$setting = $order = $pay = array();
@@ -140,7 +140,7 @@ function cache_pay() {
 	cache_write('pay.php', $pay);
 }
 
-//µÚÈý·½µÇÂ¼ÑéÖ¤
+//ç¬¬ä¸‰æ–¹ç™»å½•éªŒè¯
 function cache_oauth() {
 	global $db;
 	$setting = $order = $oauth = array();
@@ -158,7 +158,7 @@ function cache_oauth() {
 	cache_write('oauth.php', $oauth);
 }
 
-// ×Ô¶¨Òå×Ö¶Î
+// è‡ªå®šä¹‰å­—æ®µ
 function cache_fields($tb = '') {
 	global $db, $RE;
 	if($tb) {
@@ -179,7 +179,7 @@ function cache_fields($tb = '') {
 	}
 }
 
-//ÓÃ»§×é
+//ç”¨æˆ·ç»„
 function cache_group() {
 	global $db;
 	$data = $group = array();
@@ -201,7 +201,7 @@ function cache_group() {
 	cache_write('group.php', $data);
 }
 
-//Çå³ý
+//æ¸…é™¤
 function cache_clear_ad($all = false) {
 	global $RE_TIME;
 	$globs = glob(RE_CACHE.'/htm/*.htm');
@@ -218,7 +218,7 @@ function cache_clear_ad($all = false) {
 	}
 }
 
-//Çå³ýTag
+//æ¸…é™¤Tag
 function cache_clear_tag($all = false) {
 	global $RE_TIME;
 	$globs = glob(RE_CACHE.'/tag/*.htm');
@@ -234,7 +234,7 @@ function cache_clear_tag($all = false) {
 	}
 }
 
-//Çå³ýSQL
+//æ¸…é™¤SQL
 function cache_clear_sql($dir, $all = false) {
 	global $RE_TIME;
 	if($dir) {

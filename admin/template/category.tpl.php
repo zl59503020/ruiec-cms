@@ -4,10 +4,76 @@ include tpl('header');
 ?>
 
 <script type="text/javascript">
+
+	//表单验证
+    $(function () {
+        $("#myform_cat").validate({
+            invalidHandler: function (e, validator) {
+                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
+            },
+            errorPlacement: function (lable, element) {
+                //可见元素显示错误提示
+                if (element.parents(".tab_con").css('display') != 'none') {
+                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
+                }
+            },
+            success: function (lable) {
+                lable.ligerHideTip();
+            }
+        });
+		$('#myform_cat').ajaxForm({
+			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
+			success : function(responseText, statusText, xhr, $form){
+				art.dialog.list['lock'].close();
+				if(statusText == 'success'){
+					if(responseText == '0'){
+						parent.jsprint("更新成功!", "", "Success");
+						window.location = '?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>';
+					}else{
+						parent.jsprint("更新失败!", "", "Error");
+						art.dialog({
+							title: '更新失败',
+							lock: true,
+							background: '#fff',
+							opacity: 0.5,
+							content: responseText,
+							ok: true
+						});
+					}
+				}else{
+					return true;
+				}
+			}
+		});
+    });
 	
 	function _showc(id){
 		var trs = $('tr[_id='+id+']');
 		(trs[0].style.display == '') ? trs.hide() : trs.show();
+	}
+	
+	function _delete(id){
+		art.dialog.confirm('确定要删除该分类吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!<br /><strong>该分类所有子分类也将被删除!</strong></span>', function(){
+			$.ajax({
+				url:'?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>&action=delete&catid='+encodeURIComponent(id),
+				success:function(data){
+					if(data == '0'){
+						parent.jsprint("删除成功!", "", "Success");
+						window.location.reload();
+					}else{
+						parent.jsprint("删除失败!", "", "Error");
+						art.dialog({
+							title: '删除失败',
+							lock: true,
+							background: '#fff',
+							opacity: 0.5,
+							content: data,
+							ok: true
+						});
+					}
+				}
+			});
+		});
 	}
 	
 </script>
@@ -35,7 +101,7 @@ include tpl('header');
 			</tr>
 <?php
 	function show_catinfo($childs,$dsplay='',$_i=0){
-		global $do;
+		global $do,$file,$mid;
 		foreach($childs as $k=>$v) {
 			$_childs = $do->get_catchild($v['catid']);
 ?>
@@ -63,8 +129,8 @@ include tpl('header');
 					<input type="text" name="catdir[<?php echo $v['catid'];?>]" value="<?php echo $v['catdir'];?>" class="txtInput valid number" />
 				</td>
 				<td class="my_option_m">
-					<a href="javascript:;" onclick="" class="icon_import" title="添加子分类"></a>
-					<a href="javascript:;" onclick="" class="icon_edit" title="编辑"></a>
+					<a href="javascript:;" onclick="_url('?file=<?php echo $file;?>&mid=<?php echo $mid; ?>&action=add&catid=<?php echo $v['catid'];?>');" class="icon_import" title="添加子分类"></a>
+					<a href="javascript:;" onclick="_url('?file=<?php echo $file;?>&mid=<?php echo $mid; ?>&action=edit&catid=<?php echo $v['catid'];?>');" class="icon_edit" title="编辑"></a>
 					<a href="javascript:;" onclick="_delete('<?php echo $v['catid']; ?>')" class="icon_delete" title="删除"></a>
 				</td>
 			</tr>
@@ -85,8 +151,8 @@ include tpl('header');
 			<a href="javascript:void(0);" onclick="checkAll('catid[]',true);" >全选</a>&nbsp;&nbsp;&nbsp;
 			<a href="javascript:void(0);" onclick="checkAll('catid[]','!');" >反选</a>&nbsp;&nbsp;&nbsp;
 			<a href="javascript:void(0);" onclick="checkAll('catid[]',false);" >全不选</a>&nbsp;&nbsp;&nbsp;
-			<input type="button" value="更新分类数据" onclick="" class="btnSubmit" />&nbsp;&nbsp;&nbsp;
-			<input type="button" value="删除选中分类" onclick="" class="btnSearch" />
+			<input type="button" value="更新分类数据" onclick="$('action').val('update');" class="btnSubmit" />&nbsp;&nbsp;&nbsp;
+			<input type="button" value="删除选中分类" onclick="$('action').val('delete');" class="btnSearch" />
 		</div>
 	
 	</form>

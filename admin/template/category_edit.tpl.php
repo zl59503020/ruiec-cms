@@ -27,12 +27,12 @@ include tpl('header');
 				art.dialog.list['lock'].close();
 				if(statusText == 'success'){
 					if(responseText == '0'){
-						parent.jsprint("添加成功!", "", "Success");
+						parent.jsprint("更新成功!", "", "Success");
 						window.location = '?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>';
 					}else{
-						parent.jsprint("添加失败!", "", "Error");
+						parent.jsprint("更新失败!", "", "Error");
 						art.dialog({
-							title: '添加失败',
+							title: '更新失败',
 							lock: true,
 							background: '#fff',
 							opacity: 0.5,
@@ -83,7 +83,7 @@ include tpl('header');
 	
 </script>
 
-	<div class="navigation">首页 &gt; 分类管理 &gt; 添加分类 </div>
+	<div class="navigation">首页 &gt; 分类管理 &gt; 编辑分类 </div>
 	
 	<div class="tools_box">
 		<div class="tools_bar">
@@ -102,19 +102,19 @@ include tpl('header');
 						<tr>
 							<th>上级分类</th>
 							<td>
-								<?php echo category_select('category[parentid]', '请选择', isset($catid) ? $catid : $parentid, $mid, 'id="sel_parentid"');?><?php tips('如果不选择，则为顶级分类');?>
+								<?php echo category_select('category[parentid]', '请选择', $parentid, $mid, 'id="sel_parentid"');?><?php tips('如果不选择，则为顶级分类');?>
 							</td>
 						</tr>
 						<tr>
 							<th>分类名称</th>
 							<td>
-								<input name="category[catname]" type="text" class="txtInput normal required" />
+								<input name="category[catname]" type="text" value="<?php echo $catname; ?>" class="txtInput normal required" />
 							</td>
 						</tr>
 						<tr>
 							<th>分类目录[英文]</th>
 							<td>
-								<input name="category[catdir]" type="text" id="catdir" class="txtInput normal required" />
+								<input name="category[catdir]" type="text" id="catdir" value="<?php echo $catdir; ?>" class="txtInput normal required" />
 								<input type="button" class="btnSearch" value="目录检测" onclick="ckDir();">
 								<?php echo tips('限英文、数字、中划线、下划线'); ?>
 							</td>
@@ -122,7 +122,7 @@ include tpl('header');
 						<tr>
 							<th>排序</th>
 							<td>
-								<input name="category[listorder]" type="text" size="5" class="txtInput normal" />
+								<input name="category[listorder]" type="text" size="5" value="<?php echo $listorder; ?>" class="txtInput normal" />
 							</td>
 						</tr>
 						<tr>
@@ -139,15 +139,15 @@ include tpl('header');
 						</tr>
 						<tr>
 							<th>Title</th>
-							<td><input name="category[seo_title]" type="text" size="60" class="txtInput normal" /></td>
+							<td><input name="category[seo_title]" type="text" size="60" value="<?php echo $seo_title; ?>" class="txtInput normal" /></td>
 						</tr>
 						<tr>
 							<th>Meta Keywords</th>
-							<td><textarea name="category[seo_keywords]" cols="60" rows="3" class="small valid" id="seo_keywords"></textarea></td>
+							<td><textarea name="category[seo_keywords]" cols="60" rows="3" class="small valid" id="seo_keywords"><?php echo $seo_keywords; ?></textarea></td>
 						</tr>
 						<tr>
 							<th>Meta Description</th>
-							<td><textarea name="category[seo_description]" cols="60" rows="3" class="small valid" id="seo_description"></textarea></td>
+							<td><textarea name="category[seo_description]" cols="60" rows="3" class="small valid" id="seo_description"><?php echo $seo_description; ?></textarea></td>
 						</tr>
 					</tbody>
 				</table>
@@ -156,7 +156,7 @@ include tpl('header');
 			<div class="foot_btn_box">
 				<input type="hidden" name="file" value="<?php echo $file; ?>" />
 				<input type="hidden" name="mid" value="<?php echo $mid; ?>" />
-				<input type="hidden" name="action" value="add" />
+				<input type="hidden" name="action" value="edit" />
 				<input type="hidden" name="v_ruiec_sm" value="ruiec" />
 				<input name="提交" type="submit" value="提交保存" class="btnSubmit" />&nbsp;
 				<input name="重置" type="reset" class="btnSubmit" value="重 置" />
