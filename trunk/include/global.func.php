@@ -347,13 +347,31 @@ function strip_sql($string) {
 }
 
 // 随机
-function _random($length, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz') {
+function random($length, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz') {
 	$hash = '';
 	$max = strlen($chars) - 1;
 	for($i = 0; $i < $length; $i++)	{
 		$hash .= $chars[mt_rand(0, $max)];
 	}
 	return $hash;
+}
+
+function listurl($CAT, $page = 0) {
+	//global $RE, $MOD, $L;
+	//include RE_ROOT.'/api/url.inc.php';
+	$catid = $CAT['catid'];
+	//$file_ext = 'php';//$RE['file_ext'];	
+	//$index = 'index';//$RE['index'];
+	//$catdir = $CAT['catdir'];
+	//$catname = file_vname($CAT['catname']);
+	//$prefix = $MOD['htm_list_prefix'];
+	//$urlid = $MOD['list_html'] ? $MOD['htm_list_urlid'] : $MOD['php_list_urlid'];
+	//$ext = $MOD['list_html'] ? 'htm' : 'php';
+	//isset($urls[$ext]['list'][$urlid]) or $urlid = 0;
+	//
+    $listurl = 'list.php?catid='.$catid;
+	//if(substr($listurl, 0, 1) == '/') $listurl = substr($listurl, 1);
+	return $listurl;
 }
 
 function set_cookie($var, $value = '', $time = 0) {
@@ -416,6 +434,24 @@ function cache_clear($str, $type = '', $dir = '') {
 			}
 		}
 	}
+}
+
+// 写入日志
+function log_write($message, $type = 'php') {
+	global $RE_IP, $RE_TIME, $_username;
+	if(!RE_DEBUG) return;
+	$RE_IP or $RE_IP = get_env('ip');
+	$RE_TIME or $RE_TIME = time();
+	$user = $_username ? $_username : 'guest';
+	$log = "<$type>\n";
+	$log .= "\t<time>".date('Y-m-d H:i:s', $RE_TIME)."</time>\n";
+	$log .= "\t<ip>".$RE_IP."</ip>\n";
+	$log .= "\t<user>".$user."</user>\n";
+	$log .= "\t<file>".$_SERVER['SCRIPT_NAME']."</file>\n";
+	$log .= "\t<querystring>".str_replace('&', '&amp;', $_SERVER['QUERY_STRING'])."</querystring>\n";
+	$log .= "\t<message>".$message."\t</message>\n";
+	$log .= "</$type>";
+	file_put(RE_ROOT.'/file/log/'.date('Ym', $RE_TIME).'/'.$type.'-'.date('Y.m.d H.i.s', $RE_TIME).'-'.strtolower(random(10)).'.xml', $log);
 }
 
 // IP地址
@@ -570,6 +606,7 @@ function get_cat($catid) {
 function cat_pos($CAT, $str = ' &raquo; ', $target = '') {
 	global $MODULE, $db;
 	if(!$CAT) return '';
+	$CAT = $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=$CAT");
 	$arrparentids = $CAT['arrparentid'].','.$CAT['catid'];
 	$arrparentid = explode(',', $arrparentids);
 	$pos = '';
@@ -620,47 +657,46 @@ function category_select($name = 'catid', $title = '', $catid = 0, $moduleid = 1
 	}
 }
 
-function get_catchildid($catid){
+//获取所有子类id
+function get_catchilds($catid, $moduleid = 1, $retype = '0'){
 	global $db;
 	$parents = array();
-	$result = $db->query("SELECT child FROM {$db->pre}category WHERE parentid=$catid");
+	$_parents = '';
+	$result = $db->query("SELECT catid FROM {$db->pre}category WHERE moduleid=$moduleid AND parentid=$catid");
 	while($c = $db->fetch_array($result)) {
-		$parents[] = $c['catid'];
+		$parents[$c['catid']] = get_catchilds($c['catid'], $moduleid);
+		$_parents .= ','.$c['catid'];//.get_catchilds($c['catid'], $moduleid,$retype);
+		//array_push($parents, get_catchilds($c['catid'], $moduleid));
+		//$parents = array_merge($parents, get_catchilds($c['catid'], $moduleid));
 	}
-	return $parents;
+	return ($retype == '0') ? $parents : $_parents;
 }
 
-function get_category_select($title = '', $catid = 0, $moduleid = 1, $extend = '', $deep = 0, $cat_id = 1) {
-	global $db, $_child;
-	$_child or $_child = array();
-	$parents = array();
-	if($catid) {
-		$result = $db->query("SELECT child FROM {$db->pre}category WHERE parentid=$catid");
-		while($c = $db->fetch_array($result)) {
-			$parents[] = $c['catid'];
-			array_push($parents, get_catchildid($c['catid']));
-		}
-		//$r = $db->get_one("SELECT child FROM {$db->pre}category WHERE parentid=$catid");
-		//$parents = explode(',', $r['arrparentid']);
-		//if($r['child']) $parents[] = $catid;
-	} else {
-		$parents[] = 0;
-	}
+//获取下拉选项
+function _get_option($parents,$catid=0,$exstr=''){
 	$select = '';
 	foreach($parents as $k=>$v) {
-		if($deep && $deep <= $k) break;
-		$select .= '<select '.$extend.'>';
-		if($title) $select .= '<option value="0">'.$title.'</option>';
-		$condition = $v ? "parentid=$v" : "moduleid=$moduleid AND parentid=0";
-		$result = $db->query("SELECT catid,catname FROM {$db->pre}category WHERE $condition ORDER BY listorder,catid ASC");
-		while($c = $db->fetch_array($result)) {
-			$selectid = isset($parents[$k+1]) ? $parents[$k+1] : $catid;
-			$selected = $c['catid'] == $selectid ? ' selected' : '';
-			if($_child && !in_array($c['catid'], $_child)) continue;
-			$select .= '<option value="'.$c['catid'].'"'.$selected.'>'.$c['catname'].'</option>';
+		$_catinfo = get_cat($k);
+		if($_catinfo){
+			$selected = $_catinfo['catid'] == $catid ? ' selected' : '';
+			$select .= '<option value="'.$_catinfo['catid'].'"'.$selected.'>'.$exstr.$_catinfo['catname'].'</option>';
+			if(is_array($v) && $v){
+				$select .= _get_option($v,$catid,$exstr.' |--');
+			}
 		}
-		$select .= '</select> ';
 	}
+	return $select;
+}
+
+function get_category_select($name = '', $title = '', $catid = 0, $moduleid = 1, $extend = '', $deep = 0, $cat_id = 1) {
+	global $db, $_child;
+	$_child or $_child = array();
+	//$parents = get_catchilds($catid,$moduleid);
+	$parents = get_catchilds('0',$moduleid);
+	$select = '<select name="'.$name.'" '.$extend.'>';
+	if($title) $select .= '<option value="0">'.$title.'</option>';
+	$select .= _get_option($parents,$catid);
+	$select .= '</select> ';
 	return $select;
 }
 
@@ -673,8 +709,7 @@ function ajax_category_select($name = 'catid', $title = '', $catid = 0, $modulei
 	}
 	$catid = intval($catid);
 	$deep = intval($deep);
-	$select = '';
-	$select .= '<span id="load_category_'.$cat_id.'">'.get_category_select($title, $catid, $moduleid, 'name="'.$name.'" '.$extend, $deep, $cat_id).'</span>';
+	$select = get_category_select($name, $title, $catid, $moduleid, $extend, $deep, $cat_id);
 	//if($cat_id == 1) $select .= '<script type="text/javascript" src="'.RE_PATH.'file/script/category.js"></script>';
 	return $select;
 }

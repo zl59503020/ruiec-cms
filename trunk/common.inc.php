@@ -26,7 +26,7 @@ define('RE_KEY', $CFG['authkey']);
 define('RE_CHARSET', $CFG['charset']);
 define('RE_CACHE', $CFG['cache_dir'] ? $CFG['cache_dir'] : RE_ROOT.'/file/cache');
 define('RE_SKIN', RE_PATH.'skin/'.$CFG['skin'].'/');
-$L = array();
+//$L = array();
 require RE_ROOT.'/version.inc.php';
 require RE_ROOT.'/include/global.func.php';
 require RE_ROOT.'/include/tag.func.php';
@@ -65,6 +65,7 @@ $CACHE = cache_read('module.php');
 if(!$CACHE) {
 	require_once RE_ROOT.'/admin/global.func.php';
 	require_once RE_ROOT.'/include/cache.func.php';
+	$MODULE = array();
     cache_all();
 	$CACHE = cache_read('module.php');
 }

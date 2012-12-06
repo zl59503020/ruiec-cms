@@ -15,6 +15,7 @@ switch($action) {
 			$category['catname'] = trim($category['catname']);
 			$category['catdir'] = $do->get_catdir($category['catdir']);
 			$do->add($category);
+			$do->cache();
 			die('0');
 			exit;
 		}else{
@@ -26,7 +27,7 @@ switch($action) {
 			if(!preg_match("/^[0-9a-z_-]+$/i", $catdir)){
 				echo '<div style="margin:10px;color:red;">该目录名非法,请更换一个再试</div>';
 			}else{
-				if($do->get_catdir($catdir) != '') {
+				if($do->check_catdir($catdir,$parentid)) {
 					echo '<div style="margin:10px;color:#53BD4A;">该目录合法,可以使用!</div>';
 				} else {
 					echo '<div style="margin:10px;color:red;">该目录名已经被使用,请更换一个再试</div>';
@@ -38,19 +39,32 @@ switch($action) {
 	break;
 	case 'edit':
 		$catid or die('参数为空!');
-		extract($db->get_one("SELECT * FROM {$table} WHERE catid=$catid"));
-		include tpl('category_edit');
-	break;
-	case 'cache':
-		$do->repair();
-		dmsg('更新成功', "?mid=$mid&file=$file");
+		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec'){
+			if(!$category['catname']) die('分类名不能为空');
+			if($category['parentid'] == $catid) die('上级分类不能与当前分类相同');
+			$do->edit($category);
+			$category['catid'] = $catid;
+			update_category($category);
+			$do->cache();
+			die('0');
+		}else{
+			extract($db->get_one("SELECT * FROM {$table} WHERE catid=$catid"));
+			include tpl('category_edit');
+		}
 	break;
 	case 'delete':
 		if($catid) $catids = $catid;
-		$catids or msg();
+		$catids or die('参数错误');
 		$do->delete($catids);
 		$do->cache();
-		dmsg('删除成功', $forward);
+		die('0');
+	break;
+	case 'update':
+		
+	break;
+	case 'cache':
+		$do->repair();
+		die('0');
 	break;
 	default:
 		$RECAT = array();
@@ -99,24 +113,15 @@ class category {
 		}
         $sqlk = substr($sqlk, 1);
         $sqlv = substr($sqlv, 1);
-		$this->db->query("INSERT INTO {$this->table} ($sqlk) VALUES ($sqlv)");		
+		$this->db->query("INSERT INTO {$this->table} ($sqlk) VALUES ($sqlv)");
 		$this->catid = $this->db->insert_id();
-		$this->db->query("UPDATE {$this->table} SET linkurl='list.php?catid=$this->catid' WHERE catid=$this->catid");
+		$_setkv = "linkurl='list.php?catid=".$this->catid."'";
+		if($category['catdir'] == '') $_setkv .= ", catdir='".$this->catid."'";
+		$this->db->query("UPDATE {$this->table} SET $_setkv WHERE catid=$this->catid");
 		return true;
 	}
 
 	function edit($category) {
-		$category['letter'] = preg_match("/^[a-z]{1}+$/i", $category['letter']) ? strtolower($category['letter']) : '';
-		if($category['parentid']) {
-			$category['catid'] = $this->catid;
-			$this->category[$this->catid] = $category;
-			$category['arrparentid'] = $this->get_arrparentid($this->catid, $this->category);
-		} else {
-			$category['arrparentid'] = 0;
-		}
-		foreach(array('group_list',  'group_show',  'group_add') as $v) {
-			$category[$v] = isset($category[$v]) ? implode(',', $category[$v]) : '';
-		}
 		$category['linkurl'] = '';
 		$sql = '';
 		foreach($category as $k=>$v) {
@@ -136,8 +141,11 @@ class category {
 			$catid = $catids;
 			if(isset($this->category[$catid])) {
 				$this->db->query("DELETE FROM {$this->table} WHERE catid=$catid");
-				$arrchildid = $this->category[$catid]['arrchildid'] ? $this->category[$catid]['arrchildid'] : $catid;
-				$this->db->query("DELETE FROM {$this->table} WHERE catid IN ($arrchildid)");			
+				$arrchildid = get_catchilds($catid,$this->moduleid,'1');//$this->category[$catid]['arrchildid'] ? $this->category[$catid]['arrchildid'] : $catid;
+				if($arrchildid != ''){
+					$this->db->query("DELETE FROM {$this->table} WHERE catid IN (".substr($arrchildid,1).")");
+				}
+				$arrchildid = $catid.$arrchildid;
 				if($this->moduleid > 4) $this->db->query("UPDATE ".get_table($this->moduleid)." SET status=0 WHERE catid IN (".$arrchildid.")");
 			}
 		}
@@ -169,7 +177,7 @@ class category {
 		}
 		$childs = array();
 		foreach($CATEGORY as $catid => $category) {
-			$CATEGORY[$catid]['arrparentid'] = $arrparentid = $this->get_arrparentid($catid, $CATEGORY);
+			//$CATEGORY[$catid]['arrparentid'] = $arrparentid = $this->get_arrparentid($catid, $CATEGORY);
 			$CATEGORY[$catid]['catdir'] = $catdir = preg_match("/^[0-9a-z_\-\/]+$/i", $category['catdir']) ? $category['catdir'] : $catid;
 			$sql = "catdir='$catdir',arrparentid='$arrparentid'";
 			if(!$category['linkurl']) {
@@ -228,6 +236,21 @@ class category {
 	}
 
 	// 检测分类目录是否存在
+	function check_catdir($catdir,$parentid = 0){
+		if(preg_match("/^[0-9a-z_\-\/]+$/i", $catdir)) {
+			$condition = "catdir='$catdir' AND moduleid='$this->moduleid'";
+			if($parentid) $condition .= " AND parentid = $parentid";
+			$r = $this->db->get_one("SELECT catid FROM {$this->table} WHERE $condition");
+			if($r) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+	
 	function get_catdir($catdir, $catid = 0) {
 		if(preg_match("/^[0-9a-z_\-\/]+$/i", $catdir)) {
 			$condition = "catdir='$catdir' AND moduleid='$this->moduleid'";
@@ -241,10 +264,6 @@ class category {
 		} else {
 			return '';
 		}
-	}
-
-	function get_letter($catname, $letter = true) {
-		return $letter ? strtolower(substr(gb2py($catname), 0, 1)) : str_replace(' ', '', gb2py($catname));
 	}
 
 	function cache($data = array()) {

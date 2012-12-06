@@ -62,10 +62,7 @@ include tpl('header');
 						<tr>
 							<th>所属分类：</th>
 							<td>
-								<select>
-									<option value='0'>请选择分类</option>
-								</select>
-								<?php echo $catid.$moduleid; ?>&nbsp;&nbsp;
+								<?php echo category_select('category[parentid]', '请选择', $catid, $moduleid, 'id="sel_parentid"');?>
 								<input type="checkbox" name="post[islink]" value="1" id="islink" <?php if($islink) echo 'checked';?>/> 外部链接
 							</td>
 						</tr>
