@@ -91,8 +91,8 @@ function _stripslashes($string) {
 }
 
 function _header($url) {
-	global $RE;	
-	if(!defined('RE_ADMIN') && $RE['defend_reload']) sleep($RE['defend_reload']);
+	//global $RE;	
+	//if(!defined('RE_ADMIN') && $RE['defend_reload']) sleep($RE['defend_reload']);
 	exit(header('location:'.$url));
 }
 
@@ -359,7 +359,7 @@ function random($length, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghi
 function listurl($CAT, $page = 0) {
 	//global $RE, $MOD, $L;
 	//include RE_ROOT.'/api/url.inc.php';
-	$catid = $CAT['catid'];
+	//$catid = $CAT['catid'];
 	//$file_ext = 'php';//$RE['file_ext'];	
 	//$index = 'index';//$RE['index'];
 	//$catdir = $CAT['catdir'];
@@ -369,9 +369,45 @@ function listurl($CAT, $page = 0) {
 	//$ext = $MOD['list_html'] ? 'htm' : 'php';
 	//isset($urls[$ext]['list'][$urlid]) or $urlid = 0;
 	//
-    $listurl = 'list.php?catid='.$catid;
+    $listurl = 'list.php?catid='.$CAT['catid'];
 	//if(substr($listurl, 0, 1) == '/') $listurl = substr($listurl, 1);
 	return $listurl;
+}
+
+function itemurl($item, $page = 0) {
+	//global $RE, $MOD;
+	/*
+	if($MOD['show_html'] && $item['filepath']) {
+		if($page === 0) return $item['filepath'];
+		$ext = file_ext($item['filepath']);
+		return str_replace('.'.$ext, '_'.$page.'.'.$ext, $item['filepath']);
+	}
+	include RE_ROOT.'/api/url.inc.php';
+	$file_ext = $RE['file_ext'];
+	$index = $RE['index'];
+	$itemid = $item['itemid'];
+	$title = file_vname($item['title']);
+	$addtime = $item['addtime'];
+	$catid = $item['catid'];
+	$year = date('Y', $addtime);
+	$month = date('m', $addtime);
+	$day = date('d', $addtime);
+	$prefix = $MOD['htm_item_prefix'];
+	$urlid = $MOD['show_html'] ? $MOD['htm_item_urlid'] : $MOD['php_item_urlid'];
+	$ext = $MOD['show_html'] ? 'htm' : 'php';
+	$alloc = dalloc($itemid);
+	$url = $urls[$ext]['item'][$urlid];
+	$url = $page ? $url['page'] : $url['index'];
+	if(strpos($url, 'cat') !== false && $catid) {
+		$cate = get_cat($catid);
+		$catdir = $cate['catdir'];
+		$catname = $cate['catname'];
+	}
+    eval("\$itemurl = \"$url\";");
+	if(substr($itemurl, 0, 1) == '/') $itemurl = substr($itemurl, 1);
+	*/
+	$itemurl = 'show.php?itemid='.$item['itemid'];
+	return $itemurl;
 }
 
 function set_cookie($var, $value = '', $time = 0) {
@@ -603,32 +639,137 @@ function get_cat($catid) {
 	return $catid ? $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=$catid") : array();
 }
 
-function cat_pos($CAT, $str = ' &raquo; ', $target = '') {
+// 导航 map
+function cat_pos($CAT, $str = ' &raquo; ', $target = '', $isl = false) {
 	global $MODULE, $db;
 	if(!$CAT) return '';
-	$CAT = $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=$CAT");
-	$arrparentids = $CAT['arrparentid'].','.$CAT['catid'];
-	$arrparentid = explode(',', $arrparentids);
-	$pos = '';
+	$CAT = $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=".$CAT['catid']);
+	//$arrparentids = $CAT['arrparentid'].','.$CAT['catid'];
+	//$arrparentid = explode(',', $arrparentids);
+	if($CAT['parentid'] == '0') return $CAT['catname'];
 	$target = $target ? ' target="_blank"' : '';	
-	$CATEGORY = array();
-	$result = $db->query("SELECT catid,moduleid,catname,linkurl FROM {$db->pre}category WHERE catid IN ($arrparentids)");
-	while($r = $db->fetch_array($result)) {
-		$CATEGORY[$r['catid']] = $r;
+	$arrparentids = get_catparentids($CAT['catid'],$CAT['moduleid']);
+	$showcatInfo = ($isl) ? '<a href="'.$MODULE[$CAT['moduleid']]['linkurl'].$CAT['linkurl'].'"'.$target.'>' : $CAT['catname'];
+	if($arrparentids == ''){
+		//return '<a href="'.$MODULE[$CAT['moduleid']]['linkurl'].$CAT['linkurl'].'"'.$target.'>'.$CAT['catname'].'</a> &raquo; '.$showcatInfo;
+		return $showcatInfo;
+	}else{
+		$arrparentids = substr($arrparentids,1);
+		$arrparentid = explode(',', $arrparentids);
+		$pos = '';
+		$CATEGORY = array();
+		$result = $db->query("SELECT catid,moduleid,catname,linkurl FROM {$db->pre}category WHERE catid IN ($arrparentids)");
+		while($r = $db->fetch_array($result)) {
+			$CATEGORY[$r['catid']] = $r;
+		}
+		foreach($arrparentid as $catid) {
+			if(!$catid || !isset($CATEGORY[$catid])) continue;
+			$pos .= '<a href="'.$MODULE[$CATEGORY[$catid]['moduleid']]['linkurl'].$CATEGORY[$catid]['linkurl'].'"'.$target.'>'.$CATEGORY[$catid]['catname'].'</a>'.$str;
+		}
+		$_len = strlen($str);
+		if($str && substr($pos, -$_len, $_len) === $str) $pos = substr($pos, 0, strlen($pos)-$_len);
+		return $pos.' &raquo; '.$showcatInfo;
 	}
-	foreach($arrparentid as $catid) {
-		if(!$catid || !isset($CATEGORY[$catid])) continue;
-		$pos .= '<a href="'.$MODULE[$CATEGORY[$catid]['moduleid']]['linkurl'].$CATEGORY[$catid]['linkurl'].'"'.$target.'>'.$CATEGORY[$catid]['catname'].'</a>'.$str;
-	}
-	$_len = strlen($str);
-	if($str && substr($pos, -$_len, $_len) === $str) $pos = substr($pos, 0, strlen($pos)-$_len);
-	return $pos;
 }
 
 function cat_url($catid) {
 	global $MODULE, $db;
 	$r = $db->get_one("SELECT moduleid,linkurl FROM {$db->pre}category WHERE catid=$catid");
 	return $r ? $MODULE[$r['moduleid']]['linkurl'].$r['linkurl'] : '';
+}
+
+// 清除链接
+function clear_link($content) {
+	$content = preg_replace("/<a[^>]*>/i", "", $content);
+	return preg_replace("/<\/a>/i", "", $content); 
+}
+
+// 下载远程图片
+function save_remote($content, $ext = 'jpg|jpeg|gif|png|bmp', $self = 0) {
+	global $RE_TIME, $MODULE, $moduleid, $_userid;
+	if(!$_userid || !$content) return $content;
+	if(!preg_match_all("/src=([\"|']?)([^ \"'>]+\.($ext))\\1/i", $content, $matches)) return $content;
+	$urls = $oldpath = $newpath = array();
+	foreach($matches[2] as $k=>$url) {
+		if(in_array($url, $urls)) continue;
+		$urls[$url] = $url;		
+		if(strpos($url, '://') === false) continue;
+		if(!$self) {
+			if(RE_DOMAIN) {
+				if(strpos($url, '.'.RE_DOMAIN.'/') !== false) continue;
+			} else {
+				if(strpos($url, RE_PATH) !== false) continue;
+			}
+		}
+		$filedir = 'file/upload/'.timetodate($RE_TIME, 'Y/m/d').'/';
+		$filepath = RE_PATH.$filedir;
+		$fileroot = RE_ROOT.'/'.$filedir;
+		$file_ext = file_ext($url);
+		$filename = timetodate($RE_TIME, 'H-i-s').'-'.rand(10, 99).'-'.$_userid.'.'.$file_ext;
+		$newfile = $fileroot.$filename;
+		if(file_copy($url, $newfile)) {
+			if(is_image($newfile)) {
+				if(!@getimagesize($newfile)) {
+					file_del($newfile);
+					continue;
+				}
+			}
+			$oldpath[] = $url;
+			$newurl = linkurl($filepath.$filename, 1);
+			$newpath[] = $newurl;
+		}
+	}
+	unset($matches);
+	return str_replace($oldpath, $newpath, $content);
+}
+
+function is_image($file) {
+	return preg_match("/^(jpg|jpeg|gif|png|bmp)$/i", file_ext($file));
+}
+
+// 保存标题图片
+function save_thumb($content, $no, $width = 120, $height = 90) {
+	global $RE_TIME, $_userid;
+	if(!$_userid || !$content) return '';
+	$ext = 'jpg|jpeg|gif|png|bmp';
+	if(!preg_match_all("/src=([\"|']?)([^ \"'>]+\.($ext))\\1/i", $content, $matches)) return '';
+	$urls = $oldpath = $newpath = array();
+	foreach($matches[2] as $k=>$url) {
+		if($k == $no - 1) {
+			$filedir = 'file/upload/'.timetodate($RE_TIME, 'Y/m/d').'/';
+			$filepath = RE_PATH.$filedir;
+			$fileroot = RE_ROOT.'/'.$filedir;
+			$file_ext = file_ext($url);
+			$filename = timetodate($RE_TIME, 'H-i-s').'-'.rand(10, 99).'-'.$_userid.'.'.$file_ext;
+			$newfile = $fileroot.$filename;
+			if(file_copy($url, $newfile)) {
+				if(is_image($newfile)) {					
+					if(!@getimagesize($newfile)) {
+						file_del($newfile);
+						return '';
+					}
+					$image = new image($newfile);
+					$image->thumb($width, $height);
+				}
+				$newurl = linkurl($filepath.$filename, 1);
+				return $newurl;
+			}
+		}
+	}
+	unset($matches);
+	return '';
+}
+
+// safe check
+function _safe($string) {
+	if(is_array($string)) {
+		return array_map('_safe', $string);
+	} else {
+		if(strlen($string) < 20) return $string;
+		$match = array("/&#([a-z0-9]+)([;]*)/i", "/(j[\s\r\n\t]*a[\s\r\n\t]*v[\s\r\n\t]*a[\s\r\n\t]*s[\s\r\n\t]*c[\s\r\n\t]*r[\s\r\n\t]*i[\s\r\n\t]*p[\s\r\n\t]*t|jscript|js|vbscript|vbs|about|expression|script|frame|link|import)/i", "/on(mouse|exit|error|click|dblclick|key|load|unload|change|move|submit|reset|cut|copy|select|start|stop)/i");
+		$replace = array("", "<d>\\1</d>", "on\n\\1");
+		return preg_replace($match, $replace, $string);
+	}
 }
 
 // 获取分类
@@ -641,6 +782,21 @@ function get_maincat($catid, $moduleid) {
 		$cat[] = $r;
 	}
 	return $cat;
+}
+
+// 级别选择
+function level_select($name, $title = '', $level = 0, $extend = '') {
+	global $MOD;
+	$names = isset($MOD['level']) && $MOD['level'] ? $MOD['level'] : '';
+	$names = $names ? explode('|', trim($names)) : array();
+	$select = '<select name="'.$name.'" '.$extend.'>';
+	if($title) $select .= '<option value="0">'.$title.'</option>';
+	for($i = 1; $i < 10; $i++) {
+		$n = isset($names[$i-1]) ? ' '.$names[$i-1] : '';
+		$select .= '<option value="'.$i.'"'.($i == $level ? ' selected' : '').'>'.$i.' 级'.$n.'</option>';
+	}
+	$select .= '</select>';
+	return $select;
 }
 
 //分类选择框
@@ -664,12 +820,24 @@ function get_catchilds($catid, $moduleid = 1, $retype = '0'){
 	$_parents = '';
 	$result = $db->query("SELECT catid FROM {$db->pre}category WHERE moduleid=$moduleid AND parentid=$catid");
 	while($c = $db->fetch_array($result)) {
-		$parents[$c['catid']] = get_catchilds($c['catid'], $moduleid);
+		$parents[$c['catid']] = get_catchilds($c['catid'], $moduleid, $retype);
 		$_parents .= ','.$c['catid'];//.get_catchilds($c['catid'], $moduleid,$retype);
 		//array_push($parents, get_catchilds($c['catid'], $moduleid));
 		//$parents = array_merge($parents, get_catchilds($c['catid'], $moduleid));
 	}
 	return ($retype == '0') ? $parents : $_parents;
+}
+
+//获取所有父类id
+function get_catparentids($catid, $moduleid = 1){
+	global $db;
+	$parents = '';
+	$result = $db->get_one("SELECT parentid FROM {$db->pre}category WHERE moduleid=$moduleid AND catid=$catid");
+	if($result['parentid'] != '0'){
+		$parents .= ','.$result['parentid'];
+		$parents .= get_catparentids($result['parentid'], $moduleid);
+	}
+	return $parents;
 }
 
 //获取下拉选项

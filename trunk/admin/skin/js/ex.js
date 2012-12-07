@@ -227,8 +227,21 @@ function checkAll(name,v){
 	}
 }
 
-function _url(url){
-	window.location = url;
+function _url(url,p){
+	if(typeof p == 'undefined'){
+		window.location = url;
+	}else{
+		window.parent.f_addTab(p.n, p.t, url);
+	}
 }
 
+function tpl_edit(f,d,i){
+	var v = document.getElementById('ruiec_template_'+i).firstChild.value;
+	var n = v ? v : f;
+	window.parent.f_addTab('sys_template', '模板风格', '?file=template&action=edit&fileid='+n+'&dir='+d);
+}
+	
+function tpl_add(f,d){
+	window.parent.f_addTab('sys_template', '模板风格', '?file=template&action=add&type='+f+'&dir='+d);
+}
 

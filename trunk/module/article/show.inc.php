@@ -1,7 +1,7 @@
 <?php 
 defined('IN_RUIEC') or exit('Access Denied');
 require RE_ROOT.'/module/'.$module.'/common.inc.php';
-$itemid or dheader($MOD['linkurl']);
+$itemid or _header($MOD['linkurl']);
 $item = $db->get_one("SELECT * FROM {$table} WHERE itemid=$itemid");
 if($item && $item['status'] > 2) {
 	if($item['islink']) dheader($item['linkurl']);
@@ -11,9 +11,13 @@ if($item && $item['status'] > 2) {
 	}
 	extract($item);
 } else {
-	$head_title = lang('message->item_not_exists');
+	$head_title = ('抱歉，您要访问的信息不存在或被删除');
 	@header("HTTP/1.1 404 Not Found");
-	exit(include template('show-notfound', 'message'));
+	exit(include template('notfound', 'message'));
+}
+if(!isset($_COOKIE['read_news_'.$item['itemid']])) {
+	$db->query("UPDATE {$table} SET hits=hits+1 WHERE itemid=$itemid");
+	setcookie('read_news_'.$item['itemid'],time());
 }
 $CAT = get_cat($catid);
 $content_table = content_table($moduleid, $itemid, $MOD['split'], $table_data);

@@ -17,37 +17,39 @@ class article {
 		$this->table_data = $table_data;
 		$this->split = $MOD['split'];
 		$this->db = &$db;
-		$this->fields = array('catid','level','title','introduce','thumb','tag','author','copyfrom','fromurl','status','hits','addtime','edittime','ip','template','islink','linkurl','filename','note');
+		$this->fields = array('catid','level','title','introduce','thumb','tag','author','copyfrom','fromurl','status','hits','addtime','edittime','ip','template','islink','linkurl','filename');
     }
 	
-	// ¼ì²â.
+	// æ£€æµ‹.å¿…å¡«
 	function pass($post) {
 		if(!is_array($post)) return false;
-		if(!$post['catid']) return $this->_('Ñ¡Ôñ·ÖÀà!');
-		if(strlen($post['title']) < 3) return $this->_('±êÌâÌ«¶Ì!');
+		if(!$post['catid']) return $this->_('é€‰æ‹©åˆ†ç±»!');
+		if(strlen($post['title']) < 3) return $this->_('æ ‡é¢˜å¤ªçŸ­!');
 		if(isset($post['islink'])) {
-			if(!$post['linkurl']) return $this->_('ÍâÁ´²»ÄÜÎª¿Õ!');
+			if(!$post['linkurl']) return $this->_('å¤–é“¾ä¸èƒ½ä¸ºç©º!');
 		} else {
-			if(!$post['content']) return $this->_('ÄÚÈİ²»ÄÜÎª¿Õ!');
+			if(!$post['content']) return $this->_('å†…å®¹ä¸èƒ½ä¸ºç©º!');
 		}
 		return true;
 	}
 	
-	// ±£´æÇ°¼ì²â...[ÉèÖÃÄ¬ÈÏ.]
+	// ä¿å­˜å‰æ£€æµ‹...[è®¾ç½®é»˜è®¤.]
 	function set($post) {
-		/*
 		global $MOD, $RE_TIME, $RE_IP, $_username, $_userid;
 		$post['islink'] = isset($post['islink']) ? 1 : 0;
 		$post['addtime'] = (isset($post['addtime']) && $post['addtime']) ? strtotime($post['addtime']) : $RE_TIME;
 		$post['edittime'] = $RE_TIME;
 		$post['title'] = trim($post['title']);
 		$post['content'] = stripslashes($post['content']);
-		$post['fee'] = dround($post['fee']);
+		//$post['fee'] = dround($post['fee']);
+		// æ¸…é™¤é“¾æ¥
 		if($post['content'] && isset($post['clear_link']) && $post['clear_link']) $post['content'] = clear_link($post['content']);
+		// ä¿å­˜è¿œç¨‹å›¾ç‰‡
 		if($post['content'] && isset($post['save_remotepic']) && $post['save_remotepic']) $post['content'] = save_remote($post['content']);
-		if($post['content'] && $post['thumb_no'] && !$post['thumb']) $post['thumb'] = save_thumb($post['content'], $post['thumb_no'], $MOD['thumb_wiREh'], $MOD['thumb_height']);
-		if(strpos($post['content'], 'pagebreak') !== false) $post['content'] = str_replace(array('[pagebreak]</p>', '<p>[pagebreak]', '[pagebreak]</div>', '<div>[pagebreak]'), array('</p>[pagebreak]', '[pagebreak]<p>', '</div>[pagebreak]', '[pagebreak]<div>'), $post['content']);
-		if($post['content'] && !$post['introduce'] && $post['introduce_length']) $post['introduce'] = addslashes(get_intro($post['content'], $post['introduce_length']));
+		//if($post['content'] && $post['thumb_no'] && !$post['thumb']) $post['thumb'] = save_thumb($post['content'], $post['thumb_no'], $MOD['thumb_width'], $MOD['thumb_height']);
+		//if(strpos($post['content'], 'pagebreak') !== false) $post['content'] = str_replace(array('[pagebreak]</p>', '<p>[pagebreak]', '[pagebreak]</div>', '<div>[pagebreak]'), array('</p>[pagebreak]', '[pagebreak]<p>', '</div>[pagebreak]', '[pagebreak]<div>'), $post['content']);
+		// ç®€ä»‹
+		if($post['content'] && !$post['introduce'] && $post['introduce_length'] && $post['introduce_length'] != '') $post['introduce'] = addslashes(get_intro($post['content'], $post['introduce_length']));
 		if($this->itemid) {
 			$post['editor'] = $_username;
 			$new = $post['content'];
@@ -55,7 +57,7 @@ class article {
 			$r = $this->get_one();
 			$old = $r['content'];
 			if($r['thumb']) $old .= '<img src="'.$r['thumb'].'">';
-			delete_diff($new, $old);
+			//delete_diff($new, $old);
 		} else {
 			$post['username'] = $post['editor'] = $_username;
 			$post['ip'] = $RE_IP;
@@ -64,21 +66,20 @@ class article {
 			$content = $post['content'];
 			unset($post['content']);
 			$post = dhtmlspecialchars($post);
-			$post['content'] = dsafe($content);
+			$post['content'] = _safe($content);
 		}
-		*/
-		$post['content'] = stripslashes($post['content']);
-		$post['content'] = addslashes($post['content']);
+		//$post['content'] = stripslashes($post['content']);
+		//$post['content'] = addslashes($post['content']);
 		return $post;
 	}
 
-	// »ñÈ¡Î¨Ò»
+	// è·å–å”¯ä¸€
 	function get_one() {
 		$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
         return $this->db->get_one("SELECT * FROM {$this->table} a,{$content_table} c WHERE a.itemid=c.itemid and a.itemid=$this->itemid");
 	}
 
-	// »ñÈ¡ÁĞ±í
+	// è·å–åˆ—è¡¨
 	function get_list($condition = 'status=3', $order = 'addtime DESC', $cache = '') {
 		global $MOD, $pages, $page, $pagesize, $offset, $items;
 		/*
@@ -97,7 +98,7 @@ class article {
 			$catids[$r['catid']] = $r['catid'];
 			$lists[] = $r;
 		}
-		//·ÖÀà
+		//åˆ†ç±»
 		if($catids) {
 			$result = $this->db->query("SELECT catid,catname,linkurl FROM {$this->db->pre}category WHERE catid IN (".implode(',', $catids).")");
 			while($r = $this->db->fetch_array($result)) {
@@ -105,14 +106,15 @@ class article {
 			}
 			if($CATS) {
 				foreach($lists as $k=>$v) {
-					$lists[$k]['catname'] = $v['catid'] ? $CATS[$v['catid']]['catname'] : '';
-					$lists[$k]['caturl'] = $v['catid'] ? $MOD['linkurl'].$CATS[$v['catid']]['linkurl'] : '';
+					$lists[$k]['catname'] = ($v['catid'] && isset($CATS[$v['catid']])) ? $CATS[$v['catid']]['catname'] : '<span style="color:red;">è¯¥åˆ†ç±»ä¸å­˜åœ¨!</span>';
+					$lists[$k]['caturl'] = ($v['catid'] && isset($CATS[$v['catid']])) ? $MOD['linkurl'].$CATS[$v['catid']]['linkurl'] : '';
 				}
 			}
 		}
 		return $lists;
 	}
 
+	// æ·»åŠ 
 	function add($post) {
 		global $MOD;
 		$post = $this->set($post);
@@ -128,15 +130,17 @@ class article {
 		$this->db->query("INSERT INTO {$content_table} (itemid,content) VALUES ('$this->itemid', '$post[content]')");
 		$this->update($this->itemid, $post, $post['content']);
 		if($post['status'] == 3) $this->tohtml($this->itemid, $post['catid']);
+		/*
 		if($post['status'] == 3 && $post['username'] && $MOD['credit_add']) {
 			credit_add($post['username'], $MOD['credit_add']);
 			credit_record($post['username'], $MOD['credit_add'], 'system', lang('my->credit_record_add', array($MOD['name'])), 'ID:'.$this->itemid);
 		}
-		clear_upload($post['content'].$post['thumb'], $this->itemid);
+		*/
+		//clear_upload($post['content'].$post['thumb'], $this->itemid);
 		return $this->itemid;
 	}
 
-	//±à¼­
+	//ç¼–è¾‘
 	function edit($post) {
 		//$this->delete($this->itemid, false);
 		$post = $this->set($post);
@@ -148,7 +152,7 @@ class article {
 	    $this->db->query("UPDATE {$this->table} SET $sql WHERE itemid=$this->itemid");
 		$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
 	    $this->db->query("UPDATE {$content_table} SET content='$post[content]' WHERE itemid=$this->itemid");
-		//$this->update($this->itemid, $post, $post['content']);
+		$this->update($this->itemid, $post, $post['content']);
 		//clear_upload($post['content'].$post['thumb'], $this->itemid);
 		//if($post['status'] == 3) $this->tohtml($this->itemid, $post['catid']);
 		return true;
@@ -158,7 +162,8 @@ class article {
 		global $module, $MOD;
 		if($MOD['show_html'] && $itemid) tohtml('show', $module, "itemid=$itemid");
 	}
-
+	
+	// æ›´æ–°
 	function update($itemid, $item = array(), $content = '') {
 		$item or $item = $this->db->get_one("SELECT * FROM {$this->table} WHERE itemid=$itemid");
 		$keyword = $item['title'].','.($item['tag'] ? str_replace(' ', ',', trim($item['tag'])).',' : '').strip_tags(cat_pos(get_cat($item['catid']), ','));
@@ -169,17 +174,18 @@ class article {
 		$this->db->query("UPDATE {$this->table} SET $sql WHERE itemid=$itemid");
 	}
 
-	// »ØÊÕÕ¾
+	// å›æ”¶ç«™
 	function recycle($itemid) {
 		if(is_array($itemid)) {
 			foreach($itemid as $v) { $this->recycle($v); }
 		} else {
 			$this->db->query("UPDATE {$this->table} SET status=0 WHERE itemid=$itemid");
-			//$this->delete($itemid, false);	//É¾³ıÒÑÉú³ÉµÄÎÄ¼ş.
+			$this->delete($itemid, false);	//åˆ é™¤å·²ç”Ÿæˆçš„æ–‡ä»¶.
 			return true;
 		}		
 	}
 
+	// å®¡æ ¸é€šè¿‡
 	function restore($itemid) {
 		global $module, $MOD;
 		if(is_array($itemid)) {
@@ -188,10 +194,10 @@ class article {
 			$this->db->query("UPDATE {$this->table} SET status=3 WHERE itemid=$itemid");
 			if($MOD['show_html']) tohtml('show', $module, "itemid=$itemid");
 			return true;
-		}		
+		}
 	}
 
-	// É¾³ı
+	// åˆ é™¤
 	function delete($itemid, $all = true) {
 		global $MOD;
 		if(is_array($itemid)) {
@@ -201,7 +207,7 @@ class article {
 		} else {
 			$this->itemid = $itemid;
 			$r = $this->get_one();
-			if($MOD['show_html'] && !$r['islink']) {	//Éú³ÉHTML
+			if($MOD['show_html'] && !$r['islink']) {	//ç”ŸæˆHTML
 				$_file = RE_ROOT.'/'.$MOD['moduledir'].'/'.$r['linkurl'];
 				if(is_file($_file)) unlink($_file);
 				$i = 1;
@@ -216,59 +222,33 @@ class article {
 				}
 			}
 			if($all) {
-				$userid = get_user($r['username']);
+				/* $userid = get_user($r['username']);
 				if($r['thumb']) delete_upload($r['thumb'], $userid);
-				if($r['content']) delete_local($r['content'], $userid);
+				if($r['content']) delete_local($r['content'], $userid); */
 				$this->db->query("DELETE FROM {$this->table} WHERE itemid=$itemid");
 				$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
 				$this->db->query("DELETE FROM {$content_table} WHERE itemid=$itemid");
-				if($r['username'] && $MOD['credit_del']) {
+				/* if($r['username'] && $MOD['credit_del']) {
 					credit_add($r['username'], -$MOD['credit_del']);
 					credit_record($r['username'], -$MOD['credit_del'], 'system', lang('my->credit_record_del', array($MOD['name'])), 'ID:'.$this->itemid);
-				}
+				} */
 			}
 		}
 	}
 
-	function check($itemid) {
-		global $_username, $RE_TIME, $MOD;;
-		if(is_array($itemid)) {
-			foreach($itemid as $v) { $this->check($v); }
-		} else {
-			$this->itemid = $itemid;
-			$item = $this->get_one();
-			if($MOD['credit_add'] && $item['username'] && $item['hits'] < 1) {
-				credit_add($item['username'], $MOD['credit_add']);
-				credit_record($item['username'], $MOD['credit_add'], 'system', lang('my->credit_record_add', array($MOD['name'])), 'ID:'.$this->itemid);
-			}
-			$this->db->query("UPDATE {$this->table} SET status=3,hits=hits+1,editor='$_username',edittime=$RE_TIME WHERE itemid=$itemid");
-			$this->tohtml($itemid);
-			return true;
-		}
-	}
-
-	function reject($itemid) {
-		global $_username, $RE_TIME;
-		if(is_array($itemid)) {
-			foreach($itemid as $v) { $this->reject($v); }
-		} else {
-			$this->db->query("UPDATE {$this->table} SET status=1,editor='$_username' WHERE itemid=$itemid");
-			return true;
-		}
-	}
-
-	function clear($condition = 'status=0') {		
-		$result = $this->db->query("SELECT itemid FROM {$this->table} WHERE $condition ");
-		while($r = $this->db->fetch_array($result)) {
-			$this->delete($r['itemid']);
-		}
-	}
-
+	// æ›´æ–°çº§åˆ«
 	function level($itemid, $level) {
 		$itemids = is_array($itemid) ? implode(',', $itemid) : $itemid;
 		$this->db->query("UPDATE {$this->table} SET level=$level WHERE itemid IN ($itemids)");
 	}
-
+	
+	// æ›´æ–°çŠ¶æ€
+	function status($itemid, $status) {
+		$itemids = is_array($itemid) ? implode(',', $itemid) : $itemid;
+		$this->db->query("UPDATE {$this->table} SET status=$status WHERE itemid IN ($itemids)");
+	}
+	
+	// å‡ºé”™.
 	function _($e) {
 		$this->errmsg = $e;
 		return false;

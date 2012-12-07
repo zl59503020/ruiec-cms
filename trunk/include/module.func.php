@@ -104,19 +104,19 @@ function secondstodate($seconds) {
 
 function get_intro($content, $length = 0) {
 	if($length) {
-		$intro = trim(RErim(strip_tags($content)));
+		$intro = trim(strip_tags($content));
 		$intro = preg_replace("/&([a-z]{1,});/", '', $intro);
-		return dsubstr($intro, $length);
+		return _showtext($intro, $length);
 	} else {
 		return '';
 	}
-	return $length ? dsubstr(preg_replace("/&([a-z]{1,});/", '', RErim(strip_tags($content))), $length) : '';
+	return $length ? _substr(preg_replace("/&([a-z]{1,});/", '', trim(strip_tags($content))), $length) : '';
 }
 
 function get_description($content, $length) {
 	if($length) {
 		$content = str_replace(array(' ', '[pagebreak]'), array('', ''), $content);
-		return nl2br(dsubstr(trim(strip_tags($content)), $length, '...'));
+		return nl2br(_substr(trim(strip_tags($content)), $length, '...'));
 	} else {
 		return '';
 	}

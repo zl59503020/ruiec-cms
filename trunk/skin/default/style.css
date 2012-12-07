@@ -144,6 +144,7 @@ td.submint{ padding:10px;}
 .lf_nav dl dd h4 a:hover{ color:#666;}
 .lf_nav dl .openz,
 .lf_nav dl dt.on{ background-color:#f1f1f1; background-position:14px -38px; }
+.lf_nav dl dt.on span{ color:red; }
 .lf_nav dl dt.launched{ background-position:14px -38px; }
 .lf_nav dl dt.launchedshow{ background-position:13px 18px; }
 .lf_nav dl .dthover a,

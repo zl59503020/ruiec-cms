@@ -94,5 +94,6 @@ $pagesize = isset($RE['pagesize']) ? $RE['pagesize'] : 20;
 if($catid) $CAT = get_cat($catid);
 $action = (isset($action)) ? trim($action) : '';
 $_username = $_company = $_passport = 'Guest';
+$_userid = 1;
 $_groupid = 3;
 ?>
