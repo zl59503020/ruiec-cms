@@ -16,7 +16,7 @@
 
 <div class="ri_main">
 <h3 class="title">
-<div class="position" id="ny_navx">当前位置：<a href="<?php echo $MODULE['1']['linkurl'];?>">首页</a> &raquo; <a href="<?php echo $MOD['linkurl'];?>"><?php echo $MOD['name'];?></a> &raquo; <?php echo $title;?></div>
+<div class="position" id="ny_navx">当前位置：<a href="<?php echo $MODULE['1']['linkurl'];?>">首页</a> &raquo; <a href="<?php echo $MOD['linkurl'];?>"><?php echo $MOD['name'];?></a> &raquo; <?php echo cat_pos($CAT, ' &raquo; ', '', true);?> &raquo; <?php echo $title;?></div>
 <span><?php echo $CAT['catname'];?></span>
 </h3>
 <div class="clr"></div>

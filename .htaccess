@@ -1,0 +1,6 @@
+# Ruiec CMS Rewrite Rules
+ErrorDocument 404 /404.php
+RewriteEngine On
+RewriteBase /
+RewriteRule ^(.*)\.(asp|aspx|asa|asax|dll|jsp|cgi|fcgi|pl)(.*)$ /404.php
+RewriteRule ^(.*)/file/(.*)\.php(.*)$ /404.php

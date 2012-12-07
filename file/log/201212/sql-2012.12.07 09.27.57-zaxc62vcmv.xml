@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-07 09:27:57</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/news/list.php</file>
+	<querystring>catid=7</querystring>
+	<message>		<query>SELECT catid,moduleid,catname,linkurl FROM ruiec_category WHERE catid IN ()</query>
+		<errno>0</errno>
+		<error>You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

@@ -22,7 +22,7 @@ include tpl('header');
 					<tbody>
 						<tr>
 							<th>站点名称1：</th>
-							<td><input type="text" id="sitename" name="setting[sitename]" value="<?php echo $sitename;?>" class="txtInput normal required" /></td>
+							<td><input type="text" id="sitename" name="setting[sitename]" value="" class="txtInput normal required" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -35,7 +35,7 @@ include tpl('header');
 					<tbody>
 						<tr>
 							<th>站点名称2：</th>
-							<td><input type="text" id="sitename" name="setting[sitename]" value="<?php echo $sitename;?>" class="txtInput normal required" /></td>
+							<td><input type="text" id="sitename" name="setting[sitename]" value="" class="txtInput normal required" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -48,7 +48,7 @@ include tpl('header');
 					<tbody>
 						<tr>
 							<th>站点名称3：</th>
-							<td><input type="text" id="sitename" name="setting[sitename]" value="<?php echo $sitename;?>" class="txtInput normal required" /></td>
+							<td><input type="text" id="sitename" name="setting[sitename]" value="" class="txtInput normal required" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -61,7 +61,7 @@ include tpl('header');
 					<tbody>
 						<tr>
 							<th>站点名称4：</th>
-							<td><input type="text" id="sitename" name="setting[sitename]" value="<?php echo $sitename;?>" class="txtInput normal required" /></td>
+							<td><input type="text" id="sitename" name="setting[sitename]" value="" class="txtInput normal required" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -74,7 +74,7 @@ include tpl('header');
 					<tbody>
 						<tr>
 							<th>站点名称5：</th>
-							<td><input type="text" id="sitename" name="setting[sitename]" value="<?php echo $sitename;?>" class="txtInput normal required" /></td>
+							<td><input type="text" id="sitename" name="setting[sitename]" value="" class="txtInput normal required" /></td>
 						</tr>
 					</tbody>
 				</table>

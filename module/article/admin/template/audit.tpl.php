@@ -25,11 +25,10 @@ include tpl('header');
 			success : function(responseText, statusText, xhr, $form){
 				art.dialog.list['lock'].close();
 				if(statusText == 'success'){
-					var opt = ($('#action').val() == 'level') ? '改变' : '删除';
+					var opt = $('#action').val() == 'restore' ? '还原' : '删除';
 					if(responseText == '0'){
 						parent.jsprint(opt+"成功!", "", "Success");
-						//window.location = '?file=<?php echo $file; ?>&moduleid=<?php echo $moduleid; ?>';
-						window.location.reload();
+						window.location = '?moduleid=<?php echo $moduleid; ?>';
 					}else{
 						parent.jsprint(opt+"失败!", "", "Error");
 						art.dialog({
@@ -49,8 +48,8 @@ include tpl('header');
     });
 
 	function _delete(id){
-		art.dialog.confirm('确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作可恢复,可在回收站内找回!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=delete&moduleid=<?php echo $moduleid; ?>&recycle=true&itemid='+id;
+		art.dialog.confirm('确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
+			var url = '?file=<?php echo $file;?>&action=delete&moduleid=<?php echo $moduleid; ?>&itemid='+id;
 			$.ajax({
 				url:url,
 				success:function(responseText){
@@ -74,49 +73,113 @@ include tpl('header');
 	}
 	
 	function _deleteSel(){
-		art.dialog.confirm('确定要删除选中内容吗?<br /><span style="font-size:14px;color:red;">此操作可恢复,可在回收站内找回!!!</span>', function(){
+		art.dialog.confirm('确定要删除选中内容吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
 			$('#action').val('delete');
 			$('#myform').submit();
 		});
 	}
 	
-	function _chanlevel(){
-		art.dialog.confirm('确定要改变选中的级别吗?', function(){
-			$('#action').val('level');
+	function _reduction(id){
+		art.dialog.confirm('确定要把选中内容还原吗?', function(){
+			var url = '?moduleid=<?php echo $moduleid; ?>&action=restore&itemid='+id;
+			$.ajax({
+				url:url,
+				success:function(responseText){
+					if(responseText == '0'){
+						parent.jsprint("还原成功!", "", "Success");
+						window.location.reload();
+					}else{
+						parent.jsprint("还原失败!", "", "Error");
+						art.dialog({
+							title: '还原失败',
+							lock: true,
+							background: '#fff',
+							opacity: 0.5,
+							content: responseText,
+							ok: true
+						});
+					}
+				}
+			});
+		});
+	}
+	
+	function _reSel(){
+		art.dialog.confirm('确定要把选中内容还原吗?', function(){
+			$('#action').val('restore');
 			$('#myform').submit();
 		});
 	}
 	
-	function search_news(){
-		if($('#txtKeywords').val() == ''){
-			alert('请输入搜索关键词!');
-			$('#txtKeywords').focus();
-		}else{
-			$('#ls_content').append('<tr><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td></tr>');
-		}
+	function _audit_yes(id){
+		art.dialog.confirm('确定要审核通过该内容吗?', function(){
+			var url = '?moduleid=<?php echo $moduleid; ?>&action=status&status=3&itemid='+id;
+			$.ajax({
+				url:url,
+				success:function(responseText){
+					if(responseText == '0'){
+						parent.jsprint("审核成功!", "", "Success");
+						window.location.reload();
+					}else{
+						parent.jsprint("审核失败!", "", "Error");
+						art.dialog({
+							title: '审核失败',
+							lock: true,
+							background: '#fff',
+							opacity: 0.5,
+							content: responseText,
+							ok: true
+						});
+					}
+				}
+			});
+		});
+	}
+	
+	function _audit_no(id){
+		art.dialog.confirm('确定要拒绝审核该内容吗?', function(){
+			var url = '?moduleid=<?php echo $moduleid; ?>&action=status&status=1&itemid='+id;
+			$.ajax({
+				url:url,
+				success:function(responseText){
+					if(responseText == '0'){
+						parent.jsprint("拒绝成功!", "", "Success");
+						window.location.reload();
+					}else{
+						parent.jsprint("拒绝失败!", "", "Error");
+						art.dialog({
+							title: '拒绝失败',
+							lock: true,
+							background: '#fff',
+							opacity: 0.5,
+							content: responseText,
+							ok: true
+						});
+					}
+				}
+			});
+		});
 	}
 
 </script>
 
-	<div class="navigation">首页 &gt; <?php echo $MOD['name']; ?>管理 &gt; <?php echo $MOD['name']; ?>列表</div>
+	<div class="navigation">首页 &gt; <?php echo $MOD['name']; ?>管理 &gt; 审核内容</div>
 	
 	<div class="tools_box">
 		<div class="tools_bar">
 			<div class="search_box">
 				<input type="text" id="txtKeywords" class="txtInput" />
-				<input type="button" value="搜 索" class="btnSearch" onclick="search_news()" />
+				<input type="button" value="搜 索" class="btnSearch" onclick="btnSearch_Click()" />
 			</div>
-			<a href="javascript:;" onclick="_url('?moduleid=<?php echo $moduleid; ?>&action=add',{n:'sys_addinfo',t:'添加<?php echo $MOD['name']; ?>'});" class="tools_btn"><span><b class="add">添加<?php echo $MOD['name']; ?></b></span></a>
-			<a href="javascript:;" onclick="_url('?moduleid=<?php echo $moduleid; ?>&action=recycle');" class="tools_btn"><span><b class="remove">回收站</b></span></a>
+			<a href="javascript:;" onclick="_url('?moduleid=<?php echo $moduleid; ?>');" class="tools_btn"><span><b class="add"><?php echo $MOD['name']; ?>列表</b></span></a>
 		</div>
 	</div>
 
-	<div class="tab_nav tab_nav_ex"><?php echo $MOD['name']; ?>列表</div>
+	<div class="tab_nav tab_nav_ex">审核<?php echo $MOD['name']; ?></div>
 	
 	<form action="" method="post" id="myform" name="myform" >
 	
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="msgtable">
-		  <tbody>
 			<tr>
 				<th width="5%">选择</th>
 				<th width="10%">分类</th>
@@ -126,8 +189,6 @@ include tpl('header');
 				<th width="10%">点击</th>
 				<th width="15%">操作</th>
 			</tr>
-		  </tbody>
-		  <tbody id="ls_content">
 <?php
 	foreach($lists as $k=>$v) {
 ?>
@@ -135,7 +196,7 @@ include tpl('header');
 				<td>
 					<input type="checkbox" name="itemid[]" value="<?php echo $v['itemid'];?>" />
 				</td>
-				<td align="left"><a href="<?php echo $v['caturl']; ?>" target="_blank"><?php echo $v['catname']; ?></a></td>
+				<td align="left"><?php if(isset($v['caturl'])) { ?><a href="<?php echo $v['caturl']; ?>" ><?php echo $v['catname']; ?></a><?php } else { echo '<span style="color:red;">所属分类不存在!</span>'; } ?></td>
 				<td><?php echo $v['level']; ?></td>
 				<td class="my_option_m">
 					<a href="<?php echo $v['linkurl']; ?>" title="<?php echo $v['alt'];?>" target="_blank"><?php echo $v['title'];?></a>
@@ -146,27 +207,28 @@ include tpl('header');
 				<td><?php echo $v['adddate'];?></td>
 				<td><?php echo $v['hits'];?></td>
 				<td class="my_option_m">
-					<a href="javascript:;" onclick="_url('?moduleid=<?php echo $moduleid; ?>&action=edit&itemid=<?php echo $v['itemid']; ?>',{n:'edit_article_<?php echo $v['itemid']; ?>',t:'编辑<?php echo $MOD['name'].' _ '.$v['title']; ?>'});" class="icon_edit" title="编辑"></a>
+					<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&action=edit&moduleid=<?php echo $moduleid; ?>&itemid=<?php echo $v['itemid']; ?>',{n:'sys_editinfo',t:'编辑<?php echo $MOD['name']; ?>'});" class="icon_edit" title="编辑"></a>
+					<a href="javascript:;" onclick="_audit_yes('<?php echo $v['itemid']; ?>')" class="icon_start" title="通过审核"></a>
+					<a href="javascript:;" onclick="_audit_no('<?php echo $v['itemid']; ?>')" class="icon_stop" title="拒绝审核"></a>
 					<a href="javascript:;" onclick="_delete('<?php echo $v['itemid']; ?>')" class="icon_delete" title="删除"></a>
 				</td>
 			</tr>
 <?php
 	}
 ?>
-		  </tbody>
 		</table>
 		<div class="line10"></div>
 		
 		<div class="foot_btn_box" style="text-align:left;">
 			<input type="hidden" name="file" value="<?php echo $file; ?>" />
 			<input type="hidden" id="action" name="action" value="" />
-			<input type="hidden" name="recycle" value="true" />
+			<input type="hidden" name="level" value="3" />
 			<input type="hidden" name="v_ruiec_sm" value="ruiec" />
 			<a href="javascript:void(0);" onclick="checkAll('itemid[]',true);" >全选</a>&nbsp;&nbsp;&nbsp;
 			<a href="javascript:void(0);" onclick="checkAll('itemid[]','!');" >反选</a>&nbsp;&nbsp;&nbsp;
 			<a href="javascript:void(0);" onclick="checkAll('itemid[]',false);" >全不选</a>&nbsp;&nbsp;&nbsp;
-			选中级别<?php echo level_select('level', '选择级别', 0, 'id="level" class="select" onchange="_chanlevel();"');?>
-			<input type="button" value="删除选中新闻" onclick="_deleteSel();" class="btnSearch" />
+			<input type="button" value="还原选中内容" onclick="_reSel();" class="btnSubmit" />
+			<input type="button" value="彻底删除选中内容" onclick="_deleteSel();" class="btnSearch" />
 		</div>
 	
 	</form>

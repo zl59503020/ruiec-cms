@@ -51,19 +51,12 @@ function tag($parameter, $expires = 0) {
 	(isset($cols) && $cols) or $cols = 1;
 	if($catid && $moduleid > 4) {
 		if(is_numeric($catid)) {
-			$CAT = $db->get_one("SELECT child,arrchildid,moduleid FROM {$db->pre}category WHERE catid=$catid");
-			$condition .= ($child && $CAT['child'] && $CAT['moduleid'] == $moduleid) ? " AND catid IN (".$CAT['arrchildid'].")" : " AND catid=$catid";
+			$chilids = get_catchilds($catid,$moduleid,'1');
+			$condition .= ($chilids == '') ? " AND catid=$catid" : " AND catid IN (".$catid.$chilids.")";
 		} else {
-			if($child) {
-				$catids = '';
-				$result = $db->query("SELECT arrchildid FROM {$db->pre}category WHERE catid IN ($catid)");
-				while($r = $db->fetch_array($result)) {
-					$catids .= ','.$r['arrchildid'];
-				}
-				if($catids) $catid = substr($catids, 1);
-			}
 			$condition .= " AND catid IN ($catid)";
 		}
+		
 	}
 	$table = isset($table) ? $prefix.$table : get_table($moduleid);
 	$offset or $offset = ($page-1)*$pagesize;

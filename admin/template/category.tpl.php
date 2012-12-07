@@ -101,7 +101,7 @@ include tpl('header');
 			</tr>
 <?php
 	function show_catinfo($childs,$dsplay='',$_i=0){
-		global $do,$file,$mid;
+		global $MODULE,$do,$file,$mid;
 		foreach($childs as $k=>$v) {
 			$_childs = $do->get_catchild($v['catid']);
 ?>
@@ -112,7 +112,7 @@ include tpl('header');
 				<td>
 					<input type="text" name="listorder[<?php echo $v['catid'];?>]" value="<?php echo $v['listorder'];?>" size="5" class="txtInput valid number" />
 				</td>
-				<td class="my_option_m"><span><?php echo $v['catid']; ?></span></td>
+				<td class="my_option_m"><a href="<?php echo $MODULE[$mid]['linkurl'].$v['linkurl']; ?>" target="_blank"><?php echo $v['catid']; ?></a></td>
 				<td align="left">
 <?php
 			switch($_i){

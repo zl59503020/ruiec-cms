@@ -4,7 +4,7 @@ require RE_ROOT.'/module/'.$module.'/common.inc.php';
 if(!$CAT || $CAT['moduleid'] != $moduleid) {
 	$head_title = '分类不存在';
 	@header("HTTP/1.1 404 Not Found");
-	exit(include template('list-notfound', 'message'));
+	exit(include template('notfound', 'message'));
 }
 if($MOD['list_html']) {
 	$html_file = listurl($CAT, $page);
@@ -22,7 +22,8 @@ if($MOD['cat_property'] && $CAT['property']) {
 unset($CAT['moduleid']);
 extract($CAT);
 //$maincat = get_maincat($parentid, $moduleid);
-$maincat = $childcat = get_maincat(0, $moduleid, 1);
+$maincat = get_maincat(0, $moduleid, 1);
+$childcat = get_maincat($catid, $moduleid, 1);
 
 $condition = 'status=3';
 $condition .= " AND catid=$catid";
