@@ -1,0 +1,1 @@
+<?php defined('IN_RUIEC') or exit('Access Denied'); return array ('baidu' => '百度蜘蛛','google' => 'Google蜘蛛','yahoo' => '雅虎蜘蛛','bing' => 'Bing蜘蛛','soso' => 'Soso蜘蛛','sogou' => '搜狗蜘蛛','other' => '其它蜘蛛',); ?>

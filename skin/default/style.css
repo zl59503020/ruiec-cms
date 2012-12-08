@@ -10,6 +10,7 @@ h1,h2,h3,h4,h5,h6{font-size:100%;}
 img{border:0;}
 button,input,select,textarea{font-size:100%;}
 ul,ol{ padding-left:40px;}
+ul,li{list-style:none;}
 html,body{ font:12px/1.8 'Microsoft YaHei',Tahoma,Verdana,'Simsun'; color:#666; background:#F4F4F4; -webkit-text-size-adjust:none;}
 a{ color:#343434; text-decoration:none;}
 a:hover{ color:#000; text-decoration:none;}
@@ -155,9 +156,11 @@ td.submint{ padding:10px;}
 .ri_main{ float:right; width:750px; overflow:hidden; background:#fff; }
 .ri_main h3.title{ height:45px; line-height:45px; position:relative; background:#F4F4F4; border-bottom:2px solid #CFD1D6; }
 .ri_main h3.title span{ position:absolute; left:0px; top:-1px; font-size:22px; padding:0px; color:#000; font-weight:normal;}
-.ri_main h3.title div.position{ float:right; font-weight:normal; position:relative; top:3px; right:15px; background:url(../home.gif) no-repeat left 13px; padding-left:24px; font-size:14px; }
+.ri_main h3.title div.position{ float:right; font-weight:normal; position:relative; top:3px; right:15px; background:url('./images/home.gif') no-repeat left 13px; padding-left:24px; font-size:14px; }
 .ri_main h3.title div.position a{ color:#666;}
 .ri_main h3.title div.position a.now_navx{ color:#13922B;}
+
+.np{padding: 20px 30px 20px 50px;line-height: 25px;}
 
 .met_hits{ padding:0px; height:35px; line-height:35px; margin-bottom:10px; border-bottom:1px solid #e5e5e5; text-align:left; position:relative; color:#666;}
 .met_hits a{ color:#666;}
@@ -170,6 +173,7 @@ td.submint{ padding:10px;}
 /*简介模块*/
 #showtext{ padding:30px; line-height:2;}
 /*文章模块*/
+/* 
 #newslist{ padding:30px;}
 #newslist li{ padding:6px 10px; background:url(../dt-1.gif) no-repeat left 17px; margin:5px 0px 15px; border-bottom:1px solid #e5e5e5;}
 #newslist li a{ font-size:16px; margin-right:5px;}
@@ -178,7 +182,7 @@ td.submint{ padding:10px;}
 #shownews{ padding:30px;}
 #shownews .editor{ line-height:3; padding:0px 10px; color:#444; font-size:14px;}
 #shownews h1{ font-size:26px; font-weight:normal; color:#000; text-align:center; padding:5px 0px; margin:10px 0px;}
-
+ */
 /*产品模块*/
 #productlist{ padding:20px;}
 #productlist li{ float:left; display:inline; text-align:center;}

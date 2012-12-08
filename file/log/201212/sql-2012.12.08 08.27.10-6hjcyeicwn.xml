@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-08 08:27:10</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/admin.php</file>
+	<querystring>file=404</querystring>
+	<message>		<query>SELECT * FROM ruiec_404 WHERE 1 ORDER BY id DESC</query>
+		<errno>0</errno>
+		<error>Unknown column 'id' in 'order clause'</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

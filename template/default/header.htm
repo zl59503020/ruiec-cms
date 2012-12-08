@@ -2,9 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset={RE_CHARSET}"/>
-<title>{$RE[sitename]}</title>
-<meta name="keywords" content="head_keywords"/>
-<meta name="description" content="head_description"/>
+<title>{if isset($seo_title)}{$seo_title}{else}{if isset($head_title)}{$head_title}{$RE[seo_delimiter]}{/if}{$RE[sitename]}{/if}</title>
+{if isset($head_keywords)}
+<meta name="keywords" content="{$head_keywords}"/>
+{/if}
+{if isset($head_description)}
+<meta name="description" content="{$head_description}"/>
+{/if}
 <meta name="generator" content="Ruiec CMS,www.ruiec.com"/>
 <link rel="shortcut icon" type="image/x-icon" href="{RE_PATH}favicon.ico"/>
 <link rel="bookmark" type="image/x-icon" href="{RE_PATH}favicon.ico"/>

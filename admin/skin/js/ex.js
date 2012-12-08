@@ -238,10 +238,10 @@ function _url(url,p){
 function tpl_edit(f,d,i){
 	var v = document.getElementById('ruiec_template_'+i).firstChild.value;
 	var n = v ? v : f;
-	window.parent.f_addTab('sys_template', '模板风格', '?file=template&action=edit&fileid='+n+'&dir='+d);
+	window.parent.f_addTab('sys_template_edit_'+d+i, '模板风格', '?file=template&action=edit&fileid='+n+'&dir='+d);
 }
 	
 function tpl_add(f,d){
-	window.parent.f_addTab('sys_template', '模板风格', '?file=template&action=add&type='+f+'&dir='+d);
+	window.parent.f_addTab('sys_template_add_'+d+f, '模板风格', '?file=template&action=add&type='+f+'&dir='+d);
 }
 

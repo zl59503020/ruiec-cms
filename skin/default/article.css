@@ -1,0 +1,15 @@
+/*
+	#资讯模块样式:article.css 
+	#Ruiec企业网站管理系统 
+	#Copyright (C) 深圳源中瑞科技有限公司 (http://www.ruiec.com/) All rights reserved.
+*/
+
+/*文章模块*/
+.newslist{ padding:30px;}
+.newslist li{ padding:6px 10px; background:url('./images/article/li-1.gif') no-repeat left 17px; margin:5px 0px 15px; border-bottom:1px solid #e5e5e5;}
+.newslist li a{ font-size:16px; margin-right:5px;}
+.newslist li span{ float:right; color:#aaa;}
+.newslist li p{ color:#aaa;}
+.shownews{ padding:30px;}
+.shownews .editor{ line-height:3; padding:0px 10px; color:#444; font-size:14px;}
+.shownews h1{ font-size:26px; font-weight:normal; color:#000; text-align:center; padding:5px 0px; margin:10px 0px;}

@@ -20,7 +20,7 @@ if(!isset($_COOKIE['read_news_'.$item['itemid']])) {
 	setcookie('read_news_'.$item['itemid'],time());
 }
 $CAT = get_cat($catid);
-$content_table = content_table($moduleid, $itemid, $MOD['split'], $table_data);
+$content_table = content_table($moduleid, $itemid, $table_data);
 $t = $db->get_one("SELECT content FROM {$content_table} WHERE itemid=$itemid");
 $content = $t['content'];
 
@@ -45,10 +45,12 @@ if(strpos($content, '[pagebreak]') !== false) {
 
 	if($total < $subtitles) $subtitles = $total;
 }
-if($MOD['keylink']) $content = keylink($content, $moduleid);
+//if($MOD['keylink']) $content = keylink($content, $moduleid);
 //include RE_ROOT.'/include/update.inc.php';
 $seo_file = 'show';
-//include RE_ROOT.'/include/seo.inc.php';
+
+include RE_ROOT.'/include/seo.inc.php';
+
 //if($subtitle) $seo_title = $subtitle.$seo_delimiter.$seo_title;
 $template = 'show';
 if($MOD['template_show']) $template = $MOD['template_show'];

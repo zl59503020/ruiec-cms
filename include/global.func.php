@@ -325,13 +325,9 @@ function convert($str, $from = 'utf-8', $to = 'gb2312') {
 }
 
 //获取表名[数据]
-function content_table($moduleid, $itemid, $split, $table_data = '') {
-	if($split) {
-		return split_table($moduleid, $itemid);
-	} else {
-		$table_data or $table_data = get_table($moduleid, 1);
-		return $table_data;
-	}
+function content_table($moduleid, $itemid, $table_data = '') {
+	$table_data or $table_data = get_table($moduleid, 1);
+	return $table_data;
 }
 
 function strip_nr($string, $js = false) {
@@ -909,11 +905,106 @@ function tpl_select($file = 'index', $module = '', $name = 'template', $title = 
 	return $select;
 }
 
+//选择URL
+function url_select($name, $ext = 'htm', $type = 'list', $urlid = 0, $extend = '') {
+	//include RE_ROOT."/api/url.inc.php";
+	$urls = array();
+	$urls['htm']['list'][0] = array('example'=>'(静态) disk/25.html','index'=>'{$catdir}/{$index}.{$file_ext}', 'page'=>'{$catdir}/{$prefix}{$page}.{$file_ext}');
+	$urls['htm']['list'][1] = array('example'=>'(静态) 10/25.html','index'=>'{$catid}/{$index}.{$file_ext}', 'page'=>'{$catid}/{$prefix}{$page}.{$file_ext}');
+	$urls['htm']['list'][2] = array('example'=>'(静态) 10_25.html','index'=>'{$prefix}{$catid}.{$file_ext}', 'page'=>'{$prefix}{$catid}_{$page}.{$file_ext}');
+	$urls['htm']['list'][3] = array('example'=>'(静态) 分类/1.html','index'=>'{$catname}/{$index}.{$file_ext}', 'page'=>'{$catname}/{$page}.{$file_ext}');
+	$urls['htm']['item'][0] = array('example'=>'(静态) 1/125.html','index'=>'{$alloc}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$alloc}/{$prefix}{$itemid}_{$page}.{$file_ext}');
+	$urls['htm']['item'][1] = array('example'=>'(静态) 200810/25/125.html','index'=>'{$year}{$month}/{$day}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$year}{$month}/{$day}/{$prefix}{$itemid}_{$page}.{$file_ext}');
+	$urls['htm']['item'][2] = array('example'=>'(静态) disk/1/125.html','index'=>'{$catdir}/{$alloc}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$catdir}/{$alloc}/{$prefix}{$itemid}_{$page}.{$file_ext}');
+	$urls['htm']['item'][3] = array('example'=>'(静态) 200810/标题_125.html','index'=>'{$year}{$month}/{$title}_{$itemid}.{$file_ext}', 'page'=>'{$year}{$month}/{$title}_{$itemid}_{$page}.{$file_ext}');
+	$urls['htm']['item'][4] = array('example'=>'(静态) disk/125.html','index'=>'{$catdir}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$catdir}/{$prefix}{$itemid}_{$page}.{$file_ext}');
+	$urls['php']['list'][0] = array('example'=>'(动态) list.php?catid=1&page=2','index'=>'list.php?catid={$catid}', 'page'=>'list.php?catid={$catid}&page={$page}');
+	$urls['php']['list'][1] = array('example'=>'(动态) list.php/catid-1-page-2/','index'=>'list.php/catid-{$catid}/', 'page'=>'list.php/catid-{$catid}-page-{$page}/');
+	$urls['php']['list'][2] = array('example'=>'(伪静态) list-htm-catid-1-page-2.html','index'=>'list-htm-catid-{$catid}.html', 'page'=>'list-htm-catid-{$catid}-page-{$page}.html');
+	$urls['php']['list'][3] = array('example'=>'(伪静态) list-1-2.html','index'=>'list-{$catid}.html', 'page'=>'list-{$catid}-{$page}.html');
+	$urls['php']['list'][4] = array('example'=>'(伪静态) list/1/','index'=>'list/{$catid}/', 'page'=>'list/{$catid}/{$page}/');
+	$urls['php']['list'][5] = array('example'=>'(伪静态) mulu-c1-2.html','index'=>'{$catdir}-c{$catid}-1.html', 'page'=>'{$catdir}-c{$catid}-{$page}.html');
+	$urls['php']['item'][0] = array('example'=>'(动态) show.php?itemid=1&page=2','index'=>'show.php?itemid={$itemid}', 'page'=>'show.php?itemid={$itemid}&page={$page}');
+	$urls['php']['item'][1] = array('example'=>'(动态) show.php/itemid-1-page-2/','index'=>'show.php/itemid-{$itemid}/', 'page'=>'show.php/itemid-{$itemid}-page-{$page}/');
+	$urls['php']['item'][2] = array('example'=>'(伪静态) show-htm-itmeid-1.html','index'=>'show-htm-itemid-{$itemid}.html', 'page'=>'show-htm-itemid-{$itemid}-page-{$page}.html');
+	$urls['php']['item'][3] = array('example'=>'(伪静态) show-1-2.html','index'=>'show-{$itemid}.html', 'page'=>'show-{$itemid}-{$page}.html');
+	$urls['php']['item'][4] = array('example'=>'(伪静态) show/1/','index'=>'show/{$itemid}/', 'page'=>'show/{$itemid}/{$page}/');
+
+	$select = '<select name="'.$name.'" '.$extend.'>';
+	$types = count($urls[$ext][$type]);
+	for($i = 0; $i < $types; $i++) {
+		$select .= ' <option value="'.$i.'"'.($i == $urlid ? ' selected' : '').'>示例 '.$urls[$ext][$type][$i]['example'].'</option>';
+	}
+	$select .= '</select>';
+	return $select;
+}
+
+function seo_title($title, $show = '') {
+	$SEO = array(
+		'modulename'		=>	'模块名称',
+		'page'				=>	'页码',
+		'sitename'			=>	'网站名称',
+		'sitetitle'			=>	'网站SEO标题',
+		'sitekeywords'		=>	'网站SEO关键词',
+		'sitedescription'	=>	'网站SEO描述',
+		'catname'			=>	'分类名称',
+		'cattitle'			=>	'分类SEO标题',
+		'catkeywords'		=>	'分类SEO关键词',
+		'catdescription'	=>	'分类SEO描述',
+		'showtitle'			=>	'内容标题',
+		'showintroduce'		=>	'内容简介',
+		'kw'				=>	'关键词',
+		'delimiter'			=>	'分隔符',
+	);
+	if(is_array($show)) {
+		foreach($show as $v) {
+			if(isset($SEO[$v])) echo '<a href="javascript:_into(\''.$title.'\', \'{'.$SEO[$v].'}\');" title="{'.$SEO[$v].'}">{'.$SEO[$v].'}</a>&nbsp;&nbsp;';
+		}
+	} else {
+		foreach($SEO as $k=>$v) {
+			$title = str_replace($v, '$seo_'.$k, $title);
+		}
+		return $title;
+	}
+}
+
+function seo_check($str) {
+	foreach(array('<', '>', '(', ')', ';', '?', '\\', '"', "'") as $v) {
+		if(strpos($str, $v) !== false) return false;
+	}
+	return true;
+}
+
 // 用户
 function get_user($value, $key = 'username', $from = 'userid') {
 	global $db;
 	$r = $db->get_one("SELECT `$from` FROM {$db->pre}member WHERE `$key`='$value'");
 	return $r[$from];
+}
+
+// 获取蜘蛛
+function get_spider($agent){
+	global $db;
+	$spiders = cache_read('spider-cache.php');
+	if($spiders && is_array($spiders) && count($spiders) > 0) {
+		foreach($spiders as $k=>$v) {
+			//if(strpos($agent, $k) !== false) return $v;
+			if(stripos($agent, $k) !== false) return $v;
+		}
+		return '人工访问';
+	} else {
+		$spider = array();
+		$result = $db->query("SELECT * FROM {$db->pre}spider_info");
+		while($c = $db->fetch_array($result)) {
+			$spider[$c['key']] = $c['value'];
+		}
+		cache_write('spider-cache.php', $spider);
+		foreach($spider as $k=>$v) {
+			//if(strpos($agent, $k) !== false) return $v;
+			if(stripos($agent, $k) !== false) return $v;
+		}
+		return '人工访问';
+	}
 }
 
 function linkurl($linkurl, $absurl = 1) {

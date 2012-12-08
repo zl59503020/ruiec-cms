@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-08 08:25:10</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/404.php</file>
+	<querystring></querystring>
+	<message>		<query>SELECT itemid FROM ruiec_404 WHERE addtime>1354839910 AND furl='http://192.168.1.3/555555555' LIMIT 0,1</query>
+		<errno>0</errno>
+		<error>Unknown column 'itemid' in 'field list'</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

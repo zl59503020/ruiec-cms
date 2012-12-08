@@ -2,9 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=<?php echo RE_CHARSET;?>"/>
-<title><?php echo $RE['sitename'];?></title>
-<meta name="keywords" content="head_keywords"/>
-<meta name="description" content="head_description"/>
+<title><?php if(isset($seo_title)) { ?><?php echo $seo_title;?><?php } else { ?><?php if(isset($head_title)) { ?><?php echo $head_title;?><?php echo $RE['seo_delimiter'];?><?php } ?><?php echo $RE['sitename'];?><?php } ?></title>
+<?php if(isset($head_keywords)) { ?>
+<meta name="keywords" content="<?php echo $head_keywords;?>"/>
+<?php } ?>
+<?php if(isset($head_description)) { ?>
+<meta name="description" content="<?php echo $head_description;?>"/>
+<?php } ?>
 <meta name="generator" content="Ruiec CMS,www.ruiec.com"/>
 <link rel="shortcut icon" type="image/x-icon" href="<?php echo RE_PATH;?>favicon.ico"/>
 <link rel="bookmark" type="image/x-icon" href="<?php echo RE_PATH;?>favicon.ico"/>

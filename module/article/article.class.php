@@ -6,16 +6,14 @@ class article {
 	var $db;
 	var $table;
 	var $table_data;
-	var $split;
 	var $fields;
 	var $errmsg = '';
 
     function article($moduleid) {
-		global $db, $table, $table_data, $MOD;
+		global $db, $table, $table_data;
 		$this->moduleid = $moduleid;
 		$this->table = $table;
 		$this->table_data = $table_data;
-		$this->split = $MOD['split'];
 		$this->db = &$db;
 		$this->fields = array('catid','level','title','introduce','thumb','tag','author','copyfrom','fromurl','status','hits','addtime','edittime','ip','template','islink','linkurl','filename');
     }
@@ -75,7 +73,7 @@ class article {
 
 	// 获取唯一
 	function get_one() {
-		$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
+		$content_table = content_table($this->moduleid, $this->itemid, $this->table_data);
         return $this->db->get_one("SELECT * FROM {$this->table} a,{$content_table} c WHERE a.itemid=c.itemid and a.itemid=$this->itemid");
 	}
 
@@ -126,7 +124,7 @@ class article {
         $sqlv = substr($sqlv, 1);
 		$this->db->query("INSERT INTO {$this->table} ($sqlk) VALUES ($sqlv)");
 		$this->itemid = $this->db->insert_id();
-		$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
+		$content_table = content_table($this->moduleid, $this->itemid, $this->table_data);
 		$this->db->query("INSERT INTO {$content_table} (itemid,content) VALUES ('$this->itemid', '$post[content]')");
 		$this->update($this->itemid, $post, $post['content']);
 		if($post['status'] == 3) $this->tohtml($this->itemid, $post['catid']);
@@ -150,7 +148,7 @@ class article {
 		}
         $sql = substr($sql, 1);
 	    $this->db->query("UPDATE {$this->table} SET $sql WHERE itemid=$this->itemid");
-		$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
+		$content_table = content_table($this->moduleid, $this->itemid, $this->table_data);
 	    $this->db->query("UPDATE {$content_table} SET content='$post[content]' WHERE itemid=$this->itemid");
 		$this->update($this->itemid, $post, $post['content']);
 		//clear_upload($post['content'].$post['thumb'], $this->itemid);
@@ -226,7 +224,7 @@ class article {
 				if($r['thumb']) delete_upload($r['thumb'], $userid);
 				if($r['content']) delete_local($r['content'], $userid); */
 				$this->db->query("DELETE FROM {$this->table} WHERE itemid=$itemid");
-				$content_table = content_table($this->moduleid, $this->itemid, $this->split, $this->table_data);
+				$content_table = content_table($this->moduleid, $this->itemid, $this->table_data);
 				$this->db->query("DELETE FROM {$content_table} WHERE itemid=$itemid");
 				/* if($r['username'] && $MOD['credit_del']) {
 					credit_add($r['username'], -$MOD['credit_del']);
