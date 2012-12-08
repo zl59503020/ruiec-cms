@@ -20,7 +20,7 @@
 <span><?php echo $CAT['catname'];?></span>
 </h3>
 <div class="clr"></div>
-<div class="active" id="shownews">
+<div class="active shownews" id="shownews">
             <h1 class="title"><?php echo $title;?></h1>
 <div class="met_hits">
 发布日期：<?php echo $adddate;?>&nbsp;&nbsp;
@@ -40,6 +40,14 @@
 &nbsp;&nbsp;<span><?php echo $t;?></span>&nbsp;&nbsp;
 <?php } } ?>
 </div>
+<?php } ?>
+<?php if($MOD['show_np']) { ?>
+<div class="np">
+<ul>
+<li><strong>下一篇：</strong><?php echo tag("moduleid=$moduleid&condition=status=3 and addtime>$addtime&pagesize=1&order=addtime asc&template=list-np", -1);?></li>
+<li><strong>上一篇：</strong><?php echo tag("moduleid=$moduleid&condition=status=3 and addtime<$addtime&pagesize=1&order=addtime desc&template=list-np", -1);?></li>
+</div>
+<div class="b10">&nbsp;</div>
 <?php } ?>
 </div>
 </div>

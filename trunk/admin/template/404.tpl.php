@@ -7,7 +7,7 @@ include tpl('header');
 	
 	function log_delete(id){
 		art.dialog.confirm('确定要删除该记录吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=delete&id='+id;
+			var url = '?file=<?php echo $file;?>&action=delete&itemid='+id;
 			$.ajax({
 				url:url,
 				success:function(responseText){
@@ -70,24 +70,28 @@ include tpl('header');
 	
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="msgtable">
 		<tr>
-			<th width="10%">来源URL</th>
-			<th width="40%">访问URL</th>
+			<th width="10%">访问</th>
+			<th width="15%">来源URL</th>
+			<th width="30%">访问URL</th>
+			<th width="8%">用户</th>
 			<th width="10%">操作IP</th>
 			<th width="10%">操作时间</th>
-			<th width="10%">用户代理</th>
+			<th width="8%">用户代理</th>
 			<th>管理</th>
 		</tr>
 <?php
 	foreach($lists as $v) {
 ?>
 		<tr align="center">
-			<td><?php echo $v['surl']; ?></td>
-			<td><?php echo $v['furl']; ?></td>
+			<td align="left"><?php echo $v['robot']; ?></td>
+			<td align="left"><?php echo ($v['surl']) ? $v['surl'] : '未知'; ?></td>
+			<td align="left"><?php echo $v['furl']; ?></td>
+			<td><?php echo $v['username']; ?></td>
 			<td><a href="javascript:_ip('<?php echo $v['ip'];?>');"><?php echo $v['ip'];?></a></td>
-			<td><?php echo $v['time']; ?></td>
+			<td><?php echo $v['addtime']; ?></td>
 			<td><?php echo tips($v['userAgent']); ?></td>
 			<td class="_my_option_m">
-				<a href="javascript:;" onclick="log_delete(<?php echo $v['id'];?>);" class="icon_delete" title="删除" onclick="return _delete();"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="log_delete(<?php echo $v['itemid'];?>);" class="icon_delete" title="删除" onclick="return _delete();"></a>&nbsp;&nbsp;
 			</td>
 		</tr>
 <?php

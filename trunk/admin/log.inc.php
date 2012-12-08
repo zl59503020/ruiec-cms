@@ -2,12 +2,9 @@
 defined('IN_RUIEC') or exit('Access Denied');
 
 switch($action) {
-	case 'add':
-		
-		break;
 	case 'delete':
-		if(!$id) die('ID为空!');
-		$db->query("DELETE FROM {$RE_PRE}logs WHERE id='$id'");
+		if(!$itemid) die('ID为空!');
+		$db->query("DELETE FROM {$RE_PRE}logs WHERE itemid='$itemid'");
 		die('0');
 	break;
 	case 'clear':
@@ -17,9 +14,9 @@ switch($action) {
 	default:
 		$condition = '1';
 		$lists = array();
-		$result = $db->query("SELECT * FROM {$RE_PRE}logs WHERE $condition ORDER BY id DESC");
+		$result = $db->query("SELECT * FROM {$RE_PRE}logs WHERE $condition ORDER BY addtime DESC");
 		while($r = $db->fetch_array($result)) {
-			$r['time'] = timetodate($r['time'], 5);
+			$r['addtime'] = timetodate($r['addtime'], 5);
 			$lists[] = $r;
 		}
 		include tpl('log');

@@ -7,7 +7,7 @@ include tpl('header');
 	
 	function log_delete(id){
 		art.dialog.confirm('确定要删除该记录吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=delete&id='+id;
+			var url = '?file=<?php echo $file;?>&action=delete&itemid='+id;
 			$.ajax({
 				url:url,
 				success:function(responseText){
@@ -83,10 +83,10 @@ include tpl('header');
 			<td><?php echo $v['username']; ?></td>
 			<td><?php echo tips($v['content']); ?></td>
 			<td><a href="javascript:_ip('<?php echo $v['ip'];?>');"><?php echo $v['ip'];?></a></td>
-			<td><?php echo $v['time']; ?></td>
+			<td><?php echo $v['addtime']; ?></td>
 			<td><?php echo tips($v['userAgent']); ?></td>
 			<td class="_my_option_m">
-				<a href="javascript:;" onclick="log_delete(<?php echo $v['id'];?>);" class="icon_delete" title="删除" onclick="return _delete();"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="log_delete(<?php echo $v['itemid'];?>);" class="icon_delete" title="删除"></a>&nbsp;&nbsp;
 			</td>
 		</tr>
 <?php

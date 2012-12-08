@@ -20,7 +20,7 @@
 <span><?php echo $catname;?></span>
 </h3>
 <div class="clr"></div>
-<div class="active" id="newslist">
+<div class="active newslist" id="newslist">
 <ul class="list-none metlist">
 <?php $lists = tag("moduleid=$moduleid&condition=status=3&catid=".$catid."&pagesize=10&order=".$MOD['order']."&template=null");?>
 <?php if(is_array($lists)) { foreach($lists as $v) { ?>

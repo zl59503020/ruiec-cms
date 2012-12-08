@@ -3,6 +3,7 @@ defined('IN_RUIEC') or exit('Access Denied');
 function cache_all() {
 	cache_module();		//模型
 	cache_category();	//分类
+	cache_spider();		//蜘蛛
 	/*
 	cache_fields();
 	cache_group();
@@ -20,7 +21,7 @@ function cache_module($moduleid = 0) {
 		$r = $db->get_one("SELECT * FROM {$db->pre}module WHERE disabled=0 AND moduleid='$moduleid'");
 		$setting = array();
 		$setting = get_setting($moduleid);
-		/*
+		/*	seo	*/
 		if(isset($setting['seo_title_index'])) $setting['title_index'] = seo_title($setting['seo_title_index']);
 		if(isset($setting['seo_title_list'])) $setting['title_list'] = seo_title($setting['seo_title_list']);
 		if(isset($setting['seo_title_show'])) $setting['title_show'] = seo_title($setting['seo_title_show']);
@@ -33,7 +34,7 @@ function cache_module($moduleid = 0) {
 		if(isset($setting['seo_description_list'])) $setting['description_list'] = seo_title($setting['seo_description_list']);
 		if(isset($setting['seo_description_show'])) $setting['description_show'] = seo_title($setting['seo_description_show']);
 		if(isset($setting['seo_description_search'])) $setting['description_search'] = seo_title($setting['seo_description_search']);
-		*/
+		
 		cache_write('setting/module-'.$moduleid.'.php', $setting);
 		$setting['moduleid'] = $moduleid;
 		$setting['name'] = $r['name'];
@@ -120,6 +121,16 @@ function cache_category($moduleid = 0, $data = array()) {
 			cache_category($moduleid);
 		}
 	}
+}
+
+function cache_spider(){
+	global $db;
+	$spider = array();
+	$result = $db->query("SELECT * FROM {$db->pre}spider_info");
+	while($c = $db->fetch_array($result)) {
+		$spider[$c['key']] = $c['value'];
+	}
+	cache_write('spider-cache.php', $spider);
 }
 
 //支付

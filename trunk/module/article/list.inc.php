@@ -14,11 +14,11 @@ if($MOD['list_html']) {
 	}
 }
 
-$CP = $MOD['cat_property'] && $CAT['property'];
+/* $CP = $MOD['cat_property'] && $CAT['property'];
 if($MOD['cat_property'] && $CAT['property']) {
 	require RE_ROOT.'/include/property.func.php';
 	$PPT = property_condition($catid);
-}
+} */
 unset($CAT['moduleid']);
 extract($CAT);
 //$maincat = get_maincat($parentid, $moduleid);
@@ -35,7 +35,8 @@ $datetype = 5;
 $cols = 5;
 
 $seo_file = 'list';
-//include RE_ROOT.'/include/seo.inc.php';
+
+include RE_ROOT.'/include/seo.inc.php';
 
 $template = $CAT['template'] ? $CAT['template'] : ($MOD['template_list'] ? $MOD['template_list'] : 'list');
 include template($template, $module);
