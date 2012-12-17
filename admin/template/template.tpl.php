@@ -102,11 +102,6 @@
 			});
 		});
 	}
-	
-	function ac_url(action,op){
-		window.location = '?file=<?php echo $file; ?>&action='+action+'&'+op;
-	}
-
 
 </script>
 
@@ -115,9 +110,8 @@
 	
 	<div class="tools_box">
 		<div class="tools_bar">
-			<a href="?file=<?php echo $file;?>" class="tools_btn"><span><b class="add">模板管理</b></span></a>
-			<a href="?file=skin" class="tools_btn"><span><b class="add">皮肤管理</b></span></a>
-			<a href="?file=<?php echo $file;?>&action=add&dir=<?php echo $dir;?>" class="tools_btn"><span><b class="add">新建模板</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=skin',{n:'sys_skin',t:'皮肤管理'});" class="tools_btn"><span><b class="add">皮肤管理</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=<?php echo $file;?>&action=add&dir=<?php echo $dir;?>',{n:'sys_template_new',t:'新建模板'});" class="tools_btn"><span><b class="add">新建模板</b></span></a>
 		</div>
 	</div>
 
@@ -149,8 +143,8 @@
 			<td><?php echo $v['mtime'];?></td>
 			<td><?php echo $v['mod'];?></td>
 			<td class="my_option_m">
-				<a href="javascript:;" onclick="ac_url('','dir=<?php echo $v['dirname'];?>');" title="管理" class="icon_import"></a>&nbsp;&nbsp;
-				<a href="javascript:;" onclick="ac_url('add','dir=<?php echo $v['dirname'];?>');" title="新建" class="icon_new"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&dir=<?php echo $v['dirname'];?>');" title="管理" class="icon_import"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&dir=<?php echo $v['dirname'];?>',{n:'sys_template_new',t:'新建模板'});" title="新建" class="icon_new"></a>&nbsp;&nbsp;
 			</td>
 		</tr>
 <?php 
@@ -166,14 +160,14 @@
 				<a href="javascript:;" onclick="chk_rename('<?php echo $v['fileid'];?>',this);" title="点击修改备注名称"><?php echo $v['name'] ? $v['name'] : '--';?></a>
 			</td>
 			<td>
-				<a href="?file=<?php echo $file;?>&action=add&type=<?php echo $v['type'];?>&dir=<?php echo $dir;?>" title="新建"><?php echo $v['type'];?></a>
+				<a href="javascript:;" onclick="_url('?file=<?php echo $file;?>&action=add&type=<?php echo $v['type'];?>&dir=<?php echo $dir;?>',{n:'sys_template_new',t:'新建模板'});" title="新建"><?php echo $v['type'];?></a>
 			</td>
 			<td><?php echo $v['filesize'];?> Kb</td>
 			<td><?php echo $v['mtime'];?></td>
 			<td><?php echo $v['mod'];?></td>
 			<td class="my_option_m">
-				<a href="javascript:;" onclick="ac_url('edit','fileid=<?php echo $v['fileid'];?>&dir=<?php echo $dir;?>');" title="编辑" class="icon_edit"></a>&nbsp;&nbsp;
-				<a href="javascript:;" onclick="ac_url('add','type=<?php echo $v['type'];?>&dir=<?php echo $dir;?>');" title="新建" class="icon_new"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="_url('fileid=<?php echo $v['fileid'];?>&dir=<?php echo $dir;?>',{n:'sys_template_edit',t:'编辑模板'});" title="编辑" class="icon_edit"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="_url('type=<?php echo $v['type'];?>&dir=<?php echo $dir;?>',{n:'sys_template_new',t:'新建模板'});" title="新建" class="icon_new"></a>&nbsp;&nbsp;
 				<a href="javascript:;" onclick="tpl_delete('<?php echo $v['fileid'];?>','<?php echo $v['filename'];?>')" title="删除" class="icon_delete"></a>
 			</td>
 		</tr>

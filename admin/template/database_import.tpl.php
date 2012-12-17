@@ -101,15 +101,7 @@ include tpl('header');
 		});
 	}
 	
-	function checkAll(name,v){
-		var cks = z.$('#'+name);
-		for(var i in cks){
-			//cks[i].checked = v;
-			if(v == '!')cks[i].checked = !cks[i].checked;
-			else cks[i].checked = v;
-		}
-	}
-	
+
 	//	还原.AJAX
 	function obj_import(data){
 		if(data == '0'){
@@ -133,8 +125,7 @@ include tpl('header');
 	
 	<div class="tools_box">
 		<div class="tools_bar">
-			<a href="?file=<?php echo $file; ?>" class="tools_btn"><span><b class="add">备份数据</b></span></a>
-			<a href="?file=<?php echo $file; ?>&action=import" class="tools_btn"><span><b class="add">还原数据</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>',{n:'sys_database_bak',t:'数据库备份'});" class="tools_btn"><span><b class="add">备份数据</b></span></a>
 		</div>
 	</div>
 

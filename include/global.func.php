@@ -213,7 +213,7 @@ function _sub_str($str,$len,$more='',$st=0){
 			if($tmobj >= 0 || $tmobj1 == 0){
 				if(count($objary) == 0) 
 					break;
-				if(@$v[3] == @$objary[$tmobj] && @$v[5] == '1'){
+				if(isset($v[3]) && $v[3] == @$objary[$tmobj] && isset($v[5]) && $v[5] == '1'){
 					$restr .= @$v[2];
 					$tmobj = $tmobj-1;
 				}
@@ -221,9 +221,9 @@ function _sub_str($str,$len,$more='',$st=0){
 			} else {
 				$temstr .= str_ireplace("&nbsp;"," ",@$v[0]);
 				if(strlen($temstr) > ($len*2)){
-					if($tmobj1 == -1){
+					if($tmobj1 === -1){
 						$tmobj1 = 0;
-						$restr .= $this->_showtext($v[0],($len-(strlen($temstr)-strlen($v[0]))),$more,$st);
+						$restr .= _showtext($v[0],($len-(strlen($temstr)-strlen($v[0]))),$more,$st);
 					}
 					if (isset($v[5]) and $v[5] == '1'){$restr .= @$v[2]; array_pop($objary);}	//出
 					if (isset($v[5]) and $v[5] == '2' && !in_array(@$v[3],$errarray)) array_push($objary, @$v[3]);	//入
@@ -639,7 +639,7 @@ function get_cat($catid) {
 function cat_pos($CAT, $str = ' &raquo; ', $target = '', $isl = false) {
 	global $MODULE, $db;
 	if(!$CAT) return '';
-	$CAT = $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=".$CAT['catid']);
+	//$CAT = $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=".$CAT['catid']);
 	//$arrparentids = $CAT['arrparentid'].','.$CAT['catid'];
 	//$arrparentid = explode(',', $arrparentids);
 	if($CAT['parentid'] == '0') return $CAT['catname'];
@@ -888,7 +888,7 @@ function tpl_select($file = 'index', $module = '', $name = 'template', $title = 
 		$ruiec_tpl_id++;
 	}
     $tpldir = $module ? RE_ROOT."/template/".$CFG['template']."/".$module : RE_ROOT."/template/".$CFG['template'];
-	@include $tpldir."/these.name.php";
+	if(is_file($tpldir."/these.name.php")) @include $tpldir."/these.name.php";
 	$select = '<span id="ruiec_template_'.$ruiec_tpl_id.'"><select name="'.$name.'" '.$extend.'><option value="">'.$title.'</option>';
 	$files = glob($tpldir."/*.htm");
 	foreach($files as $tplfile)	{
@@ -1107,6 +1107,3 @@ function ziconv($str,$fc='utf-8',$tc='gb2312'){
 function array_iconv($in_charset,$out_charset,$arr){
 	return @eval('return '.iconv($in_charset,$out_charset,var_export($arr,true).';'));
 }
-
-
-?>

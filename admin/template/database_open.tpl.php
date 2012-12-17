@@ -61,8 +61,8 @@ include tpl('header');
 	
 	<div class="tools_box">
 		<div class="tools_bar">
-			<a href="?file=<?php echo $file; ?>" class="tools_btn"><span><b class="add">备份数据</b></span></a>
-			<a href="?file=<?php echo $file; ?>&action=import" class="tools_btn"><span><b class="add">还原数据</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>',{n:'sys_database_bak',t:'数据库备份'});" class="tools_btn"><span><b class="add">备份数据</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&action=import',{n:'sys_database_imp',t:'还原数据'});" class="tools_btn"><span><b class="add">还原数据</b></span></a>
 		</div>
 	</div>
 

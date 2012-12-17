@@ -107,7 +107,7 @@
 				<input type="button" value="搜 索" class="btnSearch" onclick="btnSearch_Click" />
 			</div>
 			-->
-			<a href="?file=<?php echo $file; ?>&action=add" class="tools_btn"><span><b class="add">添加模块</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&action=add',{n:'sys_module_add',t:'添加模板'});" class="tools_btn"><span><b class="add">添加模块</b></span></a>
 			<!--
 			<a href="javascript:void(0);" onclick="checkAll(this);" class="tools_btn"><span><b class="all">全选</b></span></a>
 			<a href="?action=del" onclick="return false;" class="tools_btn"><span><b class="delete">批量删除</b></span></a>
@@ -147,7 +147,7 @@
 			<td class="my_option_m">
 				<a href="?file=<?php echo $file;?>&action=edit&modid=<?php echo $v['moduleid'];?>" class="icon_edit" title="修改"></a>&nbsp;&nbsp;
 				<a href="javascript:;" onclick="md_delete(<?php echo $v['moduleid'];?>,'<?php echo $v['name'];?>');" class="icon_delete" title="删除" onclick="return _delete();"></a>&nbsp;&nbsp;
-				<a href="?file=setting&moduleid=<?php echo $v['moduleid'];?>" class="icon_set" title="设置"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="_url('?file=setting&moduleid=<?php echo $v['moduleid'];?>',{n:'sys_module_add',t:'模块设置'});" class="icon_set" title="设置"></a>&nbsp;&nbsp;
 				<?php if($v['disabled']) {?><a href="javascript:;" onclick="ck_disable(0,<?php echo $v['moduleid'];?>,'<?php echo $v['name'];?>');" class="icon_start" title="已禁用,点击启用"></a><?php } else {?><a href="javascript:;" onclick="ck_disable(1,<?php echo $v['moduleid'];?>,'<?php echo $v['name'];?>');" class="icon_stop" title="正常运行,点击禁用" ></a><?php } ?>
 			</td>
 		</tr>

@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($seo_title)}{$seo_title}{else}{if isset($head_title)}{$head_title}{$RE[seo_delimiter]}{/if}{$RE[sitename]}{/if}</title>
+{if isset($head_keywords)}
+<meta name="keywords" content="{$head_keywords}"/>
+{/if}
+{if isset($head_description)}
+<meta name="description" content="{$head_description}"/>
+{/if}
+<link rel="stylesheet" type="text/css" href="{RE_SKIN}style.css"/>
+{if $moduleid>4}
+<link rel="stylesheet" type="text/css" href="{RE_SKIN}{$module}.css"/>
+{/if}
+{if isset($CSS) && is_array($CSS)}
+{loop $CSS $css}
+<link rel="stylesheet" type="text/css" href="{RE_SKIN}{$css}.css"/>
+{/loop}
+{/if}
+
+
+{if !RE_DEBUG}
+<script type="text/javascript">window.onerror=function(){return true;}</script>
+{/if}
+
+<script type="text/javascript" src="{RE_PATH}file/JavaScript/jquery.min.js"></script>
+<script type="text/javascript" src="{RE_PATH}file/JavaScript/common.js"></script>
+<script type="text/javascript" src="{RE_PATH}file/JavaScript/ruiec.js"></script>
+
+{if isset($JS) && is_array($JS)}
+{loop $JS $js}
+<script type="text/javascript" src="{RE_PATH}file/JavaScript/{$js}.js"></script>
+{/loop}
+{/if}
+</head>
+
+<body>
+<!--Header-->
+<div class="header">
+  <div class="header_inner">
+    <h1 class="logo">
+      <a title="Ruiec内容管理系统" href="http://demo.dtcms.net">Ruiec内容管理系统</a>
+    </h1>
+    <ul class="nav">
+	  <li{if $moduleid<4} class="navdown"{/if}><a href="{$MODULE[1][linkurl]}"><span>首页</span></a></li>
+	  {loop $MODULE $m}
+	{if $m[ismenu]}
+	<li{if $m[moduleid]==$moduleid} class="navdown"{/if}>
+	<a href="{$m[linkurl]}"{if $m[isblank]} target="_blank"{/if}><span>{$m[name]}</span></a>
+	</li>
+	{/if}
+	{/loop}
+    </ul>
+    <div class="search">
+      <input id="keywords" name="keywords" class="input" type="text" x-webkit-speech="" autofocus="" placeholder="输入回车搜索" onkeydown="if(event.keyCode==13){SiteSearch('/search.aspx', '#keywords');return false};" />
+      <input class="submit" type="submit" value="搜索" onclick="SiteSearch('/search.aspx', '#keywords');" />
+    </div>
+  </div>
+</div>
+<!--/Header-->

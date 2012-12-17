@@ -4,3 +4,10 @@ RewriteEngine On
 RewriteBase /
 RewriteRule ^(.*)\.(asp|aspx|asa|asax|dll|jsp|cgi|fcgi|pl)(.*)$ /404.php
 RewriteRule ^(.*)/file/(.*)\.php(.*)$ /404.php
+
+RewriteRule ^(.*)-htm-(.*)$ $1.php?$2
+RewriteRule ^(.*)/show-([0-9]+)([\-])?([0-9]+)?\.html$ $1/show.php?itemid=$2&page=$4
+RewriteRule ^(.*)/list-([0-9]+)([\-])?([0-9]+)?\.html$ $1/list.php?catid=$2&page=$4
+RewriteRule ^(.*)/([A-za-z0-9_\-]+)-c([0-9]+)-([0-9]+)\.html$ $1/list.php?catid=$3&catdir=$2&page=$4
+RewriteRule ^(.*)/show/([0-9]+)/([0-9]+)?([/])?$ $1/show.php?itemid=$2&page=$3
+RewriteRule ^(.*)/list/([0-9]+)/([0-9]+)?([/])?$ $1/list.php?catid=$2&page=$3

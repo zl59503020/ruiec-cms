@@ -125,17 +125,7 @@
 		});
 	}
 	
-	function checkAll(name,v){
-		var cks = z.$('#'+name);
-		for(var i in cks){
-			cks[i].checked = v;
-			//if(v == 0) cks[i].checked = !cks[i].checked;
-			//else cks[i].checked = v;
-		}
-	}
-	
 	//备份或删除
-	
 	function dbopt(type){
 		var sels = z.$('#tables[]');
 		var ib = false;
@@ -223,8 +213,7 @@
 	
 	<div class="tools_box">
 		<div class="tools_bar">
-			<a href="?file=<?php echo $file; ?>" class="tools_btn"><span><b class="add">备份数据</b></span></a>
-			<a href="?file=<?php echo $file; ?>&action=import" class="tools_btn"><span><b class="add">还原数据</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&action=import',{n:'sys_database_imp',t:'还原数据'});" class="tools_btn"><span><b class="add">还原数据</b></span></a>
 		</div>
 	</div>
 

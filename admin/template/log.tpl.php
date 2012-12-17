@@ -60,7 +60,7 @@ include tpl('header');
 	
 	<div class="tools_box">
 		<div class="tools_bar">
-			<a href="?file=404" class="tools_btn"><span><b class="add">404记录</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=404',{n:'sys_log_404',t:'404记录管理'});" class="tools_btn"><span><b class="add">404记录</b></span></a>
 			<a href="javascript:;" onclick="log_clear()" class="tools_btn"><span><b class="remove">清空记录</b></span></a>
 		</div>
 	</div>
