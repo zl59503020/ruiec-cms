@@ -60,7 +60,8 @@ switch($action) {
 		die('0');
 	break;
 	case 'update':
-		
+		print_r($_POST);
+		exit;
 	break;
 	case 'cache':
 		$do->repair();

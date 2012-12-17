@@ -61,7 +61,7 @@ include tpl('header');
 	
 	<div class="tools_box">
 		<div class="tools_bar">
-			<a href="?file=log" class="tools_btn"><span><b class="add">系统日志</b></span></a>
+			<a href="javascript:;" onclick="_url('?file=log',{n:'sys_log',t:'系统日志管理'});" class="tools_btn"><span><b class="add">系统日志</b></span></a>
 			<a href="javascript:;" onclick="log_clear()" class="tools_btn"><span><b class="remove">清空记录</b></span></a>
 		</div>
 	</div>

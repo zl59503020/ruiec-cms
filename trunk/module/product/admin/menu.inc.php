@@ -1,11 +1,11 @@
 <?php
 defined('IN_RUIEC') or exit('Access Denied');
 $menu = array(
-	array('text' => '添加'.$MCFG['name'], 'url' => '?module='.$MCFG['module'].'&action=con'),
-	array('text' => $MCFG['name'].'列表', 'url' => '?module='.$MCFG['module'].'&action=list'),
-	array('text' => '审核'.$MCFG['name'], 'url' => '?module='.$MCFG['module'].'&action=check'),
-	array('text' => '分类管理', 'url' => '?module='.$MCFG['module'].'&file=setting'),
-	array('text' => '更新数据', 'url' => '?module='.$MCFG['module'].'&action=html'),
-	array('text' => '模块设置', 'url' => '?module='.$MCFG['module'].'&file=setting'),
+	array('text' => '添加'.$name, 'url' => '?moduleid='.$moduleid.'&action=add'),
+	array('text' => $name.'列表', 'url' => '?moduleid='.$moduleid),
+	array('text' => '审核'.$name, 'url' => '?moduleid='.$moduleid.'&action=audit'),
+	array('text' => '分类管理', 'url' => '?file=category&mid='.$moduleid),
+	//array('text' => '更新数据', 'url' => '?moduleid='.$moduleid.'&action=html'),
+	array('text' => '模块设置', 'url' => '?file=setting&moduleid='.$moduleid)
 );
 ?>

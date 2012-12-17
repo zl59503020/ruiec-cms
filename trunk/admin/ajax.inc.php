@@ -48,6 +48,7 @@ switch($action) {
 	case 'plug':
 		$_menu = array();
 		$_menu[] = array('id' => 'sys_Spider', 'name' => '蜘蛛管理', 'url' => '?file=spider');
+		//$_menu[] = array('id' => 'sys_Comment', 'name' => '评论管理', 'url' => '?file=comment');
 		echo json_encode($_menu);
 		exit;
 	break;

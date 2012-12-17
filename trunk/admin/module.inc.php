@@ -135,23 +135,22 @@ switch($action) {
 			include $module_cfg;
 			if($MCFG['uninstall'] == false) die('此模型不可卸载，请检查');
 			@include RE_ROOT.'/module/'.$module.'/admin/uninstall.inc.php';			//uninstall 删除
-			$result = $db->query("SHOW TABLES FROM `".$CFG['db_name']."`");
-			/*
-			while($r = $db->fetch_row($result)) {
+			/* $result = $db->query("SHOW TABLES FROM `".$CFG['db_name']."`");
+			while($r = $db->fetch_row($result)) {		//删除表
 				$tb = $r[0];
 				$pt = str_replace($RE_PRE.$moduleid.'_', '', $tb);
 				if(is_numeric($pt)) $db->query("DROP TABLE IF EXISTS `".$tb."`");
-			}
-			*/
+			} */
+
 			$db->query("DELETE FROM `".$RE_PRE."setting` WHERE item=$moduleid");
-			/*
-			$tb = str_replace($RE_PRE, '', get_table($moduleid));
-			$db->query("DELETE FROM `".$RE_PRE."fields` WHERE tb='$tb'");
-			*/
+			
+			/* $tb = str_replace($RE_PRE, '', get_table($moduleid));
+			$db->query("DELETE FROM `".$RE_PRE."fields` WHERE tb='$tb'"); */
+			
 			dir_delete(RE_ROOT.'/'.$dir);
 		}
 		$db->query("DELETE FROM {$RE_PRE}module WHERE moduleid='$modid'");
-		//cache_module();
+		cache_module();
 		//echo '模块删除成功';
 		die('0');
 		break;

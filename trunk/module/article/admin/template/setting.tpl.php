@@ -220,6 +220,13 @@ include tpl('header');
 							<td><input type="text" size="3" name="setting[max_width]" value="<?php echo $max_width;?>"/> px</td>
 						</tr>
 						<tr>
+							<th>是否开启评论</th>
+							<td>
+								<input type="radio" name="setting[comment]" value="1"  <?php if($comment) echo 'checked';?>/> 开启&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="radio" name="setting[comment]" value="0"  <?php if(!$comment) echo 'checked';?>/> 关闭
+							</td>
+						</tr>
+						<tr>
 							<th>内容显示上一篇下一篇</th>
 							<td>
 								<input type="radio" name="setting[show_np]" value="1"  <?php if($show_np) echo 'checked';?>/> 开启&nbsp;&nbsp;&nbsp;&nbsp;

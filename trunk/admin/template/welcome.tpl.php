@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>管理中心</title>
 <link href="<?php echo RE_PATH; ?>admin/skin/css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<?php echo RE_PATH; ?>admin/skin/js/jquery/jquery-1.7.2.min.js"></script>
 <script src="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js" type="text/javascript"></script>
 </head>
 <body style="padding:10px;">
@@ -36,7 +37,6 @@
 			<li>服务器端口：<?php echo $_SERVER['SERVER_PORT']; ?></li>
 			<li>其它: <?php echo iconv('GB2312','UTF-8',file_get('http://int.dpool.sina.com.cn/iplookup/iplookup.php')); ?></li>
 			<li>版权所有：深圳源中瑞科技有限公司（Ruiec Inc.）</li>
-			<li>官方通知：</li>
 		</ul>
 		<div class="line10"></div>
 	</div>
@@ -62,10 +62,17 @@
 			<li>3、制作好网站模板，上传到站点templates目录下，点击“模板管理”生成模板；</li>
 		</ul>
 		<h3 class="msg">官方消息</h3>
-		<ul>
-			<li>1、官方消息1；</li>
-			<li>2、官方消息1；</li>
+		<ul id="ruiec_message">
+			<li>正在获取官方最新消息...</li>
 		</ul>
 	</div>
+	<script>
+		$.ajax({
+			url:'?action=ruiec_message',
+			success:function(data){
+				$('#ruiec_message').html(data);
+			}
+		});
+	</script>
 </body>
 </html>
