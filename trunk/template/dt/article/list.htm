@@ -1,0 +1,102 @@
+{template 'header'}
+<div class="boxwrap">
+  <div class="left710">
+   <!--Content-->
+    <div class="main_box">
+      
+      <dl class="head green">
+        <dt>{$catname}</dt>
+        <dd>
+          <span>当前位置：<a href="/index.aspx">首页 </a> &gt; <a href="{$MOD['linkurl']}">{$MOD[name]}</a> &gt; {cat_pos($CAT, ' &gt; ')}</span>
+        </dd>
+      </dl>
+      <div class="clear"></div>
+      <h1 class="base_tit">分类“{$catname}”的内容</h1>
+	  <!--    _substr('string','长度'，‘截取后加的字符串’，‘开始截取的位置’)-->
+      <ul class="news_list">
+		{loop $tags $v}
+        <li>
+		
+          <h2><a href="{$v['linkurl']}" title="{$v['alt']}">{$v['title']}</a></h2>
+          <div class="info">
+            <span class="time">{timetodate($v['addtime'],3)}</span>
+            <span class="comm">暂时无</span>
+            <span class="view">{$v['hits']}</span>
+          </div>
+          <div class="note">{_substr($v['introduce'],100,'...')}</div>
+		
+        </li>
+        {/loop}
+        
+        
+      </ul>
+      <div class="line20"></div>
+	  {$pages}
+      <div class="flickr">
+	  <span class="disabled">«上一页</span><span class="current">1</span><a href="/news/6/2.aspx">2</a><a href="/news/6/2.aspx">下一页»</a>
+	  </div> 
+	  <!--放置页码列表-->
+
+    </div>
+    <!--/Content-->
+  </div>
+  
+  <div class="left264">
+    <!--Sidebar-->
+    <div class="sidebar">
+      <h3>资讯类别</h3>
+      <ul class="navbar">
+        {loop $maincat $k $v}
+        <li>
+          <h4><a href="{$MOD['linkurl']}{$v['linkurl']}"{if $v['catid']==$catid} class="current"{/if} >{$v['catname']}</a></h4>
+		  {php $nav2=get_maincat($v['catid']);}
+		  {if $nav2!=null}
+          <div class="list">
+		  {loop $nav2 $key $va}
+            <a  href="{$MOD['linkurl']}{$va['linkurl']}" {if $va['catid']==$catid} class="current"{/if} >{$va['catname']}</a>
+          {/loop}
+          </div>
+		  {/if}
+        </li>
+        
+        {/loop}
+      </ul>
+      <div class="clear"></div>
+      <h3>推荐资讯</h3>
+      <div class="focus_list">
+        <ul>
+          <!--{php $commend = tag("moduleid=$moduleid&condition=status=3 AND level=6 &catid=".$catid."&pagesize=6&order=".$MOD[order]."&template=null");}-->
+          {loop $commend $v}
+		  <li>
+            <a title="{$v['title']}" href="{$v['linkurl']}">
+              <img src="{$v['thumb']}" width="100" height="100" alt="{$v['title']}" />
+              <span>{$v['title']}</span>
+            </a>
+          </li>
+		  {/loop}
+          
+
+        </ul>
+        <div class="clear"></div>
+      </div>
+      <h3>人气排行</h3>
+      <ul class="rank_list">
+        <!--{php $hits = tag("moduleid=$moduleid&condition=status=3 &catid=".$catid."&pagesize=10&order=hits DESC&template=null");}-->
+		{loop $hits $key $v}
+		{php $key++;}
+        <li class="active">
+        
+          <span>{timetodate($v['addtime'],2)}</span>
+          <i class="num">{$key}</i><a href="{$v['linkurl']}" title="{$v['title']}">{$v['title']}</a>
+        </li>
+        {/loop}
+
+      </ul>
+    </div>
+    <!--/Sidebar-->
+  </div>
+</div>
+
+<div class="clear"></div>
+
+{template 'footer'}

@@ -46,7 +46,6 @@ class db_mysql {
 	}
 
 	function query($sql, $type = '', $ttl = 0, $save_id = false) {
-		//echo $sql;echo '<br/>';
 		$select = strtoupper(substr($sql, 0, 7)) == 'SELECT ' ? 1 : 0;
 		/*
 		if($select) {

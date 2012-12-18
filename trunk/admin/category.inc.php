@@ -60,8 +60,16 @@ switch($action) {
 		die('0');
 	break;
 	case 'update':
-		print_r($_POST);
-		exit;
+		$u_category = array();
+		foreach($_POST['catid'] as $_catid){
+			$_tempary = array();
+			$_tempary['catname'] = $catname[$_catid];
+			$_tempary['listorder'] = $listorder[$_catid];
+			$_tempary['catdir'] = $catdir[$_catid];
+			$u_category[$_catid] = $_tempary;
+		}
+		$do->update($u_category);
+		die('0');
 	break;
 	case 'cache':
 		$do->repair();
@@ -142,7 +150,7 @@ class category {
 			$catid = $catids;
 			if(isset($this->category[$catid])) {
 				$this->db->query("DELETE FROM {$this->table} WHERE catid=$catid");
-				$arrchildid = get_catchilds($catid,$this->moduleid,'1');//$this->category[$catid]['arrchildid'] ? $this->category[$catid]['arrchildid'] : $catid;
+				$arrchildid = implode(',', get_catchilds($catid,$this->moduleid));
 				if($arrchildid != ''){
 					$this->db->query("DELETE FROM {$this->table} WHERE catid IN (".substr($arrchildid,1).")");
 				}
@@ -157,15 +165,10 @@ class category {
 	    if(!is_array($category)) return false;
 		foreach($category as $k=>$v) {
 			if(!$v['catname']) continue;
-			$v['parentid'] = intval($v['parentid']);
-			if($k == $v['parentid']) continue;
-			if($v['parentid'] > 0 && !isset($this->category[$v['parentid']])) continue;
 			$v['listorder'] = intval($v['listorder']);
-			$v['level'] = intval($v['level']);
-			$v['letter'] = preg_match("/^[a-z0-9]{1}+$/i", $v['letter']) ? strtolower($v['letter']) : '';
 			$v['catdir'] = $this->get_catdir($v['catdir'], $k);
 			if(!$v['catdir']) $v['catdir'] = $k;
-			$this->db->query("UPDATE {$this->table} SET catname='$v[catname]',parentid='$v[parentid]',listorder='$v[listorder]',style='$v[style]',level='$v[level]',letter='$v[letter]',catdir='$v[catdir]' WHERE catid=$k ");
+			$this->db->query("UPDATE {$this->table} SET catname='$v[catname]',listorder='$v[listorder]',catdir='$v[catdir]' WHERE catid=$k ");
 		}
 		return true;
 	}

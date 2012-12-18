@@ -7,7 +7,9 @@ require RE_ROOT.'/module/'.$module.'/common.inc.php';
 	include($html_file);
 	exit;
 } */
-$maincat = $childcat = get_maincat(0, $moduleid, 1);
+
+$maincat = get_maincat(0, $moduleid, 1);
+
 $seo_file = 'index';
 
 include RE_ROOT.'/include/seo.inc.php';

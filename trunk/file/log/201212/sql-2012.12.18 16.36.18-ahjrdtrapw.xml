@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-18 16:36:18</time>
+	<ip>192.168.1.88</ip>
+	<user>Guest</user>
+	<file>/news/index.php</file>
+	<querystring></querystring>
+	<message>		<query>SELECT * FROM ruiec_article_18 WHERE status=5 AND catid IN (.0.) ORDER BY addtime desc LIMIT 0,1</query>
+		<errno>0</errno>
+		<error>You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '.) ORDER BY addtime desc LIMIT 0,1' at line 1</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

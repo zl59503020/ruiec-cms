@@ -7,21 +7,8 @@ include tpl('header');
 
 	//表单验证
     $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
+		form_check_init('','',{title:'添加',url:'?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>'});
+		/* $('#myform').ajaxForm({
 			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
 			success : function(responseText, statusText, xhr, $form){
 				art.dialog.list['lock'].close();
@@ -44,7 +31,7 @@ include tpl('header');
 					return true;
 				}
 			}
-		});
+		}); */
     });
 	
 	function ckDir(){

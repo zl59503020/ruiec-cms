@@ -1,39 +1,97 @@
 <?php defined('IN_RUIEC') or exit('Access Denied');?><?php include template('header');?>
-<div class="m">
-<div class="lf_nav">
-<a href="<?php echo $MOD['linkurl'];?>"><h3 class="title"><?php echo $MOD['name'];?></h3></a>
-<div class="active" id="sidebar">
-<?php if(is_array($maincat)) { foreach($maincat as $k => $v) { ?>
-<dl class="list-none navnow">
-<dt id="part2_80" class="<?php if($v['catid'] == $catid) { ?>on<?php } ?>">
-<a href="<?php echo $MOD['linkurl'];?><?php echo $v['linkurl'];?>" title="<?php echo $v['catname'];?>" class="zm"><span><?php echo $v['catname'];?></span></a>
-</dt>
-</dl>
-<?php } } ?>
-<div class="clear"></div>
-</div>
-    </div>
+<div class="boxwrap">
+  <div class="left710">
+   <!--Content-->
+    <div class="main_box">
+      
+      <dl class="head green">
+        <dt><?php echo $catname;?></dt>
+        <dd>
+          <span>当前位置：<a href="/index.aspx">首页 </a> &gt; <a href="<?php echo $MOD['linkurl'];?>"><?php echo $MOD['name'];?></a> &gt; <?php echo cat_pos($CAT, ' &gt; ');?></span>
+        </dd>
+      </dl>
+      <div class="clear"></div>
+      <h1 class="base_tit">分类“<?php echo $catname;?>”的内容</h1>
+  <!--    _substr('string','长度'，‘截取后加的字符串’，‘开始截取的位置’)-->
+      <ul class="news_list">
+<?php if(is_array($tags)) { foreach($tags as $v) { ?>
+        <li>
 
-<div class="ri_main">
-<h3 class="title">
-<div class="position" id="ny_navx">当前位置：<a href="<?php echo $MODULE['1']['linkurl'];?>">首页</a> &raquo; <a href="<?php echo $MOD['linkurl'];?>"><?php echo $MOD['name'];?></a> &raquo; <?php echo cat_pos($CAT, ' &raquo; ');?></div>
-<span><?php echo $catname;?></span>
-</h3>
-<div class="clr"></div>
-<div class="active newslist" id="newslist">
-<ul class="list-none metlist">
-<?php $lists = tag("moduleid=$moduleid&condition=status=3&catid=".$catid."&pagesize=10&order=".$MOD['order']."&template=null");?>
-<?php if(is_array($lists)) { foreach($lists as $v) { ?>
-<li class="list top">
-<span>[<?php echo timetodate($v['addtime'],3);?>]</span>
-<a href="<?php echo $v['linkurl'];?>" title="<?php echo $v['alt'];?>" target="_blank"><?php echo $v['title'];?></a>
-</li>
-<?php } } ?>
-</ul>
-</div>
+          <h2><a href="<?php echo $v['linkurl'];?>" title="<?php echo $v['alt'];?>"><?php echo $v['title'];?></a></h2>
+          <div class="info">
+            <span class="time"><?php echo timetodate($v['addtime'],3);?></span>
+            <span class="comm">暂时无</span>
+            <span class="view"><?php echo $v['hits'];?></span>
+          </div>
+          <div class="note"><?php echo _substr($v['introduce'],100,'...');?></div>
+
+        </li>
+        <?php } } ?>
+        
+        
+      </ul>
+      <div class="line20"></div>
+  <?php echo $pages;?>
+      <div class="flickr">
+  <span class="disabled">«上一页</span><span class="current">1</span><a href="/news/6/2.aspx">2</a><a href="/news/6/2.aspx">下一页»</a>
+  </div> 
+  <!--放置页码列表-->
+    </div>
+    <!--/Content-->
+  </div>
+  
+  <div class="left264">
+    <!--Sidebar-->
+    <div class="sidebar">
+      <h3>资讯类别</h3>
+      <ul class="navbar">
+        <?php if(is_array($maincat)) { foreach($maincat as $k => $v) { ?>
+        <li>
+          <h4><a href="<?php echo $MOD['linkurl'];?><?php echo $v['linkurl'];?>"<?php if($v['catid']==$catid) { ?> class="current"<?php } ?> ><?php echo $v['catname'];?></a></h4>
+  <?php $nav2=get_maincat($v['catid']);?>
+  <?php if($nav2!=null) { ?>
+          <div class="list">
+  <?php if(is_array($nav2)) { foreach($nav2 as $key => $va) { ?>
+            <a  href="<?php echo $MOD['linkurl'];?><?php echo $va['linkurl'];?>" <?php if($va['catid']==$catid) { ?> class="current"<?php } ?> ><?php echo $va['catname'];?></a>
+          <?php } } ?>
+          </div>
+  <?php } ?>
+        </li>
+        
+        <?php } } ?>
+      </ul>
+      <div class="clear"></div>
+      <h3>推荐资讯</h3>
+      <div class="focus_list">
+        <ul>
+          <?php $commend = tag("moduleid=$moduleid&condition=status=3 AND level=6 &catid=".$catid."&pagesize=6&order=".$MOD['order']."&template=null");?>
+          <?php if(is_array($commend)) { foreach($commend as $v) { ?>
+  <li>
+            <a title="<?php echo $v['title'];?>" href="<?php echo $v['linkurl'];?>">
+              <img src="<?php echo $v['thumb'];?>" width="100" height="100" alt="<?php echo $v['title'];?>" />
+              <span><?php echo $v['title'];?></span>
+            </a>
+          </li>
+  <?php } } ?>
+          
+        </ul>
+        <div class="clear"></div>
+      </div>
+      <h3>人气排行</h3>
+      <ul class="rank_list">
+        <?php $hits = tag("moduleid=$moduleid&condition=status=3 &catid=".$catid."&pagesize=10&order=hits DESC&template=null");?>
+<?php if(is_array($hits)) { foreach($hits as $key => $v) { ?>
+<?php $key++;?>
+        <li class="active">
+        
+          <span><?php echo timetodate($v['addtime'],2);?></span>
+          <i class="num"><?php echo $key;?></i><a href="<?php echo $v['linkurl'];?>" title="<?php echo $v['title'];?>"><?php echo $v['title'];?></a>
+        </li>
+        <?php } } ?>
+      </ul>
+    </div>
+    <!--/Sidebar-->
+  </div>
 </div>
 <div class="clear"></div>
-</div>
-<div class="clear"></div>
-<div class="b10"></div>
 <?php include template('footer');?>

@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-18 15:25:38</time>
+	<ip>192.168.1.88</ip>
+	<user>Guest</user>
+	<file>/news/list.php</file>
+	<querystring>catid=7</querystring>
+	<message>		<query>SELECT * FROM ruiec_article_18 WHERE status=3  AND catid IN (7,19,21) ORDER BY hit DESC LIMIT 0,6</query>
+		<errno>0</errno>
+		<error>Unknown column 'hit' in 'order clause'</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

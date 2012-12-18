@@ -51,12 +51,11 @@ function tag($parameter, $expires = 0) {
 	(isset($cols) && $cols) or $cols = 1;
 	if($catid && $moduleid > 4) {
 		if(is_numeric($catid)) {
-			$chilids = get_catchilds($catid,$moduleid,'1');
-			$condition .= ($chilids == '') ? " AND catid=$catid" : " AND catid IN (".$catid.$chilids.")";
+			$chilids = implode(',', get_catchilds($catid,$moduleid));
+			$condition .= ($chilids == '') ? " AND catid=$catid" : " AND catid IN (".$chilids.")";
 		} else {
 			$condition .= " AND catid IN ($catid)";
 		}
-		
 	}
 	$table = isset($table) ? $prefix.$table : get_table($moduleid);
 	$offset or $offset = ($page-1)*$pagesize;
