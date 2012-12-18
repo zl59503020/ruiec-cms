@@ -150,25 +150,28 @@
 <?php 
 	}
 	foreach($templates as $k=>$v) {
+		$_edit_js = "_url('?file=$file&action=edit&fileid={$v['fileid']}&dir=$dir',{n:'sys_template_edit',t:'编辑模板'});";
+		$_add_js = "_url('?file=$file&action=add&type={$v['type']}&dir=$dir',{n:'sys_template_new',t:'新建模板'});";
+		$_del_js = "tpl_delete('{$v['fileid']}','{$v['filename']}');";
 ?>
 		<tr align="center">
 			<td align="left">
 				<div class="icon_htm" style="float:left;"></div>
-				<a href="?file=<?php echo $file;?>&action=edit&fileid=<?php echo $v['fileid'];?>&dir=<?php echo $dir;?>" title="编辑"><?php echo $v['filename'];?></a>
+				<a href="javascript:;" onclick="<?php echo $_edit_js; ?>" title="编辑"><?php echo $v['filename'];?></a>
 			</td>
 			<td>
 				<a href="javascript:;" onclick="chk_rename('<?php echo $v['fileid'];?>',this);" title="点击修改备注名称"><?php echo $v['name'] ? $v['name'] : '--';?></a>
 			</td>
 			<td>
-				<a href="javascript:;" onclick="_url('?file=<?php echo $file;?>&action=add&type=<?php echo $v['type'];?>&dir=<?php echo $dir;?>',{n:'sys_template_new',t:'新建模板'});" title="新建"><?php echo $v['type'];?></a>
+				<a href="javascript:;" onclick="<?php echo $_add_js; ?>" title="新建"><?php echo $v['type'];?></a>
 			</td>
 			<td><?php echo $v['filesize'];?> Kb</td>
 			<td><?php echo $v['mtime'];?></td>
 			<td><?php echo $v['mod'];?></td>
 			<td class="my_option_m">
-				<a href="javascript:;" onclick="_url('fileid=<?php echo $v['fileid'];?>&dir=<?php echo $dir;?>',{n:'sys_template_edit',t:'编辑模板'});" title="编辑" class="icon_edit"></a>&nbsp;&nbsp;
-				<a href="javascript:;" onclick="_url('type=<?php echo $v['type'];?>&dir=<?php echo $dir;?>',{n:'sys_template_new',t:'新建模板'});" title="新建" class="icon_new"></a>&nbsp;&nbsp;
-				<a href="javascript:;" onclick="tpl_delete('<?php echo $v['fileid'];?>','<?php echo $v['filename'];?>')" title="删除" class="icon_delete"></a>
+				<a href="javascript:;" onclick="<?php echo $_edit_js; ?>" title="编辑" class="icon_edit"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="<?php echo $_add_js; ?>" title="新建" class="icon_new"></a>&nbsp;&nbsp;
+				<a href="javascript:;" onclick="<?php echo $_del_js; ?>" title="删除" class="icon_delete"></a>
 			</td>
 		</tr>
 <?php 

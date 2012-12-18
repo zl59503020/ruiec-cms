@@ -245,3 +245,85 @@ function tpl_add(f,d){
 	window.parent.f_addTab('sys_template_add_'+d+f, '模板风格', '?file=template&action=add&type='+f+'&dir='+d);
 }
 
+// Form 表单 提交check init
+function form_check_init(fmname,classname,ajaxopt){
+	if(typeof fmname == 'undefined' || fmname == '') fmname = '#myform';
+	if(typeof classname == 'undefined' || classname == '') classname = '.tab_con';
+	$(fmname).validate({
+		invalidHandler: function (e, validator) {
+			parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
+		},
+		errorPlacement: function (lable, element) {
+			//可见元素显示错误提示
+			if (element.parents(classname).css('display') != 'none') {
+				element.ligerTip({ content: lable.html(), appendIdTo: lable });
+			}
+		},
+		success: function (lable) {
+			lable.ligerHideTip();
+		}
+	});
+	//ajax form
+	$(fmname).ajaxForm({
+		beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
+		success : function(responseText, statusText, xhr, $form){
+			art.dialog.list['lock'].close();
+			if(statusText == 'success'){
+				if(responseText == '0'){
+					parent.jsprint(ajaxopt.title+"成功!", "", "Success");
+					if(typeof ajaxopt.url == 'undefined')
+						window.location.reload();
+					else
+						window.location = ajaxopt.url;
+				}else{
+					parent.jsprint(ajaxopt.title+"失败!", "", "Error");
+					art.dialog({
+						title: ajaxopt.title+'失败',
+						lock: true,
+						background: '#fff',
+						opacity: 0.5,
+						content: responseText,
+						ok: true
+					});
+				}
+			}else{
+				return true;
+			}
+		}
+	});
+}
+
+// base
+function _cf(opt){
+	art.dialog.confirm(opt.info, function(){
+		$.ajax({
+			url:opt.url,
+			success:function(data){
+				if(data == '0'){
+					parent.jsprint(opt.title+"成功!", "", "Success");
+					window.location.reload();
+				}else{
+					parent.jsprint(opt.title+"失败!", "", "Error");
+					art.dialog({
+						title: opt.title+'失败',
+						lock: true,
+						background: '#fff',
+						opacity: 0.5,
+						content: data,
+						ok: true
+					});
+				}
+			}
+		});
+	});
+}
+
+// check selected
+function ck_sel(name){
+	var sels = z.$('#'+name);
+	var ib = false;
+	for(var i in sels){
+		if(sels[i].checked) return true;
+	}
+	return false;
+}

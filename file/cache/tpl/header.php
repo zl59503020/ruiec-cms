@@ -35,14 +35,14 @@
 <div class="header">
   <div class="header_inner">
     <h1 class="logo">
-      <a title="Ruiec内容管理系统" href="http://demo.dtcms.net">Ruiec内容管理系统</a>
+      <a title="Ruiec内容管理系统" href="http://www.ruiec.com">Ruiec内容管理系统</a>
     </h1>
     <ul class="nav">
-  <li<?php if($moduleid<4) { ?> class="navdown"<?php } ?>><a href="<?php echo $MODULE['1']['linkurl'];?>"><span>首页</span></a></li>
+  <li<?php if($moduleid<4) { ?> class="navdown"<?php } ?>><a href="<?php echo $MODULE['1']['linkurl'];?>" title="首页"><span>首页</span></a></li>
   <?php if(is_array($MODULE)) { foreach($MODULE as $m) { ?>
 <?php if($m['ismenu']) { ?>
 <li<?php if($m['moduleid']==$moduleid) { ?> class="navdown"<?php } ?>>
-<a href="<?php echo $m['linkurl'];?>"<?php if($m['isblank']) { ?> target="_blank"<?php } ?>><span><?php echo $m['name'];?></span></a>
+<a href="<?php echo $m['linkurl'];?>"<?php if($m['isblank']) { ?> title="<?php echo $m['name'];?>" target="_blank"<?php } ?>><span><?php echo $m['name'];?></span></a>
 </li>
 <?php } ?>
 <?php } } ?>

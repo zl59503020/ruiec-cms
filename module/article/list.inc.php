@@ -10,34 +10,42 @@ if($MOD['list_html']) {
 	$html_file = listurl($CAT, $page);
 	if(is_file(RE_ROOT.'/'.$MOD['moduledir'].'/'.$html_file)) {
 		@header("HTTP/1.1 301 Moved Permanently");
-		dheader($MOD['linkurl'].$html_file);
+		_header($MOD['linkurl'].$html_file);
+		exit;
 	}
 }
 
-/* $CP = $MOD['cat_property'] && $CAT['property'];
-if($MOD['cat_property'] && $CAT['property']) {
-	require RE_ROOT.'/include/property.func.php';
-	$PPT = property_condition($catid);
-} */
-unset($CAT['moduleid']);
+//unset($CAT['moduleid']);
+
 extract($CAT);
-//$maincat = get_maincat($parentid, $moduleid);
-$maincat = get_maincat(0, $moduleid, 1);
-$childcat = get_maincat($catid, $moduleid, 1);
 
-$condition = 'status=3';
-$condition .= " AND catid=$catid";
-$pagesize = $MOD['pagesize'];
 $tags = array();
+$maincat = get_maincat(0, $moduleid);
+$childcat = get_maincat($catid, $moduleid);
+$catchilds = implode(',', get_catchilds($catid, $moduleid));
 
-$showpage = 1;
-$datetype = 5;
-$cols = 5;
+$condition = "status=3 AND catid IN ($catchilds)";
+$pagesize = $MOD['pagesize'];
+$start = ($page-1)*$pagesize;
+
+$items = $db->count($table, $condition, $CFG['db_expires']);
+
+$pages = listpages($CAT, $items, $page, $pagesize);
+
+$result = $db->query("SELECT * FROM {$table} WHERE {$condition} ORDER BY ".$MOD['order']." LIMIT {$start},{$pagesize}");
+while($r = $db->fetch_array($result)) {
+	$r['adddate'] = timetodate($r['addtime'], 5);
+	$r['editdate'] = timetodate($r['edittime'], 5);
+	$r['alt'] = $r['title'];
+	if(strpos($r['linkurl'], '://') === false) $r['linkurl'] = $MOD['linkurl'].$r['linkurl'];
+	$tags[] = $r;
+}
+$db->free_result($result);
 
 $seo_file = 'list';
-
 include RE_ROOT.'/include/seo.inc.php';
 
 $template = $CAT['template'] ? $CAT['template'] : ($MOD['template_list'] ? $MOD['template_list'] : 'list');
+
 include template($template, $module);
-?>
+

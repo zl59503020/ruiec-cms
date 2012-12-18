@@ -16,3 +16,11 @@
 .right350{float:right;width:350px;}
 .right356{float:right;width:356px;}
 .right757{float:right;position:relative;width:757px;padding:20px;border-left:1px solid #E2E2E2;background:#fff;min-height:470px;_height:470px;}
+
+
+.line20 {
+clear: both;
+font-size: 0px;
+height: 20px;
+overflow: hidden;
+}

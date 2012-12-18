@@ -2,134 +2,6 @@
 defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
-
-<script type="text/javascript">
-
-	//表单验证
-    $(function () {
-        $("#myform_cat").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform_cat').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("更新成功!", "", "Success");
-						window.location = '?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>';
-					}else{
-						parent.jsprint("更新失败!", "", "Error");
-						art.dialog({
-							title: '更新失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-	
-	function _showc(id){
-		var trs = $('tr[_id='+id+']');
-		(trs[0].style.display == '') ? trs.hide() : trs.show();
-	}
-	
-	function _delete(id){
-		art.dialog.confirm('确定要删除该分类吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!<br /><strong>该分类所有子分类也将被删除!</strong></span>', function(){
-			$.ajax({
-				url:'?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>&action=delete&catid='+encodeURIComponent(id),
-				success:function(data){
-					if(data == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: data,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function _update_sel(){
-		var sels = z.$('#catid[]');
-		var ib = false;
-		for(var i in sels){
-			if(sels[i].checked) ib = true;
-		}
-		if(ib || _increate_new != ''){
-			art.dialog.confirm('确定要更新所选的分类吗?', function(){
-				$('#action').val('update');
-				$('#myform').submit();
-			});
-		}else{
-			alert('请选择要更新的分类!');
-		}		
-	}
-	
-	function _delete_sel(){
-		var sels = z.$('#catid[]');
-		var ib = false;
-		for(var i in sels){
-			if(sels[i].checked) ib = true;
-		}
-		if(ib){
-			art.dialog.confirm('确定要删除所选的分类吗?<br><span style="color:red;">此操作不可恢复!</span>', function(){
-				$('#action').val('delete');
-				$('#myform').submit();
-			});
-		}else{
-			alert('请选择要删除的分类!');
-		}
-	}
-	
-	var _increate_new = '';
-	
-	function _add(elem,url,p){
-	
-		elem = elem.parentElement.parentElement;
-		
-		var parentid = z.$('<input>',elem)[0].value;
-		
-		_increate_new = z.create({tagName:'tr',align:'center',content:'<td></td><td><input type="text" name="newCat[][listorder]" value="0" size="5" class="valid number" /></td><td></td><td align="left"><input type="text" name="newCat[][catname]" value="" class="txtInput normal required" style="width:150px;" /></td><td align="left"><input type="text" name="newCat[][catdir]" value="" class="txtInput required" /></td><td class="my_option_m"><a href="javascript:;" onclick="_Revocation(this);" title="撤销">撤销</a><input type="hidden" name="newCat[][parentid]" value="'+parentid+'" /></td>',adom:elem});
-		
-		
-		
-		//_url(url,p);
-	}
-	
-	function _Revocation(elem){
-		elem = elem.parentElement.parentElement;
-		z.remove(elem);
-	}
-	
-</script>
-
 <div class="navigation">首页 &gt; 分类管理 &gt; <?php echo $MOD['name']; ?>分类</div>
 	
 	<div class="tools_box">
@@ -208,5 +80,87 @@ include tpl('header');
 		
 	<div class="line10"></div>
 
+<script type="text/javascript">
+
+	//表单初始化验证
+    $(function () {
+        form_check_init('','',{title:'更新'});
+		//onkeydown
+		var txts = z.$('<input> [type=text]');
+		for(var i in txts){
+			z.att(txts[i],'onkeydown',function(){
+				z.$('<input> [type=checkbox]', this.parentElement.parentElement)[0].checked = true;
+			});
+		}
+    });
+	
+	function _delete(id){
+		var info = '确定要删除该分类吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!<br /><strong>该分类所有子分类也将被删除!</strong></span>';
+		var url = '?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>&action=delete&catid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'删除'});
+	}
+	
+	/* function _sm_sel(opt){
+		if(ck_sel(opt.name)){
+			art.dialog.confirm(opt.title, function(){
+				if(typeof opt.action != 'undefined') $('#action').val(opt.action);
+				if(typeof opt.fmname != 'undefined')
+					$('#'+opt.fmname).submit();
+				else
+					$('#myform').submit();
+			});
+		}else{
+			alert('请选择!');
+		}
+	} */
+	
+	function _update_sel(){
+		if(ck_sel('catid[]') || _increate_new != ''){
+			art.dialog.confirm('确定要更新所选的分类吗?', function(){
+				$('#action').val('update');
+				$('#myform').submit();
+			});
+		}else{
+			alert('请选择要更新的分类!');
+		}		
+	}
+	
+	function _delete_sel(){
+		if(ck_sel('catid[]')){
+			art.dialog.confirm('确定要删除所选的分类吗?<br><span style="color:red;">此操作不可恢复!</span>', function(){
+				$('#action').val('delete');
+				$('#myform').submit();
+			});
+		}else{
+			alert('请选择要删除的分类!');
+		}
+	}
+	
+	var _increate_new = '';
+	var _ni = 0;
+	
+	function _add(elem,url,p){
+		
+		_ni++;
+		
+		elem = elem.parentElement.parentElement;
+		
+		var parentid = z.$('<input>',elem)[0].value;
+		
+		var _n = 'newCat['+_ni+']';
+		
+		_increate_new = z.create({tagName:'tr',align:'center',content:'<td></td><td><input type="text" name="'+_n+'[listorder]" value="0" size="5" class="valid number" /></td><td></td><td align="left"><input type="text" name="'+_n+'[catname]" value="" class="txtInput normal required" style="width:150px;" /></td><td align="left"><input type="text" name="'+_n+'[catdir]" value="" class="txtInput required" /></td><td class="my_option_m"><a href="javascript:;" onclick="_Revocation(this);" title="撤销">撤销</a><input type="hidden" name="'+_n+'[parentid]" value="'+parentid+'" /></td>',adom:elem});
+		
+		//form_check_init('#myform_cat');
+		
+		//_url(url,p);
+	}
+	
+	function _Revocation(elem){
+		elem = elem.parentElement.parentElement;
+		z.remove(elem);
+	}
+	
+</script>
 
 <?php include tpl('footer');?>

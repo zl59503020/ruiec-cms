@@ -353,7 +353,7 @@ function random($length, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghi
 }
 
 function listurl($CAT, $page = 0) {
-	//global $RE, $MOD, $L;
+	//global $RE, $MOD;
 	//include RE_ROOT.'/api/url.inc.php';
 	//$catid = $CAT['catid'];
 	//$file_ext = 'php';//$RE['file_ext'];	
@@ -404,6 +404,104 @@ function itemurl($item, $page = 0) {
 	*/
 	$itemurl = 'show.php?itemid='.$item['itemid'];
 	return $itemurl;
+}
+
+// 分页 (总数,当前页数,每页显示数)
+function pages($total, $page = 1, $perpage = 10, $demo = '', $step = 2) {
+	global $RE_URL, $RE;
+	if($total <= $perpage) return '';
+	$items = $total;
+	$total = ceil($total/$perpage);
+	if($page < 1 || $page > $total) $page = 1;
+	if($demo) {
+		$demo_url = $demo;
+		$home_url = str_replace('{ruiec_page}', '1', $demo_url);
+	} else {
+		if(defined('RE_REWRITE') && $RE['rewrite'] && $_SERVER["SCRIPT_NAME"]) {
+			$demo_url = $_SERVER["SCRIPT_NAME"];
+			$demo_url = str_replace('//', '/', $demo_url);//Fix Nginx
+			$mark = false;
+			if(substr($demo_url, -4) == '.php') {
+				if(strpos($_SERVER['QUERY_STRING'], '.html') === false) {
+					$qstr = '';
+					if($_SERVER['QUERY_STRING']) {					
+						if(substr($_SERVER['QUERY_STRING'], -5) == '.html') {
+							$qstr = '-'.substr($_SERVER['QUERY_STRING'], 0, -5);
+						} else {
+							parse_str($_SERVER['QUERY_STRING'], $qs);
+							foreach($qs as $k=>$v) {
+								$qstr .= '-'.$k.'-'.rawurlencode($v);
+							}
+						}
+					}
+					$demo_url = substr($demo_url, 0, -4).'-htm-page-{ruiec_page}'.$qstr.'.html';
+				} else {
+					$demo_url = substr($demo_url, 0, -4).'-htm-'.$_SERVER['QUERY_STRING'];
+					$mark = true;
+				}
+			} else {
+				$mark = true;
+			}
+			if($mark) {
+				if(strpos($demo_url, '%') === false) $demo_url =  rawurlencode($demo_url);
+				$demo_url = str_replace(array('%2F', '%3A'), array('/', ':'), $demo_url);
+				if(strpos($demo_url, '-page-') !== false) {
+					$demo_url = preg_replace("/page-([0-9]+)/", 'page-{ruiec_page}', $demo_url);
+				} else {
+					$demo_url = str_replace('.html', '-page-{ruiec_page}.html', $demo_url);
+				}
+			}
+			$home_url = str_replace('-page-{ruiec_page}', '-page-1', $demo_url);
+		} else {
+			$RE_URL = str_replace('&amp;', '&', $RE_URL);
+			$demo_url = $home_url = preg_replace("/(.*)([&?]page=[0-9]*)(.*)/i", "\\1\\3", $RE_URL);
+			$s = strpos($demo_url, '?') === false ? '?' : '&';
+			$demo_url = $demo_url.$s.'page={des'.'toon_page}';
+		}
+	}
+	$pages = '';
+	include RE_ROOT.'/api/pages.default.php';
+	return $pages;
+}
+
+// 列表页 分页
+function listpages($CAT, $total, $page = 1, $perpage = 10, $step = 2) {
+	global $RE, $MOD;
+	if($total <= $perpage) return '';
+	$items = $total;
+	$total = ceil($total/$perpage);
+	if($page < 1 || $page > $total) $page = 1;
+	$home_url = $MOD['linkurl'].$CAT['linkurl'];
+	$demo_url = $MOD['linkurl'].$CAT['linkurl'].'&page='.ceil($total/$page);
+	$pages = '';
+	include RE_ROOT.'/api/pages.default.php';
+	return $pages;
+}
+
+// 内容页 分页
+function showpages($item, $total, $page = 1) {
+	global $MOD;
+	$pages = '';
+	$home_url = $MOD['linkurl'].itemurl($item);
+	$demo_url = $MOD['linkurl'].itemurl($item, '{ruiec_page}');
+	$_page = $page <= 1 ? $total : ($page - 1);
+	$url = $_page == 1 ? $home_url : str_replace('{ruiec_page}', $_page, $demo_url);
+	$pages .= '<input type="hidden" id="des'.'toon_previous" value="'.$url.'"/><a href="'.$url.'" title="上一页">&nbsp;&#171;&nbsp;</a> ';
+	for($_page = 1; $_page <= $total; $_page++) {
+		$url = $_page == 1 ? $home_url : str_replace('{ruiec_page}', $_page, $demo_url);
+		$pages .= $page == $_page ? '<strong>&nbsp;'.$_page.'&nbsp;</strong> ' : ' <a href="'.$url.'">&nbsp;'.$_page.'&nbsp;</a>  ';
+	}
+	$_page = $page >= $total ? 1 : $page + 1;
+	$url = $_page == 1 ? $home_url : str_replace('{ruiec_page}', $_page, $demo_url);
+	$pages .= '<a href="'.$url.'" title="下一页">&nbsp;&#187;&nbsp;</a> <input type="hidden" id="des'.'toon_next" value="'.$url.'"/>';
+	return $pages;
+}
+
+function get_info_similar($moduleid,$keys){
+	global $db;
+	$table = get_table($moduleid);
+	
+	
 }
 
 function set_cookie($var, $value = '', $time = 0) {
@@ -628,52 +726,6 @@ function get_env($type) {
 	}
 }
 
-// 分类
-function get_cat($catid) {
-	global $db;
-	$catid = intval($catid);
-	return $catid ? $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=$catid") : array();
-}
-
-// 导航 map
-function cat_pos($CAT, $str = ' &raquo; ', $target = '', $isl = false) {
-	global $MODULE, $db;
-	if(!$CAT) return '';
-	//$CAT = $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=".$CAT['catid']);
-	//$arrparentids = $CAT['arrparentid'].','.$CAT['catid'];
-	//$arrparentid = explode(',', $arrparentids);
-	if($CAT['parentid'] == '0') return $CAT['catname'];
-	$target = $target ? ' target="_blank"' : '';	
-	$arrparentids = get_catparentids($CAT['catid'],$CAT['moduleid']);
-	$showcatInfo = ($isl) ? '<a href="'.$MODULE[$CAT['moduleid']]['linkurl'].$CAT['linkurl'].'"'.$target.'>' : $CAT['catname'];
-	if($arrparentids == ''){
-		//return '<a href="'.$MODULE[$CAT['moduleid']]['linkurl'].$CAT['linkurl'].'"'.$target.'>'.$CAT['catname'].'</a> &raquo; '.$showcatInfo;
-		return $showcatInfo;
-	}else{
-		$arrparentids = substr($arrparentids,1);
-		$arrparentid = explode(',', $arrparentids);
-		$pos = '';
-		$CATEGORY = array();
-		$result = $db->query("SELECT catid,moduleid,catname,linkurl FROM {$db->pre}category WHERE catid IN ($arrparentids)");
-		while($r = $db->fetch_array($result)) {
-			$CATEGORY[$r['catid']] = $r;
-		}
-		foreach($arrparentid as $catid) {
-			if(!$catid || !isset($CATEGORY[$catid])) continue;
-			$pos .= '<a href="'.$MODULE[$CATEGORY[$catid]['moduleid']]['linkurl'].$CATEGORY[$catid]['linkurl'].'"'.$target.'>'.$CATEGORY[$catid]['catname'].'</a>'.$str;
-		}
-		$_len = strlen($str);
-		if($str && substr($pos, -$_len, $_len) === $str) $pos = substr($pos, 0, strlen($pos)-$_len);
-		return $pos.' &raquo; '.$showcatInfo;
-	}
-}
-
-function cat_url($catid) {
-	global $MODULE, $db;
-	$r = $db->get_one("SELECT moduleid,linkurl FROM {$db->pre}category WHERE catid=$catid");
-	return $r ? $MODULE[$r['moduleid']]['linkurl'].$r['linkurl'] : '';
-}
-
 // 清除链接
 function clear_link($content) {
 	$content = preg_replace("/<a[^>]*>/i", "", $content);
@@ -768,8 +820,47 @@ function _safe($string) {
 	}
 }
 
+
+// 分类
+function get_cat($catid) {
+	global $db;
+	$catid = intval($catid);
+	return $catid ? $db->get_one("SELECT * FROM {$db->pre}category WHERE catid=$catid") : array();
+}
+
+// 导航 map
+function cat_pos($CAT, $str = ' &raquo; ', $target = '') {
+	global $MODULE, $db;
+	if(!$CAT) return '';
+	if($CAT['parentid'] == '0') return $CAT['catname'];
+	$target = $target ? ' target="_blank"' : '';
+	$arrparentids = get_catparentids($CAT['catid'], $CAT['moduleid']);
+	if($arrparentids == ''){
+		return $CAT['catname'];
+	}else{
+		$pos = '';
+		$CATEGORY = array();
+		$result = $db->query("SELECT catid,moduleid,catname,linkurl FROM {$db->pre}category WHERE catid IN ($arrparentids)");
+		while($r = $db->fetch_array($result)) {
+			$CATEGORY[$r['catid']] = $r;
+		}
+		foreach(explode(',', $arrparentids) as $catid) {
+			if(!$catid || !isset($CATEGORY[$catid])) continue;
+			$pos .= '<a href="'.$MODULE[$CATEGORY[$catid]['moduleid']]['linkurl'].$CATEGORY[$catid]['linkurl'].'"'.$target.'>'.$CATEGORY[$catid]['catname'].'</a>'.$str;
+		}
+		return $pos.$CAT['catname'];
+	}
+}
+
+// 分类的 url
+function cat_url($catid) {
+	global $MODULE, $db;
+	$r = $db->get_one("SELECT moduleid,linkurl FROM {$db->pre}category WHERE catid=$catid");
+	return $r ? $MODULE[$r['moduleid']]['linkurl'].$r['linkurl'] : '';
+}
+
 // 获取分类
-function get_maincat($catid, $moduleid) {
+function get_maincat($catid, $moduleid = 0) {
 	global $db;
 	$condition = $catid ? "parentid=$catid" : "moduleid=$moduleid AND parentid=0";
 	$cat = array();
@@ -778,6 +869,46 @@ function get_maincat($catid, $moduleid) {
 		$cat[] = $r;
 	}
 	return $cat;
+}
+
+//获取所有子类id
+function get_catchilds($catid, $moduleid = 1, $parents = array()){
+	global $db;
+	$parents[] = $catid;
+	$result = $db->query("SELECT catid FROM {$db->pre}category WHERE moduleid=$moduleid AND parentid=$catid");
+	while($c = $db->fetch_array($result)) {
+		$parents = get_catchilds($c['catid'], $moduleid, $parents);
+	}
+	return $parents;
+}
+
+//获取所有父类id
+function get_catparentids($catid, $moduleid = 1){
+	global $db;
+	$parents = '';
+	$result = $db->get_one("SELECT parentid FROM {$db->pre}category WHERE moduleid=$moduleid AND catid=$catid");
+	if($result['parentid'] != '0'){
+		$parents .= $result['parentid'];
+		$_tmpparents = get_catparentids($result['parentid'], $moduleid);
+		$parents .= ($_tmpparents == '') ? '' : ', '.$_tmpparents;
+	}
+	return $parents;
+}
+
+//获取下拉选项
+function _get_option($parents,$catid=0,$exstr=''){
+	$select = '';
+	foreach($parents as $k=>$v) {
+		$_catinfo = get_cat($k);
+		if($_catinfo){
+			$selected = $_catinfo['catid'] == $catid ? ' selected' : '';
+			$select .= '<option value="'.$_catinfo['catid'].'"'.$selected.'>'.$exstr.$_catinfo['catname'].'</option>';
+			if(is_array($v) && $v){
+				$select .= _get_option($v,$catid,$exstr.' |--');
+			}
+		}
+	}
+	return $select;
 }
 
 // 级别选择
@@ -807,49 +938,6 @@ function category_select($name = 'catid', $title = '', $catid = 0, $moduleid = 1
 	} else {
 		return ajax_category_select($name, $title, $catid, $moduleid, $extend);
 	}
-}
-
-//获取所有子类id
-function get_catchilds($catid, $moduleid = 1, $retype = '0'){
-	global $db;
-	$parents = array();
-	$_parents = '';
-	$result = $db->query("SELECT catid FROM {$db->pre}category WHERE moduleid=$moduleid AND parentid=$catid");
-	while($c = $db->fetch_array($result)) {
-		$parents[$c['catid']] = get_catchilds($c['catid'], $moduleid, $retype);
-		$_parents .= ','.$c['catid'];//.get_catchilds($c['catid'], $moduleid,$retype);
-		//array_push($parents, get_catchilds($c['catid'], $moduleid));
-		//$parents = array_merge($parents, get_catchilds($c['catid'], $moduleid));
-	}
-	return ($retype == '0') ? $parents : $_parents;
-}
-
-//获取所有父类id
-function get_catparentids($catid, $moduleid = 1){
-	global $db;
-	$parents = '';
-	$result = $db->get_one("SELECT parentid FROM {$db->pre}category WHERE moduleid=$moduleid AND catid=$catid");
-	if($result['parentid'] != '0'){
-		$parents .= ','.$result['parentid'];
-		$parents .= get_catparentids($result['parentid'], $moduleid);
-	}
-	return $parents;
-}
-
-//获取下拉选项
-function _get_option($parents,$catid=0,$exstr=''){
-	$select = '';
-	foreach($parents as $k=>$v) {
-		$_catinfo = get_cat($k);
-		if($_catinfo){
-			$selected = $_catinfo['catid'] == $catid ? ' selected' : '';
-			$select .= '<option value="'.$_catinfo['catid'].'"'.$selected.'>'.$exstr.$_catinfo['catname'].'</option>';
-			if(is_array($v) && $v){
-				$select .= _get_option($v,$catid,$exstr.' |--');
-			}
-		}
-	}
-	return $select;
 }
 
 function get_category_select($name = '', $title = '', $catid = 0, $moduleid = 1, $extend = '', $deep = 0, $cat_id = 1) {
