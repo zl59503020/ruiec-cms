@@ -32,9 +32,6 @@
       </ul>
       <div class="line20"></div>
   <?php echo $pages;?>
-      <div class="flickr">
-  <span class="disabled">«上一页</span><span class="current">1</span><a href="/news/6/2.aspx">2</a><a href="/news/6/2.aspx">下一页»</a>
-  </div> 
   <!--放置页码列表-->
     </div>
     <!--/Content-->

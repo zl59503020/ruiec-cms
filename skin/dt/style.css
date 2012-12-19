@@ -17,6 +17,13 @@ a {
 a:hover {
 	color:#8CAC52;
 }
+
+/*	page	*/
+.page{width:100%; margin:10px auto; text-align:center; font-size:13px;}
+.page .mPage {padding: 3px 6px;border: 1px solid #DDDDDD;color: #AAAAAA;margin-left: 1px;}
+
+.hide{display:none;}
+
 /*GOTO TOP*/
 .gotop {
 	display:none;

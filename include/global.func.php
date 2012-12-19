@@ -407,11 +407,11 @@ function itemurl($item, $page = 0) {
 }
 
 // 分页 (总数,当前页数,每页显示数)
-function pages($total, $page = 1, $perpage = 10, $demo = '', $step = 2) {
+function pages($total, $page = 1, $pagesize = 10, $demo = '', $step = 2) {
 	global $RE_URL, $RE;
-	if($total <= $perpage) return '';
+	if($total <= $pagesize) return '';
 	$items = $total;
-	$total = ceil($total/$perpage);
+	$total = ceil($total/$pagesize);
 	if($page < 1 || $page > $total) $page = 1;
 	if($demo) {
 		$demo_url = $demo;
@@ -465,11 +465,11 @@ function pages($total, $page = 1, $perpage = 10, $demo = '', $step = 2) {
 }
 
 // 列表页 分页
-function listpages($CAT, $total, $page = 1, $perpage = 10, $step = 2) {
+function listpages($CAT, $total, $page = 1, $pagesize = 10, $step = 2) {
 	global $RE, $MOD;
-	if($total <= $perpage) return '';
+	if($total <= $pagesize) return '';
 	$items = $total;
-	$total = ceil($total/$perpage);
+	$total = ceil($total/$pagesize);
 	if($page < 1 || $page > $total) $page = 1;
 	$home_url = $MOD['linkurl'].$CAT['linkurl'];
 	$demo_url = $MOD['linkurl'].$CAT['linkurl'].'&page='.ceil($total/$page);
@@ -503,6 +503,33 @@ function get_info_similar($moduleid,$keys){
 	
 	
 }
+
+// 获取评论
+function get_comments($moduleid, $infoid=0, $pid=1, $pct=10){
+	global $db,$MODULE;
+	$comments = array();
+	$sqlwhere = " moduleid = $moduleid ".(($infoid == 0) ? '' : ' AND infoid = '.$infoid);
+	$query = $db->query("SELECT * FROM {$db->pre}comment WHERE $sqlwhere ORDER BY addtime DESC LIMIT ".(($pid-1)*$pct).", ".$pct);
+	while($r = $db->fetch_array($query)) {
+		$_tempi = get_comment_info($moduleid,$r['infoid']);
+		if($_tempi == null){
+			$r['title'] = '信息未找到!';
+			$r['linkurl'] = 'javascript:;';
+		}else{
+			$r['title'] = $_tempi['title'];
+			$r['linkurl'] = $MODULE[$moduleid]['linkurl'].$_tempi['linkurl'];
+		}
+		$comments[] = $r;
+	}
+	return $comments;
+}
+
+// 获取详细
+function get_comment_info($moduleid,$infoid){
+	global $db,$MODULE;
+	return $db->get_one("SELECT * FROM ".get_table($moduleid)." WHERE itemid = $infoid");
+}
+
 
 function set_cookie($var, $value = '', $time = 0) {
 	global $CFG, $RE_TIME;
