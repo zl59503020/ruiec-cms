@@ -55,32 +55,6 @@ function get_setting($item) {
 	return $setting;
 }
 
-// 获取评论
-function get_comments($moduleid, $infoid=0, $pid=1, $pct=10){
-	global $db,$MODULE;
-	$comments = array();
-	$sqlwhere = " moduleid = $moduleid ".(($infoid == 0) ? '' : ' AND infoid = '.$infoid);
-	$query = $db->query("SELECT * FROM {$db->pre}comment WHERE $sqlwhere ORDER BY addtime DESC LIMIT ".(($pid*$pct)-$pct).", ".$pct);
-	while($r = $db->fetch_array($query)) {
-		$_tempi = get_comment_info($moduleid,$r['infoid']);
-		if($_tempi == null){
-			$r['title'] = '信息未找到!';
-			$r['linkurl'] = 'javascript:;';
-		}else{
-			$r['title'] = $_tempi['title'];
-			$r['linkurl'] = $MODULE[$moduleid]['linkurl'].$_tempi['linkurl'];
-		}
-		$comments[] = $r;
-	}
-	return $comments;
-}
-
-// 获取详细
-function get_comment_info($moduleid,$infoid){
-	global $db,$MODULE;
-	return $db->get_one("SELECT * FROM ".get_table($moduleid)." WHERE itemid = $infoid");
-}
-
 // 更新分类
 function update_category($CAT) {
 	global $db, $RE;

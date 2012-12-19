@@ -2,6 +2,30 @@
 defined('IN_RUIEC') or exit('Access Denied');
 require RE_ROOT.'/module/'.$module.'/common.inc.php';
 $itemid or _header($MOD['linkurl']);
+$cmt = new COMMENT;
+// 评论
+if(isset($v_sm) && $v_sm == 'ruiec' && isset($comment) && is_array($comment)){
+	if(isset($MOD['comment']) && $MOD['comment'] == 1){
+		$comment['moduleid'] = $moduleid;
+		$comment['infoid'] = $itemid;
+		if($cmt->add_newcomment($comment) > 0){
+			die('0');
+		}else{
+			die('1');
+		}
+	}else{
+		die('系统当前模块未开启评论功能!');
+	}
+}
+// 评论分页
+if(isset($v_ajax) && $v_ajax == 'ruiec'){
+	if(isset($c_page)){
+		$_comments = $cmt->get_comments($moduleid,$itemid,$c_page);
+		echo json_encode($_comments);
+	}
+	exit;
+}
+
 $item = $db->get_one("SELECT * FROM {$table} WHERE itemid=$itemid");
 if($item && $item['status'] > 2) {
 	if($item['islink']) dheader($item['linkurl']);
@@ -23,6 +47,11 @@ $CAT = get_cat($catid);
 $content_table = content_table($moduleid, $itemid, $table_data);
 $t = $db->get_one("SELECT content FROM {$content_table} WHERE itemid=$itemid");
 $content = $t['content'];
+
+if(isset($MOD['comment']) && $MOD['comment'] == 1){
+	$comments = $cmt->get_comments($moduleid,$itemid);
+	$comments_count = $cmt->get_comments_count($moduleid,$itemid);
+}
 
 $adddate = timetodate($addtime, 3);
 $editdate = timetodate($edittime, 3);
@@ -57,5 +86,5 @@ if($MOD['template_show']) $template = $MOD['template_show'];
 if($MOD['template_show']) $template = $MOD['template_show'];
 if($CAT['show_template']) $template = $CAT['show_template'];
 if($item['template']) $template = $item['template'];
+
 include template($template, $module);
-?>
