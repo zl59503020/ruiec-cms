@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-21 16:39:00</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/api/comment.php</file>
+	<querystring>moduleid=18&amp;itemid=17&amp;action=list&amp;v_ajax=ruiec&amp;c_page=1&amp;pagesize=10</querystring>
+	<message>		<query>SELECT * FROM ruiec_comment WHERE  moduleid = 18  AND infoid = 17 AND status == 1 ORDER BY addtime DESC LIMIT 0, 10</query>
+		<errno>0</errno>
+		<error>You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '== 1 ORDER BY addtime DESC LIMIT 0, 10' at line 1</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

@@ -14,24 +14,24 @@ class COMMENT {
 		$this->fields = array('itemid','comment_id','moduleid','infoid','username','userip','addtime','content','useragent','status','other');
 	}
 	
-	// »ñÈ¡ÆÀÂÛ
+	// èŽ·å–è¯„è®º
 	function get_comments($moduleid, $infoid=0, $pid=1, $pct=10){
 		$comments = array();
 		$sqlwhere = " moduleid = $moduleid ".(($infoid == 0) ? '' : ' AND infoid = '.$infoid);
-		$query = $this->db->query("SELECT * FROM {$this->table} WHERE $sqlwhere ORDER BY addtime DESC LIMIT ".(($pid-1)*$pct).", ".$pct);
+		$query = $this->db->query("SELECT * FROM {$this->table} WHERE $sqlwhere AND status = 1 ORDER BY addtime DESC LIMIT ".(($pid-1)*$pct).", ".$pct);
 		while($r = $this->db->fetch_array($query)) {
 			$_tempi = get_comment_info($moduleid,$r['infoid']);
 			if($_tempi == null){
-				$r['title'] = 'ÐÅÏ¢Î´ÕÒµ½!';
+				$r['title'] = 'ä¿¡æ¯æœªæ‰¾åˆ°!';
 				$r['linkurl'] = 'javascript:;';
 			}else{
 				$r['title'] = $_tempi['title'];
 				$r['linkurl'] = $_tempi['linkurl'];
 			}
 			if($r['other'] != ''){
-				$_tmpary = unserialize($r['other']);
-				if(isset($_tmpary['email'])){
-					$r['thumb'] = 'http://www.gravatar.com/avatar/'.md5($_tmpary['email']);
+				$r['other'] = unserialize($r['other']);
+				if(isset($r['other']['email'])){
+					$r['thumb'] = 'http://www.gravatar.com/avatar/'.md5($r['other']['email']);
 				}
 			}
 			if(!isset($r['thumb'])) $r['thumb'] = 'http://www.gravatar.com/avatar/'.md5('test@test.cn');
@@ -40,35 +40,44 @@ class COMMENT {
 		return $comments;
 	}
 	
-	// »ñÈ¡ÆÀÂÛ×ÜÊý
+	// èŽ·å–è¯„è®ºæ€»æ•°
 	function get_comments_count($moduleid, $infoid=0){
 		$sqlwhere = " moduleid = $moduleid ".(($infoid == 0) ? '' : ' AND infoid = '.$infoid);
-		$r = $this->db->get_one("SELECT COUNT(*) AS ct FROM {$this->table} WHERE $sqlwhere");
+		$r = $this->db->get_one("SELECT COUNT(*) AS ct FROM {$this->table} WHERE $sqlwhere AND status = 1 ");
 		return $r['ct'];
 	}
 
-	// »ñÈ¡ÏêÏ¸
+	// èŽ·å–è¯¦ç»†
 	function get_comment_info($moduleid,$infoid){
 		return $this->db->get_one("SELECT * FROM ".get_table($moduleid)." WHERE itemid = $infoid");
 	}
 	
-	//check
-	function set($comment){
-		if(!isset($comment['username']) || $comment['username'] == ''){$comment['username'] = 'ÄäÃûÓÃ»§';}
-		$comment['userip'] = get_env('ip');
-		$comment['addtime'] = time();
-		$comment['useragent'] = $_SERVER["HTTP_USER_AGENT"];
-		$comment['status'] = '0';
-		if(isset($comment['other'])){
-			$comment['other'] = serialize($comment['other']);
-		}
-		
-		return $comment;
+	// check æ£€æµ‹
+	function check($post) {
+		if(!is_array($post)) return false;
+		if(!isset($post['moduleid']) || $post['moduleid'] == '') return 'æ¨¡å—é”™è¯¯!';
+		if(!isset($post['infoid']) || $post['infoid'] == '') return 'ç›®æ ‡ä¿¡æ¯é”™è¯¯!';
+		if(!isset($post['content']) || $post['content'] == '') return 'è¯„è®ºå†…å®¹ä¸èƒ½ä¸ºç©º';
+		return true;
 	}
 	
-	// Ìí¼ÓÆÀÂÛ
-	function add_newcomment($comment){
+	//check
+	function set($post){
+		if(!isset($post['username']) || $post['username'] == ''){$post['username'] = 'åŒ¿åç”¨æˆ·';}
+		$post['userip'] = get_env('ip');
+		$post['addtime'] = time();
+		$post['useragent'] = $_SERVER["HTTP_USER_AGENT"];
+		$post['status'] = '0';
+		if(isset($post['other'])){
+			$post['other'] = serialize($post['other']);
+		}
 		
+		return $post;
+	}
+	
+	// æ·»åŠ è¯„è®º
+	function add_newcomment($comment){
+				
 		$comment = $this->set($comment);
 		
 		$sqlk = $sqlv = '';
