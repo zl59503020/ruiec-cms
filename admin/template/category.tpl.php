@@ -141,7 +141,7 @@ include tpl('header');
 	
 	function _add(elem,url,p){
 		
-		_ni++;
+		/* _ni++;
 		
 		elem = elem.parentElement.parentElement;
 		
@@ -149,11 +149,11 @@ include tpl('header');
 		
 		var _n = 'newCat['+_ni+']';
 		
-		_increate_new = z.create({tagName:'tr',align:'center',content:'<td></td><td><input type="text" name="'+_n+'[listorder]" value="0" size="5" class="valid number" /></td><td></td><td align="left"><input type="text" name="'+_n+'[catname]" value="" class="txtInput normal required" style="width:150px;" /></td><td align="left"><input type="text" name="'+_n+'[catdir]" value="" class="txtInput required" /></td><td class="my_option_m"><a href="javascript:;" onclick="_Revocation(this);" title="撤销">撤销</a><input type="hidden" name="'+_n+'[parentid]" value="'+parentid+'" /></td>',adom:elem});
+		_increate_new = z.create({tagName:'tr',align:'center',content:'<td></td><td><input type="text" name="'+_n+'[listorder]" value="0" size="5" class="valid number" /></td><td></td><td align="left"><input type="text" name="'+_n+'[catname]" value="" class="txtInput normal required" style="width:150px;" /></td><td align="left"><input type="text" name="'+_n+'[catdir]" value="" class="txtInput required" /></td><td class="my_option_m"><a href="javascript:;" onclick="_Revocation(this);" title="撤销">撤销</a><input type="hidden" name="'+_n+'[parentid]" value="'+parentid+'" /></td>',adom:elem}); */
 		
 		//form_check_init('#myform_cat');
 		
-		//_url(url,p);
+		_url(url,p);
 	}
 	
 	function _Revocation(elem){

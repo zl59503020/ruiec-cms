@@ -465,7 +465,7 @@ function pages($total, $page = 1, $pagesize = 10, $demo = '', $step = 2) {
 }
 
 // 列表页 分页
-function listpages($CAT, $total, $page = 1, $pagesize = 10, $step = 2) {
+function listpages($CAT, $total, $page = 1, $pagesize = 10){
 	global $RE, $MOD;
 	if($total <= $pagesize) return '';
 	$items = $total;
@@ -497,11 +497,22 @@ function showpages($item, $total, $page = 1) {
 	return $pages;
 }
 
-function get_info_similar($moduleid,$keys){
-	global $db;
+// 相关
+function get_info_similar($moduleid,$keys,$pc=5){
+	global $db,$itemid;
+	if($moduleid == 0 || $moduleid < 3 || count($keys) == 0) return array();
 	$table = get_table($moduleid);
-	
-	
+	$info_sims = array();
+	$sqlwhere = '';
+	foreach($keys as $k){
+		$sqlwhere .= " OR tag LIKE '%{$k}%' ";
+	}
+	$sqlwhere = " itemid != {$itemid} AND (".substr($sqlwhere, 3).")";
+	$query = $db->query("SELECT * FROM {$table} WHERE {$sqlwhere} ORDER BY addtime DESC LIMIT 0, {$pc}");
+	while($r = $db->fetch_array($query)) {
+		$info_sims[] = $r;
+	}
+	return $info_sims;
 }
 
 // 获取评论
@@ -528,6 +539,17 @@ function get_comments($moduleid, $infoid=0, $pid=1, $pct=10){
 function get_comment_info($moduleid,$infoid){
 	global $db,$MODULE;
 	return $db->get_one("SELECT * FROM ".get_table($moduleid)." WHERE itemid = $infoid");
+}
+
+// 验证码
+function checkcaptcha($captcha){
+	global $RE_IP;
+	if(strlen($captcha) < 4) return false;
+	$session = new _session();
+	if(!isset($_SESSION['captchastr'])) return false;
+	$captcha = convert($captcha, 'UTF-8', RE_CHARSET);
+	if($_SESSION['captchastr'] != md5(md5(strtoupper($captcha).RE_KEY.$RE_IP))) return false;
+	return true;
 }
 
 
@@ -1122,6 +1144,7 @@ function get_spider($agent){
 	}
 }
 
+// 链接
 function linkurl($linkurl, $absurl = 1) {
 	global $CFG;
 	if($absurl) {

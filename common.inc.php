@@ -45,7 +45,6 @@ header("Content-Type:text/html;charset=".RE_CHARSET);
 require RE_ROOT.'/include/db_'.$CFG['database'].'.class.php';
 require RE_ROOT.'/include/session.class.php';
 require RE_ROOT.'/include/file.func.php';
-require RE_ROOT.'/include/comment.class.php';
 if(!IN_ADMIN) {
 	if(!empty($_SERVER['REQUEST_URI'])) {
 		$uri = urldecode($_SERVER['REQUEST_URI']);
@@ -90,7 +89,7 @@ if(!isset($moduleid)) {
 $page = isset($page) ? max(intval($page), 1) : 1;
 $catid = isset($catid) ? intval($catid) : 0;
 $itemid = isset($itemid) ? (is_array($itemid) ? $itemid : intval($itemid)) : 0;
-$pagesize = isset($RE['pagesize']) ? $RE['pagesize'] : 20;
+$pagesize = isset($pagesize) ? intval($pagesize) : (isset($RE['pagesize']) ? $RE['pagesize'] : 20);
 
 if($catid) $CAT = get_cat($catid);
 $action = (isset($action)) ? trim($action) : '';

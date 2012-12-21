@@ -1,4 +1,5 @@
-<?php defined('IN_RUIEC') or exit('Access Denied');?><?php include template('header');?>
+<?php defined('IN_RUIEC') or exit('Access Denied');?><?php $JS = array('comment','jquery.form');?>
+<?php include template('header');?>
 <div class="boxwrap">
   <div class="left710">
    <!--Content-->
@@ -10,7 +11,7 @@
         </div>
         <p class="meta-info">
             <span class="time"><?php echo $adddate;?></span>
-            <span class="comm">0人评论</span>
+            <?php if(isset($MOD['comment']) && $MOD['comment'] == 1) { ?><span class="comm"><comment class="sp_comment_count">0</comment>人评论</span><?php } ?>
 <span class="view"><?php echo $hits;?>次浏览</span>
             分类：IT业界
         </p>
@@ -25,60 +26,35 @@
       
       <div class="line10"></div>
       
+  <?php if(isset($MOD['show_np']) && $MOD['show_np'] == '1') { ?>
+  <div class="related">
+        <h3 class="base_tit">继续阅读...</h3>
+        <ul class="txt_list">
+         <li><strong>下一篇：</strong><?php echo tag("moduleid=$moduleid&condition=status=3 and addtime>$addtime&pagesize=1&order=addtime asc&template=list-np", -1);?></li>
+<li><strong>上一篇：</strong><?php echo tag("moduleid=$moduleid&condition=status=3 and addtime<$addtime&pagesize=1&order=addtime desc&template=list-np", -1);?></li>
+        </ul>
+      </div>
+  <?php } ?>
+  <div class="line10"></div>
+  
       <!--同类推荐-->
       <div class="related">
         <h3 class="base_tit">相关资讯</h3>
         <ul class="txt_list">
-          
-          <div>同类下暂无推荐的资讯...</div>
-          
+          <?php $info_sim = get_info_similar($moduleid,$keytags);?>
+  <?php if(count($info_sim) == 0) { ?>
+          <li>暂无相关的数据...</li>
+  <?php } else { ?>
+  <?php if(is_array($info_sim)) { foreach($info_sim as $k => $v) { ?>
+  <li><a href="<?php echo $v['linkurl'];?>" title="<?php echo $v['title'];?>"><?php echo $v['title'];?></a></li>
+  <?php } } ?>
+  <?php } ?>
         </ul>
       </div>
-      <!--/同类推荐-->
-      <?php if(isset($comments)) { ?>
-      <!--评论-->
-      <div class="comment_box">
-  <h3 class="base_tit"><span><a href="#Add">发表评论</a></span>共有6访客发表了评论</h3>
-<ol id="comment_list" class="comment_list">
-<?php if(is_array($comments)) { foreach($comments as $key => $v) { ?>
-<li><div class="floor">#<?php echo $key+1; ?></div>
-<div class="avatar"><img src="<?php echo $v['thumb'];?>" width="36" height="36"></div>
-<div class="inner">
-<p><?php echo $v['content'];?></p>
-<div class="meta"><span class="blue"><?php echo $v['username'];?></span><span class="time"><?php echo timetodate($v['addtime'],3);?></span></div>
-</div>
-</li>
-<?php } } ?>
-</ol>
-  </div>
-      <!--/评论-->
-      <div class="line20"></div>
-  <!--放置页码-->
   <?php echo $pages;?>
-  <!--放置页码-->
-  <!--提交评论-->
-  <div class="comment_add">
-        <h3 class="base_tit">我来说几句吧<a name="Add"></a></h3>
-        <form action="" method="post" id="comment_form" name="comment_form" >
-         <input type="hidden" name="v_sm" value="ruiec"/>
- <div class="comment_editor">
-          昵称：<input type="text" name="comment[username]" class="input" />
-  邮箱：<input type="text" name="comment[other][email]" class="input" />
-  QQ：<input type="text" name="comment[other][qq]" class="input" />
-        </div>
-<div class="comment_editor">
-          <textarea id="txtContent" name="comment[content]" class="input" style="width:658px;height:70px;"></textarea>
-        </div>
-        <div class="subcon">
-          <input id="btnSubmit" name="submit" class="btn right" type="submit" value="提交评论（Ctrl+Enter）">
-          
-        </div>
-        </form>
-      </div>
-  <?php } ?>
+      <!--/同类推荐-->
+  <?php include template('comment/comment');?>
     </div>
-<!--提交评论-->
-    <!--/Content-->
   </div>
   
   <div class="left264">

@@ -21,7 +21,9 @@
 <?php if(!RE_DEBUG) { ?>
 <script type="text/javascript">window.onerror=function(){return true;}</script>
 <?php } ?>
+<script type="text/javascript">var _MODULEID = <?php echo $moduleid;?>; var _ITEMID = <?php echo $itemid;?>; var _PAGE = <?php echo $page;?>;</script>
 <script type="text/javascript" src="<?php echo RE_PATH;?>file/JavaScript/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="<?php echo RE_PATH;?>file/JavaScript/config.js"></script> -->
 <script type="text/javascript" src="<?php echo RE_PATH;?>file/JavaScript/common.js"></script>
 <script type="text/javascript" src="<?php echo RE_PATH;?>file/JavaScript/ruiec.js"></script>
 <?php if(isset($JS) && is_array($JS)) { ?>

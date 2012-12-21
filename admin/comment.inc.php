@@ -4,10 +4,23 @@ defined('IN_RUIEC') or exit('Access Denied');
 switch($action) {
 	case 'edit':
 		isset($itemid) or die('Access Denied');
+		
 		$comment = $db->get_one("SELECT * FROM {$db->pre}comment WHERE itemid = $itemid");
+		
+		$comment['addtime'] = timetodate($comment['addtime']);
+		$comment['other'] = unserialize($comment['other']);
+		
+		extract($comment, EXTR_SKIP);
 		
 		include tpl('comment_edit');
 		
+	break;
+	case 'save':
+		isset($itemid) or die('Access Denied');
+		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec' && isset($comment)){
+			$db->query("UPDATE {$db->pre}comment SET status = {$comment['status']}, content = '{$comment['content']}' WHERE itemid = $itemid");
+			die('0');
+		}
 	break;
 	case 'delete':
 		isset($itemid) or exit('Access Denied');

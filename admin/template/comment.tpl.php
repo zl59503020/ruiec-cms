@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 
-	$(function(){
+	/* $(function(){
 		$('#myform').ajaxForm({
 			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
 			success : function(responseText, statusText, xhr, $form){
@@ -28,7 +28,12 @@
 				}
 			}
 		});
-	});
+	}); */
+	
+	//表单初始化验证
+    $(function () {
+        form_check_init('','',{title:''});
+    });
 	
 	// 删除
 	function _delete(id){
@@ -77,12 +82,7 @@
 	
 	// 删除所选
 	function _del_select(){
-		var sels = z.$('#itemid[]');
-		var ib = false;
-		for(var i in sels){
-			if(sels[i].checked) ib = true;
-		}
-		if(ib){
+		if(ck_sel('itemid[]')){
 			art.dialog.confirm('确定要删除所选的评论吗?<br /><span style="font-size:14px;color:red;">提示:此操作不可恢复!!!</span>', function(){
 				$('#action').val('delete');
 				$('#myform').submit();
@@ -122,8 +122,8 @@
 			<tr align="center">
 				<td><input type="checkbox" name="itemid[]" value="<?php echo $v['itemid']; ?>" /></td>
 				<td align="left"><?php echo ($v['status'] == 1) ? '<span style="color:#ccc;">已通过</span>' : '<span style="color:red;">未通过</span>'; ?></td>
-				<td>
-					[<a href="<?php echo $MODULE[$v['moduleid']]['linkurl'] ?>" target="_blank" ><?php echo $MODULE[$v['moduleid']]['name'] ?></a>]
+				<td align="left">
+					<!--[<a href="<?php echo $MODULE[$v['moduleid']]['linkurl'] ?>" target="_blank" ><?php echo $MODULE[$v['moduleid']]['name'] ?></a>]-->
 					 <a href="<?php echo $v['linkurl']; ?>" title="<?php echo $v['title']; ?>" target="_blank"><?php echo $v['title']; ?></a>
 				</td>
 				<td><?php echo $v['username']; ?></td>
