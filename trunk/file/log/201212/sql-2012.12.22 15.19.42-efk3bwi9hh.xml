@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-22 15:19:42</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/down/show.php</file>
+	<querystring>itemid=10</querystring>
+	<message>		<query>SELECT content FROM ruiec_down_data_19 WHERE itemid=10 LIMIT 0,1</query>
+		<errno>0</errno>
+		<error>Table 'ruieccms.ruiec_down_data_19' doesn't exist</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

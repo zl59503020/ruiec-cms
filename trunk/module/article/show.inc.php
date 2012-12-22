@@ -4,10 +4,10 @@ require RE_ROOT.'/module/'.$module.'/common.inc.php';
 $itemid or _header($MOD['linkurl']);
 $item = $db->get_one("SELECT * FROM {$table} WHERE itemid=$itemid");
 if($item && $item['status'] > 2) {
-	if($item['islink']) dheader($item['linkurl']);
+	if($item['islink']) _header($item['linkurl']);
 	if($MOD['show_html'] && is_file(RE_ROOT.'/'.$MOD['moduledir'].'/'.$item['linkurl'])) {
 		@header("HTTP/1.1 301 Moved Permanently");
-		dheader($MOD['linkurl'].$item['linkurl']);
+		_header($MOD['linkurl'].$item['linkurl']);
 	}
 	extract($item);
 } else {

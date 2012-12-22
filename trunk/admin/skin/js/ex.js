@@ -130,6 +130,41 @@ function FmSubmit(fm){
 
 }
 
+function _upfile(id){
+	var upArt = art.dialog({
+		title: '上传文件',
+		content: '<form method="POST" id="fm_art_f_'+id+'" action="/upload.php" enctype="multipart/form-data"><div style="margin:10px;"><input type="hidden" name="su" value="downfile" /><input type="file" id="upfile" name="upfile" style="width:18em;padding:6px 4px" /></div></form>',
+		lock: true,
+		background: '#fff',
+		opacity: 0.5,
+		ok: function(){
+			if($('#upfile').val() != ''){
+				$('#fm_art_f_'+id).submit();
+				return false;
+			}else{
+				return true;
+			}
+		},
+		cancel: true
+	});
+	$('#fm_art_f_'+id).ajaxForm({
+		beforeSend: function() {},
+		uploadProgress: function(event, position, total, percentComplete) {},
+		complete: function(xhr) {},
+		success: function(responseText, statusText, xhr, $form){
+			if(statusText == 'success'){
+				if(responseText.substr(0,5) != 'error'){
+					$('#'+id).val(responseText);
+					upArt.close();
+				}else{
+					alert(responseText);
+				}
+			}
+		}
+	}); 
+
+}
+
 
 function upfile(id,w,h,c){
 	w = (typeof w == 'undefined') ? '' : w;

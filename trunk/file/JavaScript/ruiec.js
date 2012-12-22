@@ -1,6 +1,6 @@
 /*
 	My Javascript zongliang
-	Update Time 2012-11-12 10:28
+	Update Time 2012-12-22 09:00
 */
 (function(window,undefined){
 	
@@ -11,7 +11,7 @@
 	
 	var zl = function(id,dom,win){return zl.$(id,dom,win);};
 
-	zl.version = '1.0.0.3';
+	zl.version = '1.0.0.4';
 	/*	
 		zl.$ get Dom Object	id:name,dom:parentNode Dom,win:window. 
 	*/
@@ -358,49 +358,6 @@
 		}
 	}
 	/*
-		Native Convert Ascii
-	*/
-	zl.ascii = zl.nativeConvertAscii = function(str){
-		try{
-			var nativecode = str.split('');
-			var ascii = '';
-			for(var i = 0; i < nativecode.length; i++) {
-				var code = Number(nativecode[i].charCodeAt(0));
-				if (code > 127){
-					var charAscii = code.toString(16);
-					charAscii = new String('0000').substring(charAscii.length, 4) + charAscii;
-					ascii += '\\u' + charAscii;
-				} else {
-					ascii += nativecode[i];
-				}
-			}
-			return ascii;
-		}catch(e){
-			zl.log('[Function][ascii] Native Convert Ascii Failure!', e);
-			return '';
-		}
-	}
-	/*
-		Ascii Convert Natvie
-	*/
-	zl.natvie = zl.asciiConvertNative = function(str){
-		try{
-			var asciicode = str.split('\\u');
-			var nativeValue = asciicode[0];
-			for (var i = 1; i < asciicode.length; i++) {
-				var code = asciicode[i];
-				nativeValue += String.fromCharCode(parseInt('0x' + code.substring(0, 4)));
-				if(code.length > 4) {
-					nativeValue += code.substring(4, code.length);
-				}
-			}
-			return nativeValue;
-		}catch(e){
-			zl.log('[Function][natvie] Ascii Convert Native Failure!', e);
-			return '';
-		}
-	}
-	/*
 		load dom time
 	*/
 	zl.loadTime = 0;
@@ -493,6 +450,7 @@
 			alert('\u60a8\u7684\u6d4f\u89c8\u5668\u53ef\u80fd\u4e0d\u652f\u6301Ajax.\u8bf7\u68c0\u67e5!');
 		}else{
 			try{
+				if(opt.type == 'get') opt.url = opt.url + '?' + opt.query;
 				xmlAjax.onreadystatechange = function(){
 					if(xmlAjax.readyState == 4 || xmlAjax.readyState == "complete"){
 						try{
@@ -515,7 +473,7 @@
 						}
 					}
 				}
-				xmlAjax.open(opt.type, opt.url + '?' + opt.query, opt.async);
+				xmlAjax.open(opt.type, opt.url, opt.async);
 				xmlAjax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 				xmlAjax.send(opt.query);
 			}catch(e){
@@ -656,7 +614,7 @@
 	*/
 	zl.fm = zl.Form = {
 		Init : function(){
-			
+			/*	Unfinished...	*/
 		}
 	};
 	/*
@@ -726,7 +684,7 @@
 		r	retype
 		return (r != null)?Browser Version:Object info;
 	*/
-	zl.browser = function(r){
+	zl.bs = zl.browser = function(r){
 		try{
 			var bsary = new Array();
 			bsary[0] = new Array('MSIE ', 'Internet Explorer', 'Microsoft', '');
@@ -753,6 +711,54 @@
 			return 'Unknown';
 		}catch(e){
 			zl.log('[Function][browser] Get Browser Info Failure! ', e);
+			return e.message;
+		}
+	};
+	/*
+		Get User System Info	
+		r	retype
+		return (r != null)?System Version:Object info;
+	*/
+	zl.os = zl.system = function(r){
+		try{
+			var osary = new Array();
+			osary[0] = new Array('/windows nt 95/', 'Windows 95', 'Microsoft');
+			osary[1] = new Array('/windows nt 4.90/', 'Windows ME', 'Microsoft');
+			osary[2] = new Array('/windows nt 98/', 'Windows 98', 'Microsoft');
+			osary[3] = new Array('/windows nt 5.0/', 'Windows 2000', 'Microsoft');
+			osary[4] = new Array('/windows nt 5.1/', 'Windows XP', 'Microsoft');
+			osary[5] = new Array('/windows nt 6.0/', 'Windows Vista', 'Microsoft');
+			osary[6] = new Array('/windows nt 6.1/', 'Windows 7', 'Microsoft');
+			osary[7] = new Array('/windows nt 6.2/', 'Windows 8', 'Microsoft');
+			osary[8] = new Array('/windows nt 32/', 'Windows 32', 'Microsoft');
+			osary[9] = new Array('/windows nt nt/', 'Windows NT', 'Microsoft');
+			osary[10] = new Array('/mac os/', 'Mac OS', 'Apple');
+			osary[11] = new Array('/linux/', 'Linux', 'Unknown');
+			osary[12] = new Array('/unix/', 'Unix', 'Unknown');
+			osary[13] = new Array('/sun os/', 'SunOS', 'SUN');
+			osary[14] = new Array('/ibm os/', 'IBM OS/2', 'IBM');
+			osary[15] = new Array('/mac pc/', 'Macintosh', 'Unknown');
+			osary[16] = new Array('/powerpc/', 'PowerPC', 'Unknown');
+			osary[17] = new Array('/aix/', 'AIX', 'Unknown');
+			osary[18] = new Array('/hpux/', 'HPUX', 'Unknown');
+			osary[19] = new Array('/netbsd/', 'NetBSD', 'Unknown');
+			osary[20] = new Array('/bsd/', 'BSD', 'Unknown');
+			osary[21] = new Array('/osfl/', 'OSF1', 'Unknown');
+			osary[22] = new Array('/irix/', 'IRIX', 'Unknown');
+			osary[23] = new Array('/freebsd/', 'FreeBSD', 'Unknown');
+			
+			for(var i = 0; i < osary.length; i++){
+				var ocode = '_reg = '+osary[i][0]+';';
+				ocode = ocode + 'var _bv = _reg.exec(navigator.userAgent.toLowerCase());';
+				eval(ocode);
+				if(_bv){
+					var _obj = osary[i][2]+' '+osary[i][1];
+					return (r != undefined) ? _obj : {obj:_obj,company:osary[i][2],name:osary[i][1]};
+				}
+			}
+			return 'Unknown';
+		}catch(e){
+			zl.log('[Function][system] Get System Info Failure! ', e);
 			return e.message;
 		}
 	};
@@ -1304,6 +1310,49 @@
 		//return document.createElement('div').appendChild(document.createTextNode(con)).parentNode.innerHTML;
 		return con.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	};
+	/*
+		Native Convert Ascii
+	*/
+	zl.ascii = zl.nativeConvertAscii = function(str){
+		try{
+			var nativecode = str.split('');
+			var ascii = '';
+			for(var i = 0; i < nativecode.length; i++) {
+				var code = Number(nativecode[i].charCodeAt(0));
+				if (code > 127){
+					var charAscii = code.toString(16);
+					charAscii = new String('0000').substring(charAscii.length, 4) + charAscii;
+					ascii += '\\u' + charAscii;
+				} else {
+					ascii += nativecode[i];
+				}
+			}
+			return ascii;
+		}catch(e){
+			zl.log('[Function][ascii] Native Convert Ascii Failure!', e);
+			return '';
+		}
+	}
+	/*
+		Ascii Convert Natvie
+	*/
+	zl.natvie = zl.asciiConvertNative = function(str){
+		try{
+			var asciicode = str.split('\\u');
+			var nativeValue = asciicode[0];
+			for (var i = 1; i < asciicode.length; i++) {
+				var code = asciicode[i];
+				nativeValue += String.fromCharCode(parseInt('0x' + code.substring(0, 4)));
+				if(code.length > 4) {
+					nativeValue += code.substring(4, code.length);
+				}
+			}
+			return nativeValue;
+		}catch(e){
+			zl.log('[Function][natvie] Ascii Convert Native Failure!', e);
+			return '';
+		}
+	}
 	/*	
 		conver Data JSON
 		data	Conetnt
@@ -1741,13 +1790,13 @@
 			try{
 				elem = zl.$(elem);
 				if(elem.tagName.toUpperCase() == "INPUT"){
-					z.att(z.$(elem),'onkeyup',function(){zl.search_ajax.keySearch(this,event)});
+					zl.att(zl.$(elem),'onkeyup',function(){zl.search_ajax.keySearch(this,event)});
 					return 'Success';
 				}else{
 					elem = zl.$('<input>',elem);
 					for(var i in elem){
 						if(zl.att(elem[i],'type').toUpperCase() == 'TEXT'){
-							z.att(elem[i],'onkeyup',function(){zl.search_ajax.keySearch(this,event)});
+							zl.att(elem[i],'onkeyup',function(){zl.search_ajax.keySearch(this,event)});
 							return 'Success';
 						}
 					}
@@ -1787,7 +1836,7 @@
 				}
 			}
 			var src = 'http://suggestion.baidu.com/su?wd='+encodeURIComponent(s_key)+'&p=3&cb=window.bdsug.sug&t='+(new Date()).getTime();
-			//z.create({tagName:'script',id:'BaiDuJS',charset:'utf-8',src:src,pdom:z.$('<head>')[0]});
+			//zl.create({tagName:'script',id:'BaiDuJS',charset:'utf-8',src:src,pdom:zl.$('<head>')[0]});
 			var ajs = zl.loadjs(src,'utf-8',null,true);
 			zl.att(ajs,'id','BaiDuJS');
 			window.bdsug = {};
@@ -1804,13 +1853,13 @@
 				l = obj.offsetLeft;
 			}
 			var css = 'position:absolute;background:#fff;width:'+w+'px;top:'+t+'px;left:'+l+'px;border:1px solid #817F82;display:none;z-index:9999;';
-			var div_search_list = z.create({cssText:css/*,pdom:obj.parentNode*/});
+			var div_search_list = zl.create({cssText:css/*,pdom:obj.parentNode*/});
 			this.clear_search();
 			this.search_list = div_search_list;
 		},
 		/*	Clear Search List	*/
 		clear_search : function(){
-			if(this.search_list != null){ z.remove(this.search_list); this.search_list = null;document.body.onclick = null;}	
+			if(this.search_list != null){ zl.remove(this.search_list); this.search_list = null;document.body.onclick = null;}	
 		},
 		/*	List In Click	*/
 		search_click : function(elem){

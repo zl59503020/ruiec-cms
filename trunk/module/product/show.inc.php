@@ -23,39 +23,31 @@ $CAT = get_cat($catid);
 $content_table = content_table($moduleid, $itemid, $table_data);
 $t = $db->get_one("SELECT content FROM {$content_table} WHERE itemid=$itemid");
 $content = $t['content'];
-
 $adddate = timetodate($addtime, 3);
 $editdate = timetodate($edittime, 3);
 $maincat = $childcat = get_maincat(0, $moduleid, 1);
-//if($voteid) $voteid = explode(' ', $voteid);
 if($fromurl) $fromurl = fix_link($fromurl);
 $linkurl = linkurl($MOD['linkurl'].$linkurl, 1);
-$titles = array();
 
 $keytags = $tag ? explode(' ', $tag) : array();
-$update = '';
 
 $pages = '';
-$subtitles = count($titles);
 if(strpos($content, '[pagebreak]') !== false) {
 	$content = explode('[pagebreak]', $content);
 	$total = count($content);
 	$pages = showpages($item, $total, $page);
 	$content = _closetags($content[$page-1],true);
-
-	if($total < $subtitles) $subtitles = $total;
 }
-//if($MOD['keylink']) $content = keylink($content, $moduleid);
-//include RE_ROOT.'/include/update.inc.php';
-$seo_file = 'show';
 
+//if($MOD['keylink']) $content = keylink($content, $moduleid);
+
+$seo_file = 'show';
 include RE_ROOT.'/include/seo.inc.php';
 
-//if($subtitle) $seo_title = $subtitle.$seo_delimiter.$seo_title;
 $template = 'show';
 if($MOD['template_show']) $template = $MOD['template_show'];
 if($MOD['template_show']) $template = $MOD['template_show'];
 if($CAT['show_template']) $template = $CAT['show_template'];
 if($item['template']) $template = $item['template'];
+
 include template($template, $module);
-?>
