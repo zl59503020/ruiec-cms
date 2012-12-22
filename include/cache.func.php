@@ -1,5 +1,6 @@
 <?php
 defined('IN_RUIEC') or exit('Access Denied');
+//所有
 function cache_all() {
 	cache_module();		//模型
 	cache_category();	//分类
@@ -15,6 +16,7 @@ function cache_all() {
 	return true;
 }
 
+//	模型
 function cache_module($moduleid = 0) {
 	global $db;
 	if($moduleid) {
@@ -83,6 +85,7 @@ function cache_module($moduleid = 0) {
 	}
 }
 
+// 分类
 function cache_category($moduleid = 0, $data = array()) {
 	global $db, $RE, $MODULE;
 	if($moduleid) {
@@ -123,6 +126,7 @@ function cache_category($moduleid = 0, $data = array()) {
 	}
 }
 
+// 蜘蛛
 function cache_spider(){
 	global $db;
 	$spider = array();

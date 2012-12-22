@@ -1,0 +1,1 @@
+<?php defined('IN_RUIEC') or exit('Access Denied'); return array (23 => array ('catid' => '23','catname' => '源码分享','catdir' => 'source','linkurl' => 'list.php?catid=23','parentid' => '0',),); ?>

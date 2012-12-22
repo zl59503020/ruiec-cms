@@ -34,6 +34,16 @@ switch($su)  {
 			die('error: '.$info['state']);
 		}
 	break;
+	case 'downfile':
+		$config = array('savePath' => $uploaddir , 'maxSize' => 5000 , 'allowFiles' => array('.rar', '.zip', '.txt', '.doc', '.7z'));
+		$up = new Uploader('upfile', $config);
+		$info = $up->getFileInfo();
+		if($info['state'] == 'SUCCESS'){
+			die(RE_PATH.$info['url']);
+		}else{
+			die('error: '.$info['state']);
+		}
+	break;
 	default:
 		exit('Access Denied');
 	break;

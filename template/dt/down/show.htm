@@ -1,0 +1,121 @@
+{php $JS = array('comment','jquery.form');}
+{template 'header'}
+<div class="boxwrap">
+  <div class="left710">
+   <!--Content-->
+    <div class="main_box">
+      <div class="meta">
+        <h1 class="meta-tit">{$title}</h1>
+        <div class="share">
+            
+        </div>
+        <p class="meta-info">
+            <span class="time">{$adddate}</span>
+            {if isset($MOD['comment']) && $MOD['comment'] == 1}<span class="comm"><comment class="sp_comment_count">0</comment>人评论</span>{/if}
+			<span class="view">{$hits}次浏览</span>
+            分类：IT业界
+        </p>
+      </div>
+      <div class="entry">
+        {$content}
+      </div>
+      
+      <div class="line10"></div>
+      <!--分享-->
+	{template '_baidushare'}
+      
+      <div class="line10"></div>
+      
+	  {if isset($MOD['show_np']) && $MOD['show_np'] == '1'}
+	  <div class="related">
+        <h3 class="base_tit">继续阅读...</h3>
+        <ul class="txt_list">
+         <li><strong>下一篇：</strong><!--{tag("moduleid=$moduleid&condition=status=3 and addtime>$addtime&pagesize=1&order=addtime asc&template=list-np", -1)}--></li>
+		<li><strong>上一篇：</strong><!--{tag("moduleid=$moduleid&condition=status=3 and addtime<$addtime&pagesize=1&order=addtime desc&template=list-np", -1)}--></li>
+        </ul>
+      </div>
+	  {/if}
+	  <div class="line10"></div>
+	  
+      <!--同类推荐-->
+      <div class="related">
+        <h3 class="base_tit">相关资讯</h3>
+        <ul class="txt_list">
+          {php $info_sim = get_info_similar($moduleid,$keytags);}
+		  {if count($info_sim) == 0}
+          <li>暂无相关的数据...</li>
+		  {else}
+		  {loop $info_sim $k $v}
+		  <li><a href="{$v['linkurl']}" title="{$v['title']}">{$v['title']}</a></li>
+		  {/loop}
+		  {/if}
+        </ul>
+      </div>
+	  {$pages}
+      <!--/同类推荐-->
+	  {template 'comment/comment'}
+    </div>
+
+  </div>
+  
+  <div class="left264">
+    <!--Sidebar-->
+    <div class="sidebar">
+      <h3>资讯类别</h3>
+      <ul class="navbar">
+         {loop $maincat $k $v}
+        <li>
+          <h4><a href="{$MOD['linkurl']}{$v['linkurl']}"{if $v['catid']==$catid} class="current"{/if} >{$v['catname']}</a></h4>
+		  {php $nav2=get_maincat($v['catid']);}
+		  {if $nav2!=null}
+          <div class="list">
+		  {loop $nav2 $key $va}
+            <a  href="{$MOD['linkurl']}{$va['linkurl']}" {if $va['catid']==$catid} class="current"{/if} >{$va['catname']}</a>
+          {/loop}
+          </div>
+		  {/if}
+        </li>
+        
+        {/loop}
+        
+      </ul>
+      <div class="clear"></div>
+      <h3>推荐资讯</h3>
+      <div class="focus_list">
+        <ul>
+          
+          <!--{php $commend = tag("moduleid=$moduleid&condition=status=3 AND level=6 &pagesize=6&order=".$MOD[order]."&template=null");}-->
+          {loop $commend $v}
+		  <li>
+            <a title="{$v['title']}" href="{$v['linkurl']}">
+              <img src="{$v['thumb']}" width="100" height="100" alt="{$v['title']}" />
+              <span>{$v['title']}</span>
+            </a>
+          </li>
+		  {/loop}
+
+          
+        </ul>
+        <div class="clear"></div>
+      </div>
+      <h3>人气排行</h3>
+      <ul class="rank_list">
+        <!--{php $hits = tag("moduleid=$moduleid&condition=status=3&pagesize=10&order=hits DESC&template=null");}-->
+		{loop $hits $key $v}
+		{php $key++;}
+        <li class="active">
+        
+          <span>{timetodate($v['addtime'],2)}</span>
+          <i class="num">{$key}</i><a href="{$v['linkurl']}" title="{$v['title']}">{$v['title']}</a>
+        </li>
+        {/loop}
+        
+      </ul>
+    </div>
+    <!--/Sidebar-->
+    
+  </div>
+</div>
+
+<div class="clear"></div>
+{template 'footer'}

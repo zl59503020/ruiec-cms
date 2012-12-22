@@ -81,8 +81,8 @@ switch($action) {
 		while($r = $db->fetch_array($result)) {
 			$RECAT[$r['catid']] = $r;
 		}
-		if(!$RECAT && !$parentid) die('暂无分类,请先添加');
-		include tpl('category');
+		if(!$RECAT && !$parentid) include tpl('category_add');
+		else include tpl('category');
 	break;
 }
 
