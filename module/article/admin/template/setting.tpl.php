@@ -3,75 +3,6 @@ defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
 
-<script type="text/javascript">
-
-	//表单验证
-    $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() { art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3}); },
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("更新成功!", "", "Success");
-						//window.location = '?file=<?php echo $file; ?>&moduleid=<?php echo $moduleid; ?>';
-						window.location.reload();
-					}else{
-						parent.jsprint("更新失败!", "", "Error");
-						art.dialog({
-							title: '更新失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-
-	function _into(i, str) {
-		var o = $('#'+i);
-		if(typeof document.selection != 'undefined') {
-			o.focus();
-			var r = document.selection.createRange(); var ctr = o.createTextRange(); var i; var s = o.value; var w = "www.d"+"e"+"s"+"t"+"o"+"o"+"n.com"; 
-			r.text = w;
-			i = o.value.indexOf(w);
-			r.moveStart("character", -w.length);
-			r.text = '';
-			o.value = s.substr(0, i) + str + s.substr(i, s.length);
-			ctr.collapse(true);
-			ctr.moveStart("character", i + str.length);
-			ctr.select();
-		} else if(o.setSelectionRange) {
-			var s = o.selectionStart; var e = o.selectionEnd; var a = o.value.substring(0, s); var b = o.value.substring(e);   
-			o.value = a + str + b;
-		} else {
-			$('#'+i).val($('#'+i).val() + str);
-			o.focus();
-		}
-	}
-	
-</script>
-
 	<div class="navigation">首页 &gt; <?php echo $MOD['name']; ?>管理 &gt; 模块设置</div>
 	
 	<div id="contentTab">
@@ -79,7 +10,7 @@ include tpl('header');
 		<ul class="tab_nav">
 			<li class="selected"><a onclick="tabs('#contentTab',0);" href="javascript:;">基本设置</a></li>
 			<li><a onclick="tabs('#contentTab',1);" href="javascript:void(0);">SEO优化</a></li>
-			<li><a onclick="_url('',{n:'sys_fields_m_<?php echo $moduleid; ?>',t:'自定义字段'});" href="javascript:void(0);">自定义字段</a></li>
+			<li><a onclick="_url('?file=fields&tbname=<?php echo $table; ?>',{n:'sys_fields_m_<?php echo $table; ?>',t:'自定义字段管理'});" href="javascript:void(0);">自定义字段</a></li>
 			<li><a onclick="_url('?file=template&dir=article',{n:'sys_template_m_<?php echo $moduleid; ?>',t:'模板管理'});" href="javascript:void(0);">模板管理</a></li>
 		</ul>
 		
@@ -394,5 +325,12 @@ include tpl('header');
 			</div>
 			
 		</form>
+<script type="text/javascript">
+
+	$(function () {
+        form_check_init('','',{title:'更新'});
+    });
+	
+</script>
 
 <?php include tpl('footer');?>

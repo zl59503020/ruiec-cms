@@ -2,65 +2,6 @@
 defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
-
-<script type="text/javascript">
-
-	//表单验证
-    $(function () {
-		form_check_init('','',{title:'添加',url:'?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>'});
-		/* $('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("添加成功!", "", "Success");
-						window.location = '?file=<?php echo $file; ?>&mid=<?php echo $mid; ?>';
-					}else{
-						parent.jsprint("添加失败!", "", "Error");
-						art.dialog({
-							title: '添加失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		}); */
-    });
-	
-	function ckDir(){
-		if($('#catdir').val() == ''){
-			alert('请填写安装目录!');
-			$('#catdir').focus();
-		}else{
-			art.dialog({
-				id: 'art_ckdir',
-				title: '目录检测',
-				lock: true,
-				background: '#fff',
-				opacity: 0.5,
-				ok: true
-			});
-			var url = '?file=<?php echo $file;?>&mid=<?php echo $mid; ?>&action=ckdir&catdir='+$('#catdir').val()+'&parentid='+$('#sel_parentid').val()+'&v_ruiec_ckdir=ruiec';
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					artDialog.list['art_ckdir'].content(responseText);
-				}
-			});
-			
-		}
-	}
-	
-	
-</script>
-
 	<div class="navigation">首页 &gt; 分类管理 &gt; 添加分类 </div>
 	
 	<div class="tools_box">
@@ -143,6 +84,39 @@ include tpl('header');
 		</form>
 		
 	</div>
+	
+<script type="text/javascript">
 
+	//表单验证
+    $(function () {
+		form_check_init('','',{title:'添加'});
+    });
+	
+	function ckDir(){
+		if($('#catdir').val() == ''){
+			alert('请填写安装目录!');
+			$('#catdir').focus();
+		}else{
+			art.dialog({
+				id: 'art_ckdir',
+				title: '目录检测',
+				lock: true,
+				background: '#fff',
+				opacity: 0.5,
+				ok: true
+			});
+			var url = '?file=<?php echo $file;?>&mid=<?php echo $mid; ?>&action=ckdir&catdir='+$('#catdir').val()+'&parentid='+$('#sel_parentid').val()+'&v_ruiec_ckdir=ruiec';
+			$.ajax({
+				url:url,
+				success:function(responseText){
+					artDialog.list['art_ckdir'].content(responseText);
+				}
+			});
+			
+		}
+	}
+	
+	
+</script>
 
 <?php include tpl('footer');?>
