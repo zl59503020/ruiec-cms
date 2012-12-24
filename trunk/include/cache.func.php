@@ -5,8 +5,8 @@ function cache_all() {
 	cache_module();		//模型
 	cache_category();	//分类
 	cache_spider();		//蜘蛛
+	cache_fields();		//自定义字段
 	/*
-	cache_fields();
 	cache_group();
 	cache_pay();
 	cache_oauth();
@@ -174,22 +174,22 @@ function cache_oauth() {
 }
 
 // 自定义字段
-function cache_fields($tb = '') {
+function cache_fields($tbname = '') {
 	global $db, $RE;
-	if($tb) {
+	if($tbname) {
 		$data = array();
-		$result = $db->query("SELECT * FROM {$db->pre}fields WHERE tb='$tb' ORDER BY listorder,itemid");
+		$result = $db->query("SELECT * FROM {$db->pre}fields WHERE tbname='$tbname' ORDER BY itemid");
 		while($r = $db->fetch_array($result)) {
 			$data[$r['itemid']] = $r;
 		}
-		cache_write('fields-'.$tb.'.php', $data);
+		cache_write('fields-'.$tbname.'.php', $data);
 	} else {
 		$tbs = array();
 		$result = $db->query("SELECT * FROM {$db->pre}fields");
 		while($r = $db->fetch_array($result)) {
-			if(isset($tbs[$r['tb']])) continue;
-			cache_fields($r['tb']);
-			$tbs[$r['tb']] = $r['tb'];
+			if(isset($tbs[$r['tbname']])) continue;
+			cache_fields($r['tbname']);
+			$tbs[$r['tbname']] = $r['tbname'];
 		}
 	}
 }
