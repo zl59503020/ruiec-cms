@@ -1,102 +1,7 @@
-<?php include tpl('header'); ?>
-
-<script type="text/javascript">
-	
-	function ck_disable(v,id,name){
-		art.dialog.confirm('确定要'+((v == 1) ? '禁' : '启')+'用 ['+name+'] 模块吗?', function(){
-			var url = '?file=<?php echo $file;?>&action=disable&value='+v+'&modid='+id;
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("更改成功!", "", "Success");
-						parent.reModuleMenu();
-						window.location.reload();
-					}else{
-						parent.jsprint("更改失败!", "", "Error");
-						art.dialog({
-							title: '更改失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function md_delete(id,name){
-		art.dialog.confirm('确定要删除 ['+name+'] 模块吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=delete&modid='+id;
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						parent.reModuleMenu();
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	$(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("更新成功!", "", "Success");
-						parent.reModuleMenu();
-						window.location.reload();
-					}else{
-						parent.jsprint("更新失败!", "", "Error");
-						art.dialog({
-							title: '更新失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-
-</script>
-
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+include tpl('header');
+?>
 	<div class="navigation">首页 &gt; 控制面板 &gt; 系统模型管理</div>
 	
 	<div class="tools_box">
@@ -233,6 +138,30 @@
 	}
 ?>
 	</table>
+
+	
+<script type="text/javascript">
+
+	//表单初始化验证
+    $(function () {
+        form_check_init();
+    });
+	
+	function ck_disable(v,id,name){
+		var info = '确定要'+((v == 1) ? '禁' : '启')+'用 ['+name+'] 模块吗?';
+		var url = '?file=<?php echo $file;?>&action=disable&value='+v+'&modid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'操作'});
+		window.parent.reModuleMenu();		//刷新频道管理
+	}
+	
+	function md_delete(id,name){
+		var info = '确定要删除 ['+name+'] 模块吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file;?>&action=delete&modid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'删除',callback:function(){window.parent.reModuleMenu();}});
+		//window.parent.reModuleMenu();		//刷新频道管理
+	}
+
+</script>
 
 	
 <?php include tpl('footer'); ?>

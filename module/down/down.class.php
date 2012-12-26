@@ -13,7 +13,7 @@ class down {
 		$this->moduleid = $moduleid;
 		$this->table = $table;
 		$this->db = &$db;
-		$this->fields = array('catid','level','title','downurl','introduce','content','thumb','tag','author','copyfrom','fromurl','status','hits','addtime','edittime','ip','template','islink','linkurl','filename');
+		$this->fields = array('catid','level','title','downurl','introduce','content','thumb','tag','author','copyfrom','fromurl','status','hits','addtime','edittime','ip','template','islink','linkurl','filename','downcount');
     }
 	
 	// 检测.必填

@@ -1,6 +1,114 @@
-<?php include tpl('header'); ?>
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+include tpl('header');
+?>
+	<div class="navigation">首页 &gt; 控制面板 &gt; 数据维护管理</div>
+	
+	<div class="tools_box">
+		<div class="tools_bar">
+			<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&action=import',{n:'sys_database_imp',t:'还原数据'});" class="tools_btn"><span><b class="add">还原数据</b></span></a>
+		</div>
+	</div>
+
+	<div class="tab_nav tab_nav_ex">数据库管理维护</div>
+	
+	<form action="" method="post" id="myform_db" name="myform_db" >
+	
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="msgtable">
+			<tr>
+				<th width="8%">选择</th>
+				<th width="20%">表名</th>
+				<th width="15%">表注释</th>
+				<th width="10%">记录数</th>
+				<th width="20%">大小</th>
+				<th width="10%">碎片</th>
+				<th>操作</th>
+			</tr>
+<?php
+	foreach($dtables as $k=>$v) {
+?>
+			<tr align="center">
+				<td>
+					<input type="checkbox" name="tables[]" value="<?php echo $v['name'];?>" checked />
+					<input type="hidden" name="sizes[<?php echo $v['name'];?>]" value="<?php echo $v['tsize'];?>"/>
+				</td>
+				<td align="left"><?php echo $v['name'];?></td>
+				<td>
+					<a href="javascript:;" onclick="chk_tabnote(this,'<?php echo $v['name'];?>','<?php echo $v['note'];?>');" title="点击修改表注释"><?php echo $v['note'] ? $v['note'] : '--';?></a>
+				</td>
+				<td><?php echo $v['rows'];?></td>
+				<td>
+					<?php $_p = ($dtotalsize == 0) ? 0 : round(100*$v['tsize']/$dtotalsize); ?>
+					<div class="perc" style="width:100px" title="<?php echo $_p; ?>%"><div style="width:<?php echo $_p; ?>%;">&nbsp;</div></div>
+					<span title="数据:<?php echo $v['size'];?> 索引:<?php echo $v['index'];?>">(<?php echo $v['tsize'];?> MB)</span>
+				</td>
+				<td><?php echo $v['chip'];?></td>
+				<td class="my_option_m">
+					<a href="javascript:;" onclick="optimize_tab('<?php echo $v['name'];?>');">优化</a>
+					<a href="javascript:;" onclick="repair_tab('<?php echo $v['name'];?>');">修复</a>
+					<a href="javascript:;" onclick="down_tab('<?php echo $v['name'];?>');">下载</a>
+					<a href="javascript:;" onclick="dict_tab('<?php echo $v['name'];?>','<?php echo urlencode($v['note']);?>');">字典</a>
+				</td>
+			</tr>
+<?php
+	}
+	if(count($tables) > 0){
+?>
+			<tr>
+				<td colspan="7" align="center" style="background:#F1E7CB;color:red;height:20px;font-weight:bold;">
+					其他系统表[共<?php echo $totalsize;?>M,<?php echo count($tables);?>个表]
+				</td>
+			</tr>
+<?php
+		foreach($tables as $k=>$v) {
+?>
+			<tr align="center">
+				<td>
+					<input type="checkbox" name="tables[]" value="<?php echo $v['name'];?>" checked />
+					<input type="hidden" name="sizes[<?php echo $v['name'];?>]" value="<?php echo $v['tsize'];?>"/>
+				</td>
+				<td align="left"><?php echo $v['name'];?></td>
+				<td>
+					<a href="javascript:;" onclick="chk_tabnote(this,'<?php echo $v['name'];?>','<?php echo $v['note'];?>');" title="点击修改表注释"><?php echo $v['note'] ? $v['note'] : '--';?></a>
+				</td>
+				<td><?php echo $v['rows'];?></td>
+				<td>
+					<?php $_p = ($dtotalsize == 0) ? 0 : round(100*$v['tsize']/$dtotalsize); ?>
+					<div class="perc" style="width:100px" title="<?php echo $_p; ?>%"><div style="width:<?php echo $_p; ?>%;">&nbsp;</div></div>
+					<span title="数据:<?php echo $v['size'];?> 索引:<?php echo $v['index'];?>">(<?php echo $v['tsize'];?> MB)</span>
+				</td>
+				<td><?php echo $v['chip'];?></td>
+				<td class="my_option_m">
+					<a href="javascript:;" onclick="optimize_tab('<?php echo $v['name'];?>');">优化</a>
+					<a href="javascript:;" onclick="repair_tab('<?php echo $v['name'];?>');">修复</a>
+					<a href="javascript:;" onclick="down_tab('<?php echo $v['name'];?>');">下载</a>
+					<a href="javascript:;" onclick="dict_tab('<?php echo $v['name'];?>','<?php echo urlencode($v['note']);?>');">字典</a>
+				</td>
+			</tr>
+<?php
+		}
+	}
+?>
+		</table>
+		<div class="line10"></div>
+		
+		<div class="foot_btn_box" style="text-align:left;">
+			<input type="hidden" name="file" value="<?php echo $file; ?>" />
+			<input type="hidden" id="action" name="action" value="backup" />
+			<input type="hidden" name="v_ruiec_sm" value="ruiec" />
+			<a href="javascript:void(0);" onclick="checkAll('tables[]',true);" >全选</a>&nbsp;&nbsp;&nbsp;
+			<a href="javascript:void(0);" onclick="checkAll('tables[]',false);" >全不选</a>&nbsp;&nbsp;&nbsp;
+			<input type="button" value="备份选中表" onclick="dbopt('0');" class="btnSubmit" />&nbsp;&nbsp;&nbsp;
+			<input type="button" value="删除选中表" onclick="dbopt('1');" class="btnSearch" title="为了安全起见,仅允许删除非RuiecCMS系统表." <?php echo (count($tables) > 0) ? '' : 'disabled'; ?>  />
+		</div>
+	
+	</form>
 
 <script type="text/javascript">
+
+	$(function(){
+		form_check_init();
+	});
 
 	// 修改表注释
 	function chk_tabnote(elem,tbName,note){
@@ -127,12 +235,7 @@
 	
 	//备份或删除
 	function dbopt(type){
-		var sels = z.$('#tables[]');
-		var ib = false;
-		for(var i in sels){
-			if(sels[i].checked) ib = true;
-		}
-		if(ib){
+		if(ck_sel('tables[]')){
 			art.dialog.confirm('确定要'+((type=='0')?'备份':'删除')+'所选的表吗?<br /><span style="font-size:14px;color:red;">'+((type=='0')?'':'提示:如未备份,此操作不可恢复!!!<br/>[只能删除非本系统数据表.]')+'</span>', function(){
 				if(type == '0'){
 					$('#action').val('backup');
@@ -145,51 +248,7 @@
 			alert('请选择要'+((type=='0')?'备份':'删除')+'的表!');
 		}
 	}
-	
-	$(function(){
-		$('#myform_db').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if($('#action').val() == 'drop'){
-						if(responseText == '0'){
-							parent.jsprint("删除成功!", "", "Success");
-							window.location.reload();
-						}else{
-							parent.jsprint("删除失败!", "", "Error");
-							art.dialog({
-								title: '删除失败',
-								lock: true,
-								background: '#fff',
-								opacity: 0.5,
-								content: responseText,
-								ok: true
-							});
-						}
-					}else{
-						if(responseText == '0'){
-							parent.jsprint("备份成功!", "", "Success");
-							window.location = '?file=<?php echo $file; ?>&action=import';
-						}else{
-							art.dialog({
-								id: 'art_show_bak',
-								title: '正在备份',
-								lock: true,
-								background: '#fff',
-								opacity: 0.5,
-								ok: true
-							});
-							obj_bak(responseText);
-						}
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-	});
-	
+		
 	//	备份.AJAX
 	function obj_bak(data){
 		if(data == '0'){
@@ -208,107 +267,4 @@
 
 
 </script>
-
-	<div class="navigation">首页 &gt; 控制面板 &gt; 数据维护管理</div>
-	
-	<div class="tools_box">
-		<div class="tools_bar">
-			<a href="javascript:;" onclick="_url('?file=<?php echo $file; ?>&action=import',{n:'sys_database_imp',t:'还原数据'});" class="tools_btn"><span><b class="add">还原数据</b></span></a>
-		</div>
-	</div>
-
-	<div class="tab_nav tab_nav_ex">数据库管理维护</div>
-	
-	<form action="" method="post" id="myform_db" name="myform_db" >
-	
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="msgtable">
-			<tr>
-				<th width="8%">选择</th>
-				<th width="20%">表名</th>
-				<th width="15%">表注释</th>
-				<th width="10%">记录数</th>
-				<th width="20%">大小</th>
-				<th width="10%">碎片</th>
-				<th>操作</th>
-			</tr>
-<?php
-	foreach($dtables as $k=>$v) {
-?>
-			<tr align="center">
-				<td>
-					<input type="checkbox" name="tables[]" value="<?php echo $v['name'];?>" checked />
-					<input type="hidden" name="sizes[<?php echo $v['name'];?>]" value="<?php echo $v['tsize'];?>"/>
-				</td>
-				<td align="left"><?php echo $v['name'];?></td>
-				<td>
-					<a href="javascript:;" onclick="chk_tabnote(this,'<?php echo $v['name'];?>','<?php echo $v['note'];?>');" title="点击修改表注释"><?php echo $v['note'] ? $v['note'] : '--';?></a>
-				</td>
-				<td><?php echo $v['rows'];?></td>
-				<td>
-					<?php $_p = ($dtotalsize == 0) ? 0 : round(100*$v['tsize']/$dtotalsize); ?>
-					<div class="perc" style="width:100px" title="<?php echo $_p; ?>%"><div style="width:<?php echo $_p; ?>%;">&nbsp;</div></div>
-					<span title="数据:<?php echo $v['size'];?> 索引:<?php echo $v['index'];?>">(<?php echo $v['tsize'];?> MB)</span>
-				</td>
-				<td><?php echo $v['chip'];?></td>
-				<td class="my_option_m">
-					<a href="javascript:;" onclick="optimize_tab('<?php echo $v['name'];?>');">优化</a>
-					<a href="javascript:;" onclick="repair_tab('<?php echo $v['name'];?>');">修复</a>
-					<a href="javascript:;" onclick="down_tab('<?php echo $v['name'];?>');">下载</a>
-					<a href="javascript:;" onclick="dict_tab('<?php echo $v['name'];?>','<?php echo urlencode($v['note']);?>');">字典</a>
-				</td>
-			</tr>
-<?php
-	}
-	if(count($tables) > 0){
-?>
-			<tr>
-				<td colspan="7" align="center" style="background:#F1E7CB;color:red;height:20px;font-weight:bold;">
-					其他系统表[共<?php echo $totalsize;?>M,<?php echo count($tables);?>个表]
-				</td>
-			</tr>
-<?php
-		foreach($tables as $k=>$v) {
-?>
-			<tr align="center">
-				<td>
-					<input type="checkbox" name="tables[]" value="<?php echo $v['name'];?>" checked />
-					<input type="hidden" name="sizes[<?php echo $v['name'];?>]" value="<?php echo $v['tsize'];?>"/>
-				</td>
-				<td align="left"><?php echo $v['name'];?></td>
-				<td>
-					<a href="javascript:;" onclick="chk_tabnote(this,'<?php echo $v['name'];?>','<?php echo $v['note'];?>');" title="点击修改表注释"><?php echo $v['note'] ? $v['note'] : '--';?></a>
-				</td>
-				<td><?php echo $v['rows'];?></td>
-				<td>
-					<?php $_p = ($dtotalsize == 0) ? 0 : round(100*$v['tsize']/$dtotalsize); ?>
-					<div class="perc" style="width:100px" title="<?php echo $_p; ?>%"><div style="width:<?php echo $_p; ?>%;">&nbsp;</div></div>
-					<span title="数据:<?php echo $v['size'];?> 索引:<?php echo $v['index'];?>">(<?php echo $v['tsize'];?> MB)</span>
-				</td>
-				<td><?php echo $v['chip'];?></td>
-				<td class="my_option_m">
-					<a href="javascript:;" onclick="optimize_tab('<?php echo $v['name'];?>');">优化</a>
-					<a href="javascript:;" onclick="repair_tab('<?php echo $v['name'];?>');">修复</a>
-					<a href="javascript:;" onclick="down_tab('<?php echo $v['name'];?>');">下载</a>
-					<a href="javascript:;" onclick="dict_tab('<?php echo $v['name'];?>','<?php echo urlencode($v['note']);?>');">字典</a>
-				</td>
-			</tr>
-<?php
-		}
-	}
-?>
-		</table>
-		<div class="line10"></div>
-		
-		<div class="foot_btn_box" style="text-align:left;">
-			<input type="hidden" name="file" value="<?php echo $file; ?>" />
-			<input type="hidden" id="action" name="action" value="backup" />
-			<input type="hidden" name="v_ruiec_sm" value="ruiec" />
-			<a href="javascript:void(0);" onclick="checkAll('tables[]',true);" >全选</a>&nbsp;&nbsp;&nbsp;
-			<a href="javascript:void(0);" onclick="checkAll('tables[]',false);" >全不选</a>&nbsp;&nbsp;&nbsp;
-			<input type="button" value="备份选中表" onclick="dbopt('0');" class="btnSubmit" />&nbsp;&nbsp;&nbsp;
-			<input type="button" value="删除选中表" onclick="dbopt('1');" class="btnSearch" title="为了安全起见,仅允许删除非RuiecCMS系统表." <?php echo (count($tables) > 0) ? '' : 'disabled'; ?>  />
-		</div>
-	
-	</form>
-	
 <?php include tpl('footer'); ?>

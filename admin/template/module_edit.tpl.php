@@ -1,77 +1,7 @@
-<?php include tpl('header'); ?>
-
-<script type="text/javascript">
-    //表单验证
-    $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("修改成功!", "", "Success");
-						window.location = '?file=<?php echo $file; ?>';
-					}else{
-						parent.jsprint("修改失败!", "", "Error");
-						art.dialog({
-							title: '修改失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-	function ckDir(){
-		if($('#moduledir').val() == ''){
-			alert('请填写安装目录!');
-			$('#moduledir').focus();
-		}else{
-			//artDialog.open('?file=<?php echo $file; ?>&action=ckdir&v_ruiec_ckdir=ruiec&ck_dir='+$('#moduledir').val(),{title: '检测目录',lock: true,background: '#fff',opacity: 0.5,ok: true});
-			
-			var tckdircon = '<form method="POST" id="fm_check_dir" action="?file=<?php echo $file; ?>&action=ckdir&v_ruiec_ckdir=ruiec&ck_dir='+$('#moduledir').val()+'" ></form>';
-
-			art.dialog({
-				id: 'art_check_dir',
-				title: '检测目录',
-				lock: true,
-				background: '#fff',
-				opacity: 0.5,
-				ok: true
-			});
-		
-			art.dialog({id:'send_ckdir_temp',content:tckdircon,show:false});
-		
-			$('#fm_check_dir').ajaxForm({
-				success: function(responseText, statusText, xhr, $form){
-					art.dialog.list['art_check_dir'].content(responseText);
-					art.dialog.list['send_ckdir_temp'].close();
-				}
-			}); 
-			$('#fm_check_dir').submit();
-		}
-	}
-</script>
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+include tpl('header');
+?>
 
 	<div class="navigation">首页 &gt; 控制面板 &gt; <a href="?file=<?php echo $file; ?>">系统模型管理</a> &gt; 编辑模块 </div>
 	
@@ -155,5 +85,37 @@
 		</form>
 		
 	</div>
+<script type="text/javascript">
+    //表单验证
+    $(function () {
+       form_check_init('','',{title:'修改'});
+    });
+	function ckDir(){
+		if($('#moduledir').val() == ''){
+			alert('请填写安装目录!');
+			$('#moduledir').focus();
+		}else{
+			var tckdircon = '<form method="POST" id="fm_check_dir" action="?file=<?php echo $file; ?>&action=ckdir&v_ruiec_ckdir=ruiec&ck_dir='+$('#moduledir').val()+'" ></form>';
 
+			art.dialog({
+				id: 'art_check_dir',
+				title: '检测目录',
+				lock: true,
+				background: '#fff',
+				opacity: 0.5,
+				ok: true
+			});
+		
+			art.dialog({id:'send_ckdir_temp',content:tckdircon,show:false});
+		
+			$('#fm_check_dir').ajaxForm({
+				success: function(responseText, statusText, xhr, $form){
+					art.dialog.list['art_check_dir'].content(responseText);
+					art.dialog.list['send_ckdir_temp'].close();
+				}
+			}); 
+			$('#fm_check_dir').submit();
+		}
+	}
+</script>
 <?php include tpl('footer'); ?>

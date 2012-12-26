@@ -1,81 +1,5 @@
 <?php include tpl('header'); ?>
 
-<script type="text/javascript">
-    //表单验证
-    $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("保存成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("保存失败!", "", "Error");
-						art.dialog({
-							title: '保存失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-	function TestMail() {
-		if($('#testemail').val() == '') {
-			alert('请先输入一个接收测试邮件的邮件地址');
-			$('#testemail').focus();
-			return false;
-		}
-		if($('#testemail').val() == $('#smtp_user').val()) {
-			alert('测试收件人请不要与发件人相同');
-			$('#testemail').focus();
-			return false;
-		}
-		var tsmailcon = '<form method="POST" id="fm_test_semail" action=""><input type="hidden" name="file" value="setting" /><input type="hidden" name="action" value="sendmail" /><input type="hidden" name="v_ruiec_sendmail" value="ruiec" /><input type="hidden" name="tomail" value="'+$('#testemail').val()+'" />'+$('#div_email').html()+'</form>';
-
-		art.dialog({
-			id: 'art_testsendmail',
-			title: '测试邮件发送',
-			lock: true,
-			background: '#fff',
-			opacity: 0.5,
-			ok: true
-		});
-		
-		art.dialog({id:'send_mail_temp',content:tsmailcon,show:false});
-		
-		$('#fm_test_semail').ajaxForm({
-			success: function(responseText, statusText, xhr, $form){
-				art.dialog.list['art_testsendmail'].content(responseText);
-				art.dialog.list['send_mail_temp'].close();
-			}
-		}); 
-		$('#fm_test_semail').submit();
-	}
-</script>
-
 	<div class="navigation">首页 &gt; 控制面板 &gt; 系统设置</div>
 	
 	<div id="contentTab">
@@ -304,5 +228,45 @@
 		</form>
 		
 	</div>
+
+<script type="text/javascript">
+    
+	//表单初始化验证
+    $(function () {
+        form_check_init();
+    });
 	
+	function TestMail() {
+		if($('#testemail').val() == '') {
+			alert('请先输入一个接收测试邮件的邮件地址');
+			$('#testemail').focus();
+			return false;
+		}
+		if($('#testemail').val() == $('#smtp_user').val()) {
+			alert('测试收件人请不要与发件人相同');
+			$('#testemail').focus();
+			return false;
+		}
+		var tsmailcon = '<form method="POST" id="fm_test_semail" action=""><input type="hidden" name="file" value="setting" /><input type="hidden" name="action" value="sendmail" /><input type="hidden" name="v_ruiec_sendmail" value="ruiec" /><input type="hidden" name="tomail" value="'+$('#testemail').val()+'" />'+$('#div_email').html()+'</form>';
+
+		art.dialog({
+			id: 'art_testsendmail',
+			title: '测试邮件发送',
+			lock: true,
+			background: '#fff',
+			opacity: 0.5,
+			ok: true
+		});
+		
+		art.dialog({id:'send_mail_temp',content:tsmailcon,show:false});
+		
+		$('#fm_test_semail').ajaxForm({
+			success: function(responseText, statusText, xhr, $form){
+				art.dialog.list['art_testsendmail'].content(responseText);
+				art.dialog.list['send_mail_temp'].close();
+			}
+		}); 
+		$('#fm_test_semail').submit();
+	}
+</script>
 <?php include tpl('footer'); ?>

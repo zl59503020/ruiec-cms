@@ -1,4 +1,7 @@
-<?php include tpl('header'); ?>
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+include tpl('header');
+?>
 
 	<div class="navigation">首页 &gt; 控制面板 &gt; 查看评论详细</div>
 
@@ -90,47 +93,9 @@
 	</div>
 	
 <script type="text/javascript">
-
-	//表单验证
+	//表单初始化验证
     $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("更新成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("更新失败!", "", "Error");
-						art.dialog({
-							title: '更新失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
+        form_check_init();
     });
 	
 </script>

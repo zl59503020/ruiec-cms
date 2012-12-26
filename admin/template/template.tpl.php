@@ -1,111 +1,7 @@
-<?php include tpl('header'); ?>
-
-
-<script type="text/javascript">
-
-	// 修改表注释
-	function chk_rename(fileid,elem){
-		art.dialog.prompt('请输入新的备注名.', function (val) {
-			var url = '?file=<?php echo $file;?>&dir=<?php echo $dir;?>&action=template_name&fileid='+fileid+'&name='+encodeURIComponent(val);
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("更改成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("更改失败!", "", "Error");
-						art.dialog({
-							title: '更改失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		}, elem.innerText);
-	}
-	
-	// 删除
-	function tpl_delete(fileid,ext){
-		art.dialog.confirm('确定要删除文件['+ext+']吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			$.ajax({
-				url:'?file=<?php echo $file; ?>&action=delete&dir=<?php echo $dir; ?>&fileid='+encodeURIComponent(fileid),
-				success:function(data){
-					if(data == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: data,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	// 删除
-	function tpl_bak_delete(fileid,ext,bakid){
-		art.dialog.confirm('确定要删除文件['+ext+']吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			$.ajax({
-				url:'?file=<?php echo $file; ?>&action=delete&dir=<?php echo $dir; ?>&fileid='+encodeURIComponent(fileid)+'&bakid='+encodeURIComponent(bakid),
-				success:function(data){
-					if(data == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: data,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function tp_import(fileid,bakid){
-		art.dialog.confirm('确定要恢复备份文件['+fileid+'.'+bakid+'.bak]吗?<br /><span style="font-size:14px;color:red;">当前文件['+fileid+'.htm]将被覆盖!!!</span>', function(){
-			$.ajax({
-				url:'?file=<?php echo $file; ?>&action=import&fileid='+encodeURIComponent(fileid)+'&bakid='+encodeURIComponent(bakid),
-				success:function(data){
-					if(data == '0'){
-						parent.jsprint("恢复成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("恢复失败!", "", "Error");
-						art.dialog({
-							title: '恢复失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: data,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-
-</script>
-
-
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+include tpl('header');
+?>
 	<div class="navigation">首页 &gt; 控制面板 &gt; 模板管理</div>
 	
 	<div class="tools_box">
@@ -222,4 +118,56 @@
 	}
 ?>
 	
+
+<script type="text/javascript">
+
+	// 修改表注释
+	function chk_rename(fileid,elem){
+		art.dialog.prompt('请输入新的备注名.', function (val) {
+			var url = '?file=<?php echo $file;?>&dir=<?php echo $dir;?>&action=template_name&fileid='+fileid+'&name='+encodeURIComponent(val);
+			$.ajax({
+				url:url,
+				success:function(responseText){
+					if(responseText == '0'){
+						parent.jsprint("更改成功!", "", "Success");
+						window.location.reload();
+					}else{
+						parent.jsprint("更改失败!", "", "Error");
+						art.dialog({
+							title: '更改失败',
+							lock: true,
+							background: '#fff',
+							opacity: 0.5,
+							content: responseText,
+							ok: true
+						});
+					}
+				}
+			});
+		}, elem.innerText);
+	}
+	
+	// 删除
+	function tpl_delete(fileid,ext){
+		var info = '确定要删除文件['+ext+']吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file; ?>&action=delete&dir=<?php echo $dir; ?>&fileid='+encodeURIComponent(fileid);
+		_cf({info:info,url:url,title:'删除'});
+	}
+	
+	// 删除
+	function tpl_bak_delete(fileid,ext,bakid){
+		var info = '确定要删除文件['+ext+']吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file; ?>&action=delete&dir=<?php echo $dir; ?>&fileid='+encodeURIComponent(fileid)+'&bakid='+encodeURIComponent(bakid);
+		_cf({info:info,url:url,title:'删除'});
+	}
+	
+	function tp_import(fileid,bakid){
+		var info = '确定要恢复备份文件['+fileid+'.'+bakid+'.bak]吗?<br /><span style="font-size:14px;color:red;">当前文件['+fileid+'.htm]将被覆盖!!!</span>';
+		var url = '?file=<?php echo $file; ?>&action=import&fileid='+encodeURIComponent(fileid)+'&bakid='+encodeURIComponent(bakid);
+		_cf({info:info,url:url,title:'恢复'});
+	}
+
+</script>
+
+
 <?php include tpl('footer'); ?>

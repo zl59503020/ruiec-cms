@@ -348,6 +348,7 @@ function _cf(opt){
 						ok: true
 					});
 				}
+				if(typeof opt.callback != 'undefined') opt.callback.call(document);
 			}
 		});
 	});

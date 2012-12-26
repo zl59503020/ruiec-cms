@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-25 16:02:01</time>
+	<ip>192.168.1.106</ip>
+	<user>Guest</user>
+	<file>/down/index.php</file>
+	<querystring></querystring>
+	<message>		<query>SELECT * FROM ruiec_down WHERE status=3 AND thumb<>''  AND catid IN (23) ORDER BY addtime desc LIMIT 0,3</query>
+		<errno>0</errno>
+		<error>Table 'ruieccms.ruiec_down' doesn't exist</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

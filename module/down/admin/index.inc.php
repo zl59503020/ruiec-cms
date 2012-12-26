@@ -4,11 +4,19 @@ require MD_ROOT.'/down.class.php';
 
 $do = new down($moduleid);
 
+if(in_array($action, array('add', 'edit'))) {
+	$FD = cache_read('fields-'.substr($table, strlen($RE_PRE)).'.php');
+	if($FD) require RE_ROOT.'/include/fields.func.php';
+	isset($post_fields) or $post_fields = array();
+}
+
 switch($action) {
 	case 'add':
 		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec' ){
 			if($do->pass($post)) {
+				//if($FD) fields_check($post_fields);
 				$do->add($post);
+				if($FD) fields_update($post_fields, $table, $do->itemid);
 				die('0');
 			} else {
 				die($do->errmsg);
@@ -22,7 +30,9 @@ switch($action) {
 		$do->itemid = $itemid;
 		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec' ){
 			if($do->pass($post)) {
+				//if($FD) fields_check($post_fields);
 				$do->edit($post);
+				if($FD) fields_update($post_fields, $table, $do->itemid);
 				die('0');
 			} else {
 				die($do->errmsg);

@@ -1,0 +1,29 @@
+@charset "utf-8";
+/* CSS Document */
+.left710 {
+float: left;
+display: inline;
+width: 710px;
+border-right: 1px solid #E2E2E2;
+background: white;
+overflow: hidden;
+}
+.left264 {
+float: left;
+width: 264px;
+}
+.boxwrap {
+margin: 0 auto;
+width: 978px;
+height: auto;
+border: 1px solid #E2E2E2;
+background: #FAFAFA;
+text-align: left;
+}
+.boxwrap::after {
+clear: both;
+content: ".";
+display: block;
+height: 0;
+visibility: hidden;
+}

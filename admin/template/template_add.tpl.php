@@ -2,90 +2,6 @@
 defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
-
-<script type="text/javascript">
-	
-	$(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("保存成功!", "", "Success");
-						parent.reModuleMenu();
-						window.location = '?file=<?php echo $file; ?>&dir=<?php echo $dir;?>';
-					}else{
-						parent.jsprint("保存失败!", "", "Error");
-						art.dialog({
-							title: '保存失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-		load_code_color();
-    });
-
-	//预览
-	function tp_Preview(){
-		if(editor != null) $('#content').val(editor.getValue());
-		if($('#content').val() == '') {
-			art.dialog({
-				title: '模板内容为空!',
-				lock: true,
-				background: '#fff',
-				opacity: 0.5,
-				content: '模板内容为空<br>请编辑后再预览',
-				ok: true
-			});
-		} else {
-			$('#pcontent').val($('#content').val());
-			$('#pr').submit();
-		}
-	}
-	
-	var editor = null;
-	function load_code_color(){
-		if(editor == null){
-			editor = CodeMirror.fromTextArea(document.getElementById("content"), {
-				matchBrackets: true,
-				indentUnit: 4,
-				indentWithTabs: true,
-				enterMode: "keep",
-				tabMode: "shift",
-				mode : "text/html",
-				lineNumbers : true,
-				lineWrapping : true
-			});
-		}else{
-			editor.setValue($('#content').val());
-		}
-	}
-	
-</script>
-
 	<div class="navigation">首页 &gt; 控制面板 &gt; <a href="?file=<?php echo $file; ?>模板管理</a> &gt; 新建模板</div>
 	
 	<div class="tools_box">
@@ -147,4 +63,49 @@ include tpl('header');
 		<input type="hidden" id="pcontent" name="content" value=""/>
 	</form>
 
+<script type="text/javascript">
+	
+	//表单初始化验证
+    $(function () {
+        form_check_init();
+		load_code_color();
+    });
+
+	//预览
+	function tp_Preview(){
+		if(editor != null) $('#content').val(editor.getValue());
+		if($('#content').val() == '') {
+			art.dialog({
+				title: '模板内容为空!',
+				lock: true,
+				background: '#fff',
+				opacity: 0.5,
+				content: '模板内容为空<br>请编辑后再预览',
+				ok: true
+			});
+		} else {
+			$('#pcontent').val($('#content').val());
+			$('#pr').submit();
+		}
+	}
+	
+	var editor = null;
+	function load_code_color(){
+		if(editor == null){
+			editor = CodeMirror.fromTextArea(document.getElementById("content"), {
+				matchBrackets: true,
+				indentUnit: 4,
+				indentWithTabs: true,
+				enterMode: "keep",
+				tabMode: "shift",
+				mode : "text/html",
+				lineNumbers : true,
+				lineWrapping : true
+			});
+		}else{
+			editor.setValue($('#content').val());
+		}
+	}
+	
+</script>
 <?php include tpl('footer');?>

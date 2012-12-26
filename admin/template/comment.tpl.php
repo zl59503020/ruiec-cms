@@ -1,98 +1,7 @@
-<?php include tpl('header'); ?>
-
-<script type="text/javascript">
-
-	/* $(function(){
-		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					$_text = ($('#action').val() == 'delete') ? '删除' : '改变';
-					if(responseText == '0'){
-						parent.jsprint($_text+"成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint($_text+"失败!", "", "Error");
-						art.dialog({
-							title: $_text+'失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-	}); */
-	
-	//表单初始化验证
-    $(function () {
-        form_check_init('','',{title:''});
-    });
-	
-	// 删除
-	function _delete(id){
-		art.dialog.confirm('确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			$.ajax({
-				url:'?file=<?php echo $file; ?>&action=delete&itemid='+encodeURIComponent(id),
-				success:function(data){
-					if(data == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: data,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	// 改变状态
-	function _chanstatus(){
-		if($('#status').val() != ''){
-			var sels = z.$('#itemid[]');
-			var ib = false;
-			for(var i in sels){
-				if(sels[i].checked) ib = true;
-			}
-			if(ib){
-				art.dialog.confirm('确定要改变所选的评论状态吗?', function(){
-					$('#action').val('status');
-					$('#myform').submit();
-				});
-			}else{
-				$('#status').val('');
-				alert('请选择要改变状态的评论!');
-			}
-		}
-	}
-	
-	// 删除所选
-	function _del_select(){
-		if(ck_sel('itemid[]')){
-			art.dialog.confirm('确定要删除所选的评论吗?<br /><span style="font-size:14px;color:red;">提示:此操作不可恢复!!!</span>', function(){
-				$('#action').val('delete');
-				$('#myform').submit();
-			});
-		}else{
-			alert('请选择要删除的评论!');
-		}
-	}
-	
-</script>
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+include tpl('header');
+?>
 
 	<div class="navigation">首页 &gt; 控制面板 &gt; 评论信息管理</div>
 
@@ -152,5 +61,50 @@
 		</div>
 	
 	</form>
+<script type="text/javascript">
+	//表单初始化验证
+    $(function () {
+        form_check_init();
+    });
 	
+	// 删除
+	function _delete(id){
+		var info = '确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file; ?>&action=delete&itemid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'删除'});
+	}
+	
+	// 改变状态
+	function _chanstatus(){
+		if($('#status').val() != ''){
+			var sels = z.$('#itemid[]');
+			var ib = false;
+			for(var i in sels){
+				if(sels[i].checked) ib = true;
+			}
+			if(ib){
+				art.dialog.confirm('确定要改变所选的评论状态吗?', function(){
+					$('#action').val('status');
+					$('#myform').submit();
+				});
+			}else{
+				$('#status').val('');
+				alert('请选择要改变状态的评论!');
+			}
+		}
+	}
+	
+	// 删除所选
+	function _del_select(){
+		if(ck_sel('itemid[]')){
+			art.dialog.confirm('确定要删除所选的评论吗?<br /><span style="font-size:14px;color:red;">提示:此操作不可恢复!!!</span>', function(){
+				$('#action').val('delete');
+				$('#myform').submit();
+			});
+		}else{
+			alert('请选择要删除的评论!');
+		}
+	}
+	
+</script>
 <?php include tpl('footer'); ?>
