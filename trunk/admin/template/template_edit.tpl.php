@@ -71,45 +71,9 @@ include tpl('header');
 	
 <script type="text/javascript">
 	
-	$(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("保存成功!", "", "Success");
-						window.location = '?file=<?php echo $file; ?>&dir=<?php echo $dir;?>';
-					}else{
-						parent.jsprint("保存失败!", "", "Error");
-						art.dialog({
-							title: '保存失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
+	//表单初始化验证
+    $(function () {
+        form_check_init();
 		load_code_color();
     });
 

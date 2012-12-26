@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-24 17:19:41</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/admin.php</file>
+	<querystring>file=fields&amp;tbname=down_19&amp;action=add</querystring>
+	<message>		<query>SHOW FULL COLUMNS FROM `down_19`</query>
+		<errno>0</errno>
+		<error>Table 'ruieccms.down_19' doesn't exist</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

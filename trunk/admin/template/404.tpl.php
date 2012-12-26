@@ -3,60 +3,6 @@ defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
 
-<script type="text/javascript">
-	
-	function log_delete(id){
-		art.dialog.confirm('确定要删除该记录吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=delete&itemid='+id;
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function log_clear(){
-		art.dialog.confirm('确定要清空所有记录吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=clear';
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("清空成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("清空失败!", "", "Error");
-						art.dialog({
-							title: '清空失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-
-</script>
-
 	<div class="navigation">首页 &gt; 控制面板 &gt; 系统日志</div>
 	
 	<div class="tools_box">
@@ -98,5 +44,21 @@ include tpl('header');
 	}
 ?>
 	</table>
+
+<script type="text/javascript">
+	
+	function log_delete(id){
+		var info = '确定要删除该记录吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file;?>&action=delete&itemid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'删除'});
+	}
+	
+	function log_clear(){
+		var info = '确定要清空所有记录吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file;?>&action=clear';
+		_cf({info:info,url:url,title:'清空'});
+	}
+
+</script>
 
 <?php include tpl('footer'); ?>

@@ -2,65 +2,6 @@
 defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
-
-<script type="text/javascript">
-    //表单验证
-    $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                //可见元素显示错误提示
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() { art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3}); },
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					if(responseText == '0'){
-						parent.jsprint("更新成功!", "", "Success");
-						//window.location = '?file=<?php echo $file; ?>&moduleid=<?php echo $moduleid; ?>';
-						window.location.reload();
-					}else{
-						parent.jsprint("更新失败!", "", "Error");
-						art.dialog({
-							title: '更新失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-	
-	// 远程或本地
-	function ckwebloc(elem){
-		if(elem.checked){
-			$('#locttbd').hide();
-			$('#wurltbd').show();
-		}else{
-			$('#wurltbd').hide();
-			$('#locttbd').show();
-		}
-	}
-	
-</script>
-
-
 	<div class="navigation">首页 &gt; <?php echo $MOD['name']; ?>管理 &gt; <?php echo (isset($itemid) ? '编辑' : '添加').$MOD['name']; ?></div>
 
 	<div id="contentTab">
@@ -181,5 +122,24 @@ include tpl('header');
 		</form>
 		
 	</div>
+	
+<script type="text/javascript">
+    //表单初始化验证
+    $(function () {
+        form_check_init('','',{title:'更新'});
+    });
+	
+	// 远程或本地
+	function ckwebloc(elem){
+		if(elem.checked){
+			$('#locttbd').hide();
+			$('#wurltbd').show();
+		}else{
+			$('#wurltbd').hide();
+			$('#locttbd').show();
+		}
+	}
+	
+</script>
 
 <?php include tpl('footer');?>

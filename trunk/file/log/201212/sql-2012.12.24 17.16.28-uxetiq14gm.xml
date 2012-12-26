@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-24 17:16:28</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/admin.php</file>
+	<querystring>file=fields&amp;tbname=down_19&amp;action=add</querystring>
+	<message>		<query>ALTER TABLE ruiec_down_19 ADD `testmyfield` VARCHAR(255) NOT NULL COMMENT '测试...'</query>
+		<errno>0</errno>
+		<error>Duplicate column name 'testmyfield'</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>

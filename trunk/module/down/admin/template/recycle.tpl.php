@@ -2,118 +2,6 @@
 defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
-
-<script type="text/javascript">
-
-	 //表单验证
-    $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() { art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3}); },
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					var opt = $('#action').val() == 'restore' ? '还原' : '删除';
-					if(responseText == '0'){
-						parent.jsprint(opt+"成功!", "", "Success");
-						window.location = '?moduleid=<?php echo $moduleid; ?>';
-					}else{
-						parent.jsprint(opt+"失败!", "", "Error");
-						art.dialog({
-							title: opt+'失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-
-	function _delete(id){
-		art.dialog.confirm('确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=delete&moduleid=<?php echo $moduleid; ?>&itemid='+id;
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function _deleteSel(){
-		art.dialog.confirm('确定要删除选中内容吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			$('#action').val('delete');
-			$('#myform').submit();
-		});
-	}
-	
-	function _reduction(id){
-		art.dialog.confirm('确定要还原吗?', function(){
-			var url = '?moduleid=<?php echo $moduleid; ?>&action=restore&itemid='+id;
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("还原成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("还原失败!", "", "Error");
-						art.dialog({
-							title: '还原失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function _reSel(){
-		art.dialog.confirm('确定要把选中内容还原吗?', function(){
-			$('#action').val('restore');
-			$('#myform').submit();
-		});
-	}
-	
-
-</script>
-
 	<div class="navigation">首页 &gt; <?php echo $MOD['name']; ?>管理 &gt; 回收站</div>
 	
 	<div class="tools_box">
@@ -182,5 +70,37 @@ include tpl('header');
 		</div>
 	
 	</form>
+<script type="text/javascript">
+
+	$(function () {
+        form_check_init('','',{title:'操作'});
+    });
 	
+	function _delete(id){
+		var info = '确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file; ?>&action=delete&moduleid=<?php echo $moduleid; ?>&itemid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'删除'});
+	}
+	
+	function _deleteSel(){
+		art.dialog.confirm('确定要删除选中内容吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
+			$('#action').val('delete');
+			$('#myform').submit();
+		});
+	}
+	
+	function _reduction(id){
+		var info = '确定要还原吗?';
+		var url = '?moduleid=<?php echo $moduleid; ?>&action=restore&itemid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'还原'});
+	}
+	
+	function _reSel(){
+		art.dialog.confirm('确定要把选中内容还原吗?', function(){
+			$('#action').val('restore');
+			$('#myform').submit();
+		});
+	}
+	
+</script>
 <?php include tpl('footer');?>

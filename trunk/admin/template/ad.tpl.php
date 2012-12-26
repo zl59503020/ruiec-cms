@@ -1,4 +1,7 @@
-<?php include tpl('header'); ?>
+<?php
+defined('IN_RUIEC') or exit('Access Denied');
+include tpl('header');
+?>
 
 <script type="text/javascript">
 	
@@ -53,6 +56,5 @@
 	</table>
 	</form>
 	<div class="line10"></div>
-
 	
-<?php include tpl('footer'); ?>
+<?php include tpl('footer');?>

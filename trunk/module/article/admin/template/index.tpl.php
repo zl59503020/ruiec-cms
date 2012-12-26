@@ -2,102 +2,6 @@
 defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
-
-<script type="text/javascript">
-
-	 //表单验证
-    $(function () {
-        $("#myform").validate({
-            invalidHandler: function (e, validator) {
-                parent.jsprint("有 " + validator.numberOfInvalids() + " 项填写有误，请检查！", "", "Warning");
-            },
-            errorPlacement: function (lable, element) {
-                if (element.parents(".tab_con").css('display') != 'none') {
-                    element.ligerTip({ content: lable.html(), appendIdTo: lable });
-                }
-            },
-            success: function (lable) {
-                lable.ligerHideTip();
-            }
-        });
-		$('#myform').ajaxForm({
-			beforeSend : function() { art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3}); },
-			success : function(responseText, statusText, xhr, $form){
-				art.dialog.list['lock'].close();
-				if(statusText == 'success'){
-					var opt = ($('#action').val() == 'level') ? '改变' : '删除';
-					if(responseText == '0'){
-						parent.jsprint(opt+"成功!", "", "Success");
-						//window.location = '?file=<?php echo $file; ?>&moduleid=<?php echo $moduleid; ?>';
-						window.location.reload();
-					}else{
-						parent.jsprint(opt+"失败!", "", "Error");
-						art.dialog({
-							title: opt+'失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}else{
-					return true;
-				}
-			}
-		});
-    });
-
-	function _delete(id){
-		art.dialog.confirm('确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作可恢复,可在回收站内找回!!!</span>', function(){
-			var url = '?file=<?php echo $file;?>&action=delete&moduleid=<?php echo $moduleid; ?>&recycle=true&itemid='+id;
-			$.ajax({
-				url:url,
-				success:function(responseText){
-					if(responseText == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: responseText,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function _deleteSel(){
-		art.dialog.confirm('确定要删除选中内容吗?<br /><span style="font-size:14px;color:red;">此操作可恢复,可在回收站内找回!!!</span>', function(){
-			$('#action').val('delete');
-			$('#myform').submit();
-		});
-	}
-	
-	function _chanlevel(){
-		art.dialog.confirm('确定要改变选中的级别吗?', function(){
-			$('#action').val('level');
-			$('#myform').submit();
-		});
-	}
-	
-	function search_news(){
-		if($('#txtKeywords').val() == ''){
-			alert('请输入搜索关键词!');
-			$('#txtKeywords').focus();
-		}else{
-			$('#ls_content').append('<tr><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td><td>Hello</td></tr>');
-		}
-	}
-
-</script>
-
 	<div class="navigation">首页 &gt; <?php echo $MOD['name']; ?>管理 &gt; <?php echo $MOD['name']; ?>列表</div>
 	
 	<div class="tools_box">
@@ -170,5 +74,42 @@ include tpl('header');
 		</div>
 	
 	</form>
+
+<script type="text/javascript">
+
+	$(function () {
+        form_check_init('','',{title:'操作'});
+    });
+
+	function _delete(id){
+		var info = '确定要删除吗?<br /><span style="font-size:14px;color:red;">此操作可恢复,可在回收站内找回!!!</span>';
+		var url = '?file=<?php echo $file;?>&action=delete&moduleid=<?php echo $moduleid; ?>&recycle=true&itemid='+encodeURIComponent(id);
+		_cf({info:info,url:url,title:'删除'});
+	}
 	
+	function _deleteSel(){
+		art.dialog.confirm('确定要删除选中内容吗?<br /><span style="font-size:14px;color:red;">此操作可恢复,可在回收站内找回!!!</span>', function(){
+			$('#action').val('delete');
+			$('#myform').submit();
+		});
+	}
+	
+	function _chanlevel(){
+		art.dialog.confirm('确定要改变选中的级别吗?', function(){
+			$('#action').val('level');
+			$('#myform').submit();
+		});
+	}
+	
+	function search_news(){
+		if($('#txtKeywords').val() == ''){
+			alert('请输入搜索关键词!');
+			$('#txtKeywords').focus();
+		}else{
+			
+		}
+	}
+
+</script>
+
 <?php include tpl('footer');?>

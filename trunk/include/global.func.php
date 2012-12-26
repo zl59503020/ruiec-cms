@@ -573,7 +573,7 @@ function get_table($moduleid, $data = 0) {
 	if($data) {
 		return in_array($module, array('article', 'info')) ? $RE_PRE.$module.'_data_'.$moduleid : $RE_PRE.$module.'_data';
 	} else {
-		return in_array($module, array('article', 'info')) ? $RE_PRE.$module.'_'.$moduleid : $RE_PRE.$module;
+		return in_array($module, array('article', 'info', 'down')) ? $RE_PRE.$module.'_'.$moduleid : $RE_PRE.$module;
 	}
 }
 

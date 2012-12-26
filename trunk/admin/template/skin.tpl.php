@@ -2,65 +2,6 @@
 defined('IN_RUIEC') or exit('Access Denied');
 include tpl('header');
 ?>
-
-<script type="text/javascript">
-
-	// 删除
-	function skin_delete(fileid,ext,bakid){
-		art.dialog.confirm('确定要删除文件['+ext+']吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>', function(){
-			var url = '?file=<?php echo $file; ?>&action=delete&fileid='+encodeURIComponent(fileid);
-			$.ajax({
-				url:url + ((typeof bakid != 'undefined') ? ('&bakid='+encodeURIComponent(bakid)) : ''),
-				success:function(data){
-					if(data == '0'){
-						parent.jsprint("删除成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("删除失败!", "", "Error");
-						art.dialog({
-							title: '删除失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: data,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function sk_import(fileid,bakid){
-		art.dialog.confirm('确定要恢复备份文件['+fileid+']吗?<br /><span style="font-size:14px;color:red;">当前文件将被覆盖!!!</span>', function(){
-			$.ajax({
-				url:'?file=<?php echo $file; ?>&action=import&fileid='+encodeURIComponent(fileid)+'&bakid='+encodeURIComponent(bakid),
-				success:function(data){
-					if(data == '0'){
-						parent.jsprint("恢复成功!", "", "Success");
-						window.location.reload();
-					}else{
-						parent.jsprint("恢复失败!", "", "Error");
-						art.dialog({
-							title: '恢复失败',
-							lock: true,
-							background: '#fff',
-							opacity: 0.5,
-							content: data,
-							ok: true
-						});
-					}
-				}
-			});
-		});
-	}
-	
-	function ac_url(action,op){
-		window.location = '?file=<?php echo $file; ?>&action='+action+'&'+op;
-	}
-
-</script>
-
 	<div class="navigation">首页 &gt; 控制面板 &gt; 皮肤管理</div>
 	
 	<div class="tools_box">
@@ -134,6 +75,28 @@ include tpl('header');
 		}
 ?>
 	</table>
+
+<script type="text/javascript">
+
+	// 删除
+	function skin_delete(fileid,ext,bakid){
+		var info = '确定要删除文件['+ext+']吗?<br /><span style="font-size:14px;color:red;">此操作不可恢复!!!</span>';
+		var url = '?file=<?php echo $file; ?>&action=delete&fileid='+encodeURIComponent(fileid);
+		_cf({info:info,url:url,title:'删除'});
+	}
+	
+	function sk_import(fileid,bakid){
+		var info = '确定要恢复备份文件['+fileid+']吗?<br /><span style="font-size:14px;color:red;">当前文件将被覆盖!!!</span>';
+		url:'?file=<?php echo $file; ?>&action=import&fileid='+encodeURIComponent(fileid)+'&bakid='+encodeURIComponent(bakid),
+		_cf({info:info,url:url,title:'恢复'});
+	}
+	
+	function ac_url(action,op){
+		window.location = '?file=<?php echo $file; ?>&action='+action+'&'+op;
+	}
+
+</script>	
+	
 <?php
 	}
 	include tpl('footer');
