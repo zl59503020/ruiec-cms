@@ -2,18 +2,20 @@
 defined('IN_RUIEC') or exit('Access Denied');
 $all = (isset($all) && $all) ? 1 : 0;
 $one = (isset($one) && $one) ? 1 : 0;
-$this_forward = '?moduleid='.$moduleid.'&file='.$file;
+
+$this_url = '?moduleid='.$moduleid.'&file='.$file;
+
 switch($action) {
 	case 'all':
 		msg('', '?moduleid='.$moduleid.'&file='.$file.'&action=show&update=1&all=1&one='.$one);
 	break;
 	case 'index':
 		tohtml('index', $module);
-		$all ? msg($MOD['name'].'首页生成成功', '?moduleid='.$moduleid.'&file='.$file.'&action=list&all=1&one='.$one) : dmsg($MOD['name'].'首页生成成功', $this_forward);
+		$all ? msg($MOD['name'].'首页生成成功', '?moduleid='.$moduleid.'&file='.$file.'&action=list&all=1&one='.$one) : _msg($MOD['name'].'首页生成成功', $this_url);
 	break;
 	case 'list':
 		if(!$MOD['list_html']) {
-			$all ? msg($MOD['name'].'列表生成成功', '?moduleid='.$moduleid.'&file='.$file.'&action=show&all='.$all.'&one='.$one) : msg($MOD['name'].'列表生成成功', $this_forward);
+			$all ? msg($MOD['name'].'列表生成成功', '?moduleid='.$moduleid.'&file='.$file.'&action=show&all='.$all.'&one='.$one) : msg($MOD['name'].'列表生成成功', $this_url);
 		}
 		$CATEGORY = cache_read('category-'.$moduleid.'.php');
 		if(isset($catids)) {
@@ -36,7 +38,7 @@ switch($action) {
 				}
 				msg($MOD['name'].' ['.$CATEGORY[$bcatid]['catname'].'] 生成成功'.progress($sid, $fid, $tid), '?moduleid='.$moduleid.'&file='.$file.'&action='.$action.'&catids='.($catids+1).'&tid='.$tid.'&all='.$all.'&one='.$one);
 			} else {
-				$all ? msg($MOD['name'].'列表生成成功', '?moduleid='.$moduleid.'&file='.$file.'&action=show&all='.$all.'&one='.$one) : msg($MOD['name'].'列表生成成功', $this_forward);
+				$all ? msg($MOD['name'].'列表生成成功', '?moduleid='.$moduleid.'&file='.$file.'&action=show&all='.$all.'&one='.$one) : msg($MOD['name'].'列表生成成功', $this_url);
 			}		
 		} else {
 			$catids = 0;
@@ -46,8 +48,8 @@ switch($action) {
 	case 'show':
 		$update = (isset($update) && $update) ? 1 : 0;
 		if(!$update && !$MOD['show_html']) {
-			if($one) dheader( '?file=html&action=back&mid='.$moduleid);
-			$all ? msg($MOD['name'].'生成成功', $this_forward) : dmsg($MOD['name'].'生成成功', $this_forward);
+			if($one) _header( '?file=html&action=back&mid='.$moduleid);
+			$all ? msg($MOD['name'].'生成成功', $this_url) : _msg($MOD['name'].'生成成功', $this_url);
 		}
 		$catid = isset($catid) ? intval($catid) : '';
 		$sql = $catid ? " AND catid=$catid" : '';
@@ -78,10 +80,10 @@ switch($action) {
 			}
 		} else {
 			if($update) {
-				$all ? msg('', '?moduleid='.$moduleid.'&file='.$file.'&action=index&all=1&one='.$one) : dmsg('更新成功', $this_forward);
+				$all ? msg('', '?moduleid='.$moduleid.'&file='.$file.'&action=index&all=1&one='.$one) : _msg('更新成功', $this_url);
 			} else {
-				if($one) dheader( '?file=html&action=back&mid='.$moduleid);
-				$all ? msg($MOD['name'].'生成成功', $this_forward) : dmsg($MOD['name'].'生成成功', $this_forward);
+				if($one) _header( '?file=html&action=back&mid='.$moduleid);
+				$all ? msg($MOD['name'].'生成成功', $this_url) : _msg($MOD['name'].'生成成功', $this_url);
 			}
 		}
 		msg('ID从'.$fid.'至'.($itemid-1).$MOD['name'].($update ? '更新' : '生成').'成功'.progress($sid, $fid, $tid), "?moduleid=$moduleid&file=$file&action=$action&sid=$sid&fid=$itemid&tid=$tid&num=$num&update=$update&all=$all&one=$one");
@@ -95,13 +97,13 @@ switch($action) {
 			$fid = $fpage;
 			$num = $tpage - $fpage + 1;
 			tohtml('list', $module);
-			dmsg('生成成功', $this_forward);
+			_msg('生成成功', $this_url);
 		}
 		if($fid <= $total) {
 			tohtml('list', $module);
 			msg('第'.$fid.'页至第'.($fid+$num-1).'页生成成功', '?moduleid='.$moduleid.'&file='.$file.'&action='.$action.'&catid='.$catid.'&fid='.($fid+$num).'&num='.$num.'&fpage='.$fpage.'&tpage='.$tpage);
 		} else {
-			dmsg('生成成功', $this_forward);
+			_msg('生成成功', $this_url);
 		}
 	break;
 	case 'item':

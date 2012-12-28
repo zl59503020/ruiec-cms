@@ -12,6 +12,8 @@ CREATE TABLE `ruiec_product_8` (
   `fromurl` varchar(255) NOT NULL DEFAULT '' COMMENT '来源链接',
   `hits` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '点击次数',
   `thumb` varchar(255) NOT NULL DEFAULT '' COMMENT '标题图片',
+  `content` longtext NOT NULL COMMENT '内容',
+  `proimages` longtext NOT NULL COMMENT '产品图片',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `edittime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   `ip` varchar(50) NOT NULL DEFAULT '' COMMENT 'IP',
@@ -24,11 +26,4 @@ CREATE TABLE `ruiec_product_8` (
   PRIMARY KEY (`itemid`),
   KEY `addtime` (`addtime`),
   KEY `catid` (`catid`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='资讯';
-
-DROP TABLE IF EXISTS `ruiec_product_data_8`;
-CREATE TABLE `ruiec_product_data_8` (
-  `itemid` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '新闻ID',
-  `content` longtext NOT NULL COMMENT '内容',
-  PRIMARY KEY (`itemid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='资讯内容';
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='产品';

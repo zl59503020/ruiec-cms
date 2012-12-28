@@ -147,18 +147,42 @@
 							</td>
 						</tr>
 						<tr>
+							<th>目录首页文件名：</th>
+							<td>
+								<input name="setting[index]" type="text" value="<?php echo $index; ?>" size="61" class="txtInput" />
+							</td>
+						</tr>
+						<tr>
+							<th>生成文件扩展名：</th>
+							<td>
+								<select name="setting[file_ext]" class="select">
+									<option value="html" <?php echo $file_ext == 'html' ? 'selected' : ''; ?>>.html</option>
+									<option value="htm" <?php echo $file_ext == 'htm' ? 'selected' : ''; ?>>.htm</option>
+									<option value="shtm" <?php echo $file_ext == 'shtm' ? 'selected' : ''; ?>>.shtm</option>
+									<option value="shtml" <?php echo $file_ext == 'shtml' ? 'selected' : ''; ?>>.shtml</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>网站首页生成html: </th>
+							<td>
+								<input type="radio" name="setting[index_html]" value="1" <?php echo $index_html == '1' ? 'checked' : ''; ?>/> 开启&nbsp;&nbsp;
+								<input type="radio" name="setting[index_html]" value="0" <?php echo $index_html == '0' ? 'checked' : ''; ?>/> 关闭 
+							</td>
+						</tr>
+						<tr>
 							<th>URL Rewrite(伪静态): </th>
 							<td>
-								<input type="radio" name="setting[rewrite]" value="1" <?php if($rewrite){ ?>checked <?php } ?>/> 开启&nbsp;&nbsp;
-								<input type="radio" name="setting[rewrite]" value="0" <?php if(!$rewrite){ ?>checked <?php } ?>/> 关闭 
+								<input type="radio" name="setting[rewrite]" value="1" <?php echo $rewrite == '1' ? 'checked' : ''; ?>/> 开启&nbsp;&nbsp;
+								<input type="radio" name="setting[rewrite]" value="0" <?php echo $rewrite == '0' ? 'checked' : ''; ?>/> 关闭 
 								<?php tips('请确认服务器已做过规则配置，否则请勿开启<br/>ReWrite规则见帮助文档<br/>请点击下面的地址，如果可以正常显示，说明规则配置成功<br/><a href=index-htm-url-rule.html target=_blank>index-htm-url-rule.html</a>');?>
 							</td>
 						</tr>
 						<tr>
 							<th>404日志</th>
 							<td>
-								<input type="radio" name="setting[log_404]" value="1" <?php if($log_404){ ?>checked <?php } ?>/> 开启&nbsp;&nbsp;
-								<input type="radio" name="setting[log_404]" value="0" <?php if(!$log_404){ ?>checked <?php } ?>/> 关闭 
+								<input type="radio" name="setting[log_404]" value="1" <?php echo $log_404 == '1' ? 'checked' : ''; ?>/> 开启&nbsp;&nbsp;
+								<input type="radio" name="setting[log_404]" value="0" <?php echo $log_404 == '0' ? 'checked' : ''; ?>/> 关闭 
 								<?php tips('开启404日志有利于分析站内死链接和用户或搜索引擎蜘蛛的错误记录<br/>同时需要设置站点的404页面至网站根目录404.php');?>
 							</td>
 						</tr>
