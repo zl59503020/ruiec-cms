@@ -352,27 +352,33 @@ function random($length, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghi
 	return $hash;
 }
 
+// HTML URL
+function tohtml($htmlfile, $module = '', $parameter = '') {
+	defined('TOHTML') or define('TOHTML', true);
+    extract($GLOBALS, EXTR_SKIP);
+	if($parameter) parse_str($parameter);
+    include $module ? RE_ROOT.'/module/'.$module.'/'.$htmlfile.'.htm.php' : RE_ROOT.'/include/'.$htmlfile.'.htm.php';
+}
+
 function listurl($CAT, $page = 0) {
-	//global $RE, $MOD;
-	//include RE_ROOT.'/api/url.inc.php';
-	//$catid = $CAT['catid'];
-	//$file_ext = 'php';//$RE['file_ext'];	
-	//$index = 'index';//$RE['index'];
-	//$catdir = $CAT['catdir'];
-	//$catname = file_vname($CAT['catname']);
-	//$prefix = $MOD['htm_list_prefix'];
-	//$urlid = $MOD['list_html'] ? $MOD['htm_list_urlid'] : $MOD['php_list_urlid'];
-	//$ext = $MOD['list_html'] ? 'htm' : 'php';
-	//isset($urls[$ext]['list'][$urlid]) or $urlid = 0;
-	//
-    $listurl = 'list.php?catid='.$CAT['catid'];
-	//if(substr($listurl, 0, 1) == '/') $listurl = substr($listurl, 1);
+	global $RE, $MOD;
+	include RE_ROOT.'/api/url.inc.php';
+	$catid = $CAT['catid'];
+	$file_ext = $RE['file_ext'];	
+	$index = $RE['index'];
+	$catdir = $CAT['catdir'];
+	$catname = file_vname($CAT['catname']);
+	$prefix = $MOD['htm_list_prefix'];
+	$urlid = $MOD['list_html'] ? $MOD['htm_list_urlid'] : $MOD['php_list_urlid'];
+	$ext = $MOD['list_html'] ? 'htm' : 'php';
+	isset($urls[$ext]['list'][$urlid]) or $urlid = 0;
+    //$listurl = 'list.php?catid='.$CAT['catid'];
+	if(substr($listurl, 0, 1) == '/') $listurl = substr($listurl, 1);
 	return $listurl;
 }
 
 function itemurl($item, $page = 0) {
-	//global $RE, $MOD;
-	/*
+	global $RE, $MOD;
 	if($MOD['show_html'] && $item['filepath']) {
 		if($page === 0) return $item['filepath'];
 		$ext = file_ext($item['filepath']);
@@ -401,8 +407,7 @@ function itemurl($item, $page = 0) {
 	}
     eval("\$itemurl = \"$url\";");
 	if(substr($itemurl, 0, 1) == '/') $itemurl = substr($itemurl, 1);
-	*/
-	$itemurl = 'show.php?itemid='.$item['itemid'];
+	//$itemurl = 'show.php?itemid='.$item['itemid'];
 	return $itemurl;
 }
 
@@ -1044,29 +1049,7 @@ function tpl_select($file = 'index', $module = '', $name = 'template', $title = 
 
 //选择URL
 function url_select($name, $ext = 'htm', $type = 'list', $urlid = 0, $extend = '') {
-	//include RE_ROOT."/api/url.inc.php";
-	$urls = array();
-	$urls['htm']['list'][0] = array('example'=>'(静态) disk/25.html','index'=>'{$catdir}/{$index}.{$file_ext}', 'page'=>'{$catdir}/{$prefix}{$page}.{$file_ext}');
-	$urls['htm']['list'][1] = array('example'=>'(静态) 10/25.html','index'=>'{$catid}/{$index}.{$file_ext}', 'page'=>'{$catid}/{$prefix}{$page}.{$file_ext}');
-	$urls['htm']['list'][2] = array('example'=>'(静态) 10_25.html','index'=>'{$prefix}{$catid}.{$file_ext}', 'page'=>'{$prefix}{$catid}_{$page}.{$file_ext}');
-	$urls['htm']['list'][3] = array('example'=>'(静态) 分类/1.html','index'=>'{$catname}/{$index}.{$file_ext}', 'page'=>'{$catname}/{$page}.{$file_ext}');
-	$urls['htm']['item'][0] = array('example'=>'(静态) 1/125.html','index'=>'{$alloc}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$alloc}/{$prefix}{$itemid}_{$page}.{$file_ext}');
-	$urls['htm']['item'][1] = array('example'=>'(静态) 200810/25/125.html','index'=>'{$year}{$month}/{$day}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$year}{$month}/{$day}/{$prefix}{$itemid}_{$page}.{$file_ext}');
-	$urls['htm']['item'][2] = array('example'=>'(静态) disk/1/125.html','index'=>'{$catdir}/{$alloc}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$catdir}/{$alloc}/{$prefix}{$itemid}_{$page}.{$file_ext}');
-	$urls['htm']['item'][3] = array('example'=>'(静态) 200810/标题_125.html','index'=>'{$year}{$month}/{$title}_{$itemid}.{$file_ext}', 'page'=>'{$year}{$month}/{$title}_{$itemid}_{$page}.{$file_ext}');
-	$urls['htm']['item'][4] = array('example'=>'(静态) disk/125.html','index'=>'{$catdir}/{$prefix}{$itemid}.{$file_ext}', 'page'=>'{$catdir}/{$prefix}{$itemid}_{$page}.{$file_ext}');
-	$urls['php']['list'][0] = array('example'=>'(动态) list.php?catid=1&page=2','index'=>'list.php?catid={$catid}', 'page'=>'list.php?catid={$catid}&page={$page}');
-	$urls['php']['list'][1] = array('example'=>'(动态) list.php/catid-1-page-2/','index'=>'list.php/catid-{$catid}/', 'page'=>'list.php/catid-{$catid}-page-{$page}/');
-	$urls['php']['list'][2] = array('example'=>'(伪静态) list-htm-catid-1-page-2.html','index'=>'list-htm-catid-{$catid}.html', 'page'=>'list-htm-catid-{$catid}-page-{$page}.html');
-	$urls['php']['list'][3] = array('example'=>'(伪静态) list-1-2.html','index'=>'list-{$catid}.html', 'page'=>'list-{$catid}-{$page}.html');
-	$urls['php']['list'][4] = array('example'=>'(伪静态) list/1/','index'=>'list/{$catid}/', 'page'=>'list/{$catid}/{$page}/');
-	$urls['php']['list'][5] = array('example'=>'(伪静态) mulu-c1-2.html','index'=>'{$catdir}-c{$catid}-1.html', 'page'=>'{$catdir}-c{$catid}-{$page}.html');
-	$urls['php']['item'][0] = array('example'=>'(动态) show.php?itemid=1&page=2','index'=>'show.php?itemid={$itemid}', 'page'=>'show.php?itemid={$itemid}&page={$page}');
-	$urls['php']['item'][1] = array('example'=>'(动态) show.php/itemid-1-page-2/','index'=>'show.php/itemid-{$itemid}/', 'page'=>'show.php/itemid-{$itemid}-page-{$page}/');
-	$urls['php']['item'][2] = array('example'=>'(伪静态) show-htm-itmeid-1.html','index'=>'show-htm-itemid-{$itemid}.html', 'page'=>'show-htm-itemid-{$itemid}-page-{$page}.html');
-	$urls['php']['item'][3] = array('example'=>'(伪静态) show-1-2.html','index'=>'show-{$itemid}.html', 'page'=>'show-{$itemid}-{$page}.html');
-	$urls['php']['item'][4] = array('example'=>'(伪静态) show/1/','index'=>'show/{$itemid}/', 'page'=>'show/{$itemid}/{$page}/');
-
+	include RE_ROOT.'/api/url.inc.php';
 	$select = '<select name="'.$name.'" '.$extend.'>';
 	$types = count($urls[$ext][$type]);
 	for($i = 0; $i < $types; $i++) {

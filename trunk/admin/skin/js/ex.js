@@ -279,7 +279,7 @@ function tpl_edit(f,d,i){
 function tpl_add(f,d){
 	window.parent.f_addTab('sys_template_add_'+d+f, '模板风格', '?file=template&action=add&type='+f+'&dir='+d);
 }
-
+var ajax_obj = null;
 // Form 表单 提交check init
 function form_check_init(fmname,classname,ajaxopt){
 	if(typeof fmname == 'undefined' || fmname == '') fmname = '#myform';
@@ -302,27 +302,32 @@ function form_check_init(fmname,classname,ajaxopt){
 	$(fmname).ajaxForm({
 		beforeSend : function() {art.dialog({id:'lock',title:false,lock:true,background:'#fff',opacity:0.3});},
 		success : function(responseText, statusText, xhr, $form){
-			art.dialog.list['lock'].close();
-			if(statusText == 'success'){
-				if(responseText == '0'){
-					parent.jsprint(ajaxopt.title+"成功!", "", "Success");
-					if(typeof ajaxopt.url == 'undefined')
-						window.location.reload();
-					else
-						window.location = ajaxopt.url;
-				}else{
-					parent.jsprint(ajaxopt.title+"失败!", "", "Error");
-					art.dialog({
-						title: ajaxopt.title+'失败',
-						lock: true,
-						background: '#fff',
-						opacity: 0.5,
-						content: responseText,
-						ok: true
-					});
-				}
+			if(typeof ajaxopt.success != 'undefined'){
+				ajaxopt.success.call({document:document,statusText:statusText,responseText:responseText});
 			}else{
-				return true;
+				art.dialog.list['lock'].close();
+				if(statusText == 'success'){
+					if(responseText == '0'){
+						parent.jsprint(ajaxopt.title+"成功!", "", "Success");
+						if(typeof ajaxopt.url == 'undefined')
+							window.location.reload();
+						else
+							window.location = ajaxopt.url;
+					}else{
+						parent.jsprint(ajaxopt.title+"失败!", "", "Error");
+						art.dialog({
+							title: ajaxopt.title+'失败',
+							lock: true,
+							background: '#fff',
+							opacity: 0.5,
+							content: responseText,
+							ok: true
+						});
+					}
+					if(typeof ajaxopt.callback != 'undefined') ajaxopt.callback.call({document:document,responseText:responseText});
+				}else{
+					return true;
+				}
 			}
 		}
 	});

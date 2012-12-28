@@ -150,8 +150,8 @@ include tpl('header');
 	function ck_disable(v,id,name){
 		var info = '确定要'+((v == 1) ? '禁' : '启')+'用 ['+name+'] 模块吗?';
 		var url = '?file=<?php echo $file;?>&action=disable&value='+v+'&modid='+encodeURIComponent(id);
-		_cf({info:info,url:url,title:'操作'});
-		window.parent.reModuleMenu();		//刷新频道管理
+		_cf({info:info,url:url,title:'操作',callback:function(){window.parent.reModuleMenu();}});
+		//window.parent.reModuleMenu();		//刷新频道管理
 	}
 	
 	function md_delete(id,name){

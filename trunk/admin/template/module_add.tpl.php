@@ -87,7 +87,7 @@ include tpl('header');
 <script type="text/javascript">
    //表单验证
     $(function () {
-       form_check_init('','',{title:'修改'});
+       form_check_init('','',{title:'添加'});
     });
 
 	function ckDir(){

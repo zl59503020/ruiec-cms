@@ -4,28 +4,45 @@ include RE_ROOT.'/admin/admin.class.php';
 $do = new admin();
 switch($action) {
 	case 'add':
-		//isset($username) or $username = '';
-		//include tpl('admin_add');
-		exit;
+		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec'){
+			/* if($post['name'] == '') die('组名不能为空!');
+			$rename = $db->get_one("SELECT name FROM {$RE_PRE}groups WHERE name='".$post['name']."' AND itemid NOT IN($itemid)");
+			if($rename != null) die('该组名已经存在!');
+			$post['competence'] = serialize($post['competence']);
+			$db->query("UPDATE {$RE_PRE}groups SET name='{$post['name']}', competence='{$post['competence']}' WHERE itemid=$itemid"); */
+			echo '0';
+		}else{
+			$groups = array();
+			$result = $db->query("SELECT * FROM {$RE_PRE}groups");
+			while($r = $db->fetch_array($result)) {
+				$groups[] = $r;
+			}
+			include tpl('admin_add');
+		}
 	break;
 	case 'edit':
-		/*
-		if(!$userid) msg();
-		$user = $do->get_one($userid, 0);
-		include tpl('admin_edit');
-		*/
-		exit;
+		isset($itemid) or die('Access Denied');
+		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec'){
+			if($post['name'] == '') die('组名不能为空!');
+			$rename = $db->get_one("SELECT name FROM {$RE_PRE}groups WHERE name='".$post['name']."' AND itemid NOT IN($itemid)");
+			if($rename != null) die('该组名已经存在!');
+			$post['competence'] = serialize($post['competence']);
+			$db->query("UPDATE {$RE_PRE}groups SET name='{$post['name']}', competence='{$post['competence']}' WHERE itemid=$itemid");
+			echo '0';
+		}else{
+			$groupinfo = $db->get_one("SELECT * FROM {$RE_PRE}groups WHERE itemid = $itemid");
+			$groupinfo['competence'] = unserialize($groupinfo['competence']);
+			extract($groupinfo, EXTR_SKIP);
+			include tpl('group_edit');
+		}
 	break;
 	case 'delete':
-		/*
-		if($do->delete_admin($username)) dmsg('撤销成功', $this_forward);
-		msg($do->errmsg);
-		*/
+		isset($userid) or die('Access Denied');
+		$db->delete($userid);
 		die('0');
 	break;
 	default:
-		$condition = 'groupid=1';
-		$lists = $do->get_list($condition);
+		$lists = $do->get_list();
 		include tpl('admin');
 	break;
 }
