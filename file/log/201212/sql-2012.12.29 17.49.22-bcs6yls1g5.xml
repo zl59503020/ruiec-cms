@@ -1,0 +1,12 @@
+<sql>
+	<time>2012-12-29 17:49:22</time>
+	<ip>192.168.1.3</ip>
+	<user>Guest</user>
+	<file>/admin.php</file>
+	<querystring>file=admin&amp;action=edit&amp;userid=1</querystring>
+	<message>		<query>SELECT name FROM ruiec_groups WHERE itemid =  LIMIT 0,1</query>
+		<errno>0</errno>
+		<error>You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'LIMIT 0,1' at line 1</error>
+		<errmsg>MySQL Query Error</errmsg>
+	</message>
+</sql>
