@@ -5,40 +5,47 @@ $do = new admin();
 switch($action) {
 	case 'add':
 		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec'){
-			/* if($post['name'] == '') die('组名不能为空!');
-			$rename = $db->get_one("SELECT name FROM {$RE_PRE}groups WHERE name='".$post['name']."' AND itemid NOT IN($itemid)");
-			if($rename != null) die('该组名已经存在!');
-			$post['competence'] = serialize($post['competence']);
-			$db->query("UPDATE {$RE_PRE}groups SET name='{$post['name']}', competence='{$post['competence']}' WHERE itemid=$itemid"); */
-			echo '0';
+			if($post['username'] == '') die('用户名不能为空!');
+			if($do->get_one($post['username'], true) == null){
+				if($do->pass($post)){
+					$do->add($post);
+					die('0');
+				}
+			}else{
+				die('该用户名已经存在!');
+			}
 		}else{
 			$groups = array();
 			$result = $db->query("SELECT * FROM {$RE_PRE}groups");
 			while($r = $db->fetch_array($result)) {
-				$groups[] = $r;
+				if($r['itemid'] != '1') $groups[] = $r;
 			}
 			include tpl('admin_add');
 		}
 	break;
 	case 'edit':
-		isset($itemid) or die('Access Denied');
+		isset($userid) or die('Access Denied');
+		$admin_info = $do->get_one($userid);
 		if(isset($v_ruiec_sm) && $v_ruiec_sm == 'ruiec'){
-			if($post['name'] == '') die('组名不能为空!');
-			$rename = $db->get_one("SELECT name FROM {$RE_PRE}groups WHERE name='".$post['name']."' AND itemid NOT IN($itemid)");
-			if($rename != null) die('该组名已经存在!');
-			$post['competence'] = serialize($post['competence']);
-			$db->query("UPDATE {$RE_PRE}groups SET name='{$post['name']}', competence='{$post['competence']}' WHERE itemid=$itemid");
-			echo '0';
+			if(!$admin_info) die('该管理员不存在!');
+			if($post['password'] != ''){
+				if($post['passwords'] == '') die('请输入原密码!');
+				if(md5($post['passwords']) != $admin_info['password']) die('原密码错误!');
+			}
+			$do->edit($post,$userid);
+			die('0');
 		}else{
-			$groupinfo = $db->get_one("SELECT * FROM {$RE_PRE}groups WHERE itemid = $itemid");
-			$groupinfo['competence'] = unserialize($groupinfo['competence']);
-			extract($groupinfo, EXTR_SKIP);
-			include tpl('group_edit');
+			if(!$admin_info) message('管理员不存在!');
+			$result = $db->get_one("SELECT name FROM {$RE_PRE}groups WHERE itemid = ".$admin_info['groupid']);
+			$admin_info['groupname'] = $result['name'];
+			$admin_info['other'] = unserialize($admin_info['other']);
+			extract($admin_info, EXTR_SKIP);
+			include tpl('admin_edit');
 		}
 	break;
 	case 'delete':
 		isset($userid) or die('Access Denied');
-		$db->delete($userid);
+		$do->delete($userid);
 		die('0');
 	break;
 	default:

@@ -1,5 +1,5 @@
 <?php
-define('RE_DEBUG', false);
+define('RE_DEBUG', true);
 if(RE_DEBUG) {
 	error_reporting(E_ALL);
 	$mtime = explode(' ', microtime());
